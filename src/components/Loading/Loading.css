@@ -1,0 +1,60 @@
+.ld-mn{
+    display:flex;
+    position: relative;
+    z-index: 999;
+    height: 100vh;
+    width:100%;
+    align-items: center;
+    justify-content: center;
+    gap:30px;
+    flex-direction: column;
+}
+.ld-logo {
+    height: 180px;
+    width: 180px;
+    animation: mvx 1s infinite ease-in alternate;
+  }
+  @keyframes mvx {
+    100% {transform: translateY(20%)}
+  }
+  @keyframes mvrx {
+    100% {transform: translateY(-20%)}
+  
+}
+.loader {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: block;
+    margin:15px auto;
+    position: relative;
+    background: var(--main-bg-clr);
+    box-shadow: -24px 0 var(--main-bg-clr), 24px 0 var(--main-bg-clr);
+    box-sizing: border-box;
+    animation: shadowPulse 2s linear infinite;
+  }
+  
+  @keyframes shadowPulse {
+    33% {
+      background: var(--main-bg-clr);
+      box-shadow: -24px 0 #419661, 24px 0 var(--main-bg-clr);
+    }
+    66% {
+      background: #419661;
+      box-shadow: -24px 0 var(--main-bg-clr), 24px 0 var(--main-bg-clr);
+    }
+    100% {
+      background: var(--main-bg-clr);
+      box-shadow: -24px 0 var(--main-bg-clr), 24px 0 #419661;
+    }
+  }
+  
+
+@media screen and (max-width:800px) {
+    .ld-logo{
+        height: 100px;
+        width:100px;
+    }
+    
+}
+

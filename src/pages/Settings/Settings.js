@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import SettingsTable from '../../components/SettingsTable';
-import { socket } from '../../Socket.js';
 import { SettingCards } from './SettingCards.js';
+import { io } from 'socket.io-client';
+import { URL } from '../../lib/constants.js';
 
 const Settings = () => {
+  // a new socket instance for this page
+  const settingsSocket = io(URL, { path: "/ws/settings" });
+
   const [tableData, setTableData] = useState([]) // to store table data coming from the circuit
   const [deviceTotal, setDeviceTotal] = useState()
 
@@ -39,15 +43,18 @@ const Settings = () => {
   }
 
   useEffect(() => {
-    // the data will be fetched on initial load and when anything changes (we again get data for the ws event)
-    socket.on("ws", fetchTableData)
+    // Connect to WebSocket and listen for updates
+    settingsSocket.on("ws", fetchTableData);
+
     return () => {
-      socket.off("ws", fetchTableData) // clean up to prevent overload
+      // Cleanup: Unsubscribe from event & disconnect socket when the component unmounts
+      settingsSocket.off("ws", fetchTableData);
+      settingsSocket.disconnect();
     };
-  })
+  }, []);
 
 
-  
+
   // this is just for testing purpose
   useEffect(() => {
     setDeviceTotal({R:2, S: 10, T: 10})
@@ -64,7 +71,7 @@ const Settings = () => {
     <div>
       SETTINGS
       {deviceTotal !== undefined && <SettingCards totalDevices={deviceTotal} />}
-      {tableData.length !== 0 && <SettingsTable tableData={tableData} />}
+      {tableData.length !== 0 && <SettingsTable tableData={tableData} settingsSocket={settingsSocket} />}
     </div>
   )
 }

@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { socket } from "../Socket.js";
 // import Switch from '@mui/material/Switch'; 
 
-const SettingsTable = React.memo(({tableData}) => {
+const SettingsTable = React.memo(({tableData, settingsSocket}) => {
     const [showModal, setShowModal] = useState(false);
     const [replaced, setReplaced] = useState({})
     const [updatedData, setUpdatedData] = useState(tableData) //saving the table data in a local state to update the details whenever user makes any change
@@ -30,9 +29,9 @@ const SettingsTable = React.memo(({tableData}) => {
     };
 
     const saveSpecificDeviceData = (nodeid) => {
-        //  to send data of a specific device to the socket
+        //  to send data of a specific device to the settingsSocket
         const data = updatedData.filter(item => item.nodeid === nodeid)
-        socket.emit("ws", {data})
+        settingsSocket.emit("ws", {data})
     }
 
     const saveChanges = () => {
@@ -42,7 +41,7 @@ const SettingsTable = React.memo(({tableData}) => {
         // handleReplace()
         // setDeviceInfo(data);
         updatedData.forEach(row => {
-            socket.emit("ws", row)
+            settingsSocket.emit("ws", row)
         })
     };
 

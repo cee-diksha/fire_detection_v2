@@ -7,6 +7,7 @@ const SettingsTable = React.memo(({tableData}) => {
     const [replaced, setReplaced] = useState({})
     const [updatedData, setUpdatedData] = useState(tableData) //saving the table data in a local state to update the details whenever user makes any change
 
+
     const handleSwitchChange = (nodeid, field) => {
         setUpdatedData((prevData) =>
             prevData.map((item) =>

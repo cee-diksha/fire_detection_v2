@@ -11,7 +11,7 @@
     box-sizing: border-box;
     pointer-events: all;
     min-height: 290px;
-    background: var(--main-bg-clr);
+    background: var(--bg-mn-clr);
 }
 .err-pg-cont{
     display: flex;

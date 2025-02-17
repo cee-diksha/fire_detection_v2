@@ -1,0 +1,16 @@
+[
+    {
+        "nodeId": 106,
+        "nodeType": "Sensor",
+        "deckno": 5,
+        "compno": 11,
+        "status": [],
+        "temp": 40,
+        "smoke": "checked",
+        "lastupdate": "12:21:5 4/2/25",
+        "statusCode": 1,
+        "location": "VS Dining Hall",
+        "batp": 50,
+        "supp": "checked"
+      }
+]

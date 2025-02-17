@@ -8,7 +8,7 @@ const ErrorPage = () => {
       <div className="err-pg-cont">
         <div className="err-txt">
             <h1>SOMETHING WENT WRONG</h1>
-            <h4>404 PAGE NOT FOUND</h4> 
+            <h4>404</h4> 
         </div>
             
       </div>

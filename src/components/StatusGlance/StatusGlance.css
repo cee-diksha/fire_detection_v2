@@ -1,0 +1,63 @@
+.sum-details{
+    border-radius: 10px;
+    padding: 10px 10px 10px 10px;
+    height: 100%;
+    width: 100%;
+    background-color: var(--card-clr);
+    color: var(--text-clr-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    box-sizing: border-box !important;   
+}
+.sum-details h4{
+    text-align: center;
+    color:var(--text-clr);
+    margin: 0;
+}
+
+.sum-details-combined{
+    flex:0 !important;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#sum-details-span1 {
+    font-weight: 600;
+    font-size: 14px;
+    width: fit-content;
+}
+
+#sum-details-span2 {
+  flex:0;
+  width:40px !important;
+  font-weight: 600;
+}
+
+.sum-guage{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sum-more-details{
+  width:100%;
+  font-size: 14px;
+  height: 180px;
+  flex:0 !important;
+
+}
+.sum-all-div{
+  flex:0 !important;
+  height: fit-content;
+  cursor: pointer;
+  user-select: none;
+}
+
+.sum-all-div span{
+  font-weight: 600;
+  font-size: 12px;
+}

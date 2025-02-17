@@ -3,6 +3,7 @@ import './DeviceCard.css';
 import { FIRE_TEMP } from '../../libs/Constants';
 import { Tooltip } from '@mui/material';
 import {motion} from 'motion/react'
+import MarkFault from '../Modals/MarkFault';
 
 /**
  * 
@@ -61,6 +62,7 @@ const DeviceCard = ({
   const [tempImg, setTempImg] = useState("temperature.svg");
   const [batColor, setBatColor] = useState("green");
   const [batImg, setBatImg] = useState("battery.svg");
+  const [isFault, setIsFault] = useState(false);
 
   // Sets alertType based on status array, batp and temp
   useEffect(() => {
@@ -169,7 +171,7 @@ const DeviceCard = ({
 
   //logic to handle marking faulty
   const handleMarkFaulty = ()=>{
-
+    setIsFault(true)
   }
 
   //logic to handle alarm
@@ -287,6 +289,7 @@ const DeviceCard = ({
                     <img src="/static/images/device/faulty.svg" alt="" />
                   </motion.div>
                 </Tooltip>
+                {isFault && <MarkFault open={true} handleClose={setIsFault} />}
 
               {/* Refresh */}
                 <Tooltip title="Refresh" slotProps={{popper: {modifiers: [{name: 'offset',options: {offset: [0, -10]}}]}}} placement="bottom" disableInteractive>

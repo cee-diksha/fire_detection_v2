@@ -4,13 +4,16 @@ const MainContext = createContext()
 
 const MainContextProvider = (props) => {
 
-    const [isLogin, setIsLogin] = useState(false)
+    const [isLogin, setIsLogin] = useState(true)
+    const [isDemo, setIsDemo] = useState(true);
 
     return (
         <MainContext.Provider
             value={{
                 isLogin,
                 setIsLogin,
+                isDemo,
+                setIsDemo
             }}>
             {props.children}
         </MainContext.Provider>

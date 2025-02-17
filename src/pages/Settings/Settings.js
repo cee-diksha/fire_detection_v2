@@ -1,78 +1,101 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import SettingsTable from './SettingsTable.js';
 import {SettingCards} from "./SettingCards.js"
-import { io } from 'socket.io-client';
-import { URL } from '../../lib/constants.js';
+import { URL } from '../../libs/Constants.js';
+import fakeCardData from '../../data/fakeCardData.json'
+import { MainContext } from '../../context/MainContext.js';
+import { Link } from 'react-router-dom';
 
 const Settings = () => {
-  // a new socket instance for this page
-  const settingsSocket = io(URL, { path: "/ws/settings" });
 
+  const {isLogin, isDemo} = useContext(MainContext)
   const [tableData, setTableData] = useState([]) // to store table data coming from the circuit
   const [deviceTotal, setDeviceTotal] = useState()
+  const [socket, setSocket] = useState(null);
 
-  const fetchTableData = (info) => {
-    const cardDetails = info.settingparameter
-    setDeviceTotal(info.quantity)
 
-    console.log(Object.values(cardDetails), "values check")
+  useEffect(() => {
+    if (isDemo) {
+      setTableData(fakeCardData);
+    } else {
+      setTableData([]);
+      const settingsSocket = new WebSocket(`${URL}/ws/settings`)
 
-    // func to fetch data from websocket
-      setTableData((prevData) => {
-        const updated = [...prevData]
+      settingsSocket.onopen = () => {
+        console.log("Connected to WebSocket Server!");
+        settingsSocket.send(JSON.stringify({ GETCARD: 1 })); // Send initial message
+      };
 
-        cardDetails.forEach((newDevice) => {
-          const existing = updated.findIndex((device) => device.nodeId === newDevice.nodeId)
-          if(existing !== -1) {
-            const existingDevice = updated[existing];
+      settingsSocket.onmessage = (event) => {
+        console.log(event, "event chekc")
+        try {
+          const cardData = JSON.parse(event.data);
+          if (cardData) {
+            console.log("Received Card Data:", cardData);
+            setTableData((prevData) => {
+                const updated = [...prevData]
+                cardData.forEach((newDevice) => {
+                const existing = updated.findIndex((device) => device.nodeId === newDevice.nodeId)
+                if(existing !== -1) {
+                  const existingDevice = updated[existing];
+                  
+                  const hasChanged = Object.keys(newDevice).some(
+                    (key) => newDevice[key] !== existingDevice[key]
+                  );
 
-            // if anything has changed
-            const hasChanged = Object.keys(newDevice).some(
-              (key) => newDevice[key] !== existingDevice[key]
-            );
-
-            if (hasChanged) {
-              updated[existing] = newDevice; // update only if there are changes
-            }
-          } else {
-            updated.push(newDevice)
+                  if (hasChanged) {
+                    updated[existing] = newDevice; // update only if there are changes
+                  }
+                } else {
+                  updated.push(newDevice)
+                }
+              })
+              return updated
+            })
           }
-        })
-        return updated
-      });
-  }
+        } catch (error) {
+          console.error("Error parsing WebSocket message:", error);
+        }
+      }
 
-  useEffect(() => {
-    // Connect to WebSocket and listen for updates
-    settingsSocket.on("ws", fetchTableData);
+      settingsSocket.onclose = () => {
+        console.log("WebSocket Disconnected.");
+      };
+      setSocket(settingsSocket);
 
-    return () => {
-      // Cleanup: Unsubscribe from event & disconnect socket when the component unmounts
-      settingsSocket.off("ws", fetchTableData);
-      settingsSocket.disconnect();
-    };
-  }, []);
-
-
-
-  // this is just for testing purpose
-  useEffect(() => {
-    setDeviceTotal({R:2, S: 10, T: 10})
-    const cardDetails = {
-      3:{nodeid:3, nodetype:"Repeater", deckno :"1", compno:"1", status:"Normal", temp:60, smoke:"checked", lastupdate:"unknown", statuscode:0, location:"unknown", batp:80, parentid:0, parentpipe:2,supp:null, replacedby:-1, lastpid:1, slave:0, path:[3], length:1, tempvalue:-1, connectedto:0}, 
-      4:{nodeid:4, nodetype:"Repeater", deckno :"2", compno:"4", status:"Normal", temp:60, smoke:"checked", lastupdate:"unknown", statuscode:0, location:"unknown", batp:80, parentid:0, parentpipe:2,supp:null, replacedby:-1, lastpid:1, slave:0, path:[3], length:1, tempvalue:-1, connectedto:0}
+      // cleanup WebSocket connection on unmount
+      return () => {
+        settingsSocket.close();
+      };
     }
-    setTableData(Object.values(cardDetails))
-  }, [])
-
+  }, []);
   
 
   return (
-    <div>
-      SETTINGS
-      {deviceTotal !== undefined && <SettingCards totalDevices={deviceTotal} />}
-      {tableData.length !== 0 && <SettingsTable tableData={tableData} settingsSocket={settingsSocket} />}
-    </div>
+    <>
+      {isLogin && (
+      <div className='page'>
+        <div className='st-head flex-space-row'> 
+            <SettingCards tableData={tableData}/>
+          <div className='st-udtd-dv'>
+              Update/Remove Devices
+          </div>
+        </div>
+       
+        <SettingsTable tableData={tableData} socket={socket} />
+       
+      </div>
+  )}
+      {!isLogin && (
+        <div className='sttngs-user'>
+          <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M27 17.4V27M27 36.6H27.024M51 27C51 40.2548 40.2548 51 27 51C13.7452 51 3 40.2548 3 27C3 13.7452 13.7452 3 27 3C40.2548 3 51 13.7452 51 27Z" stroke="white" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <h2>You need to be logged in to access settings.</h2>
+          <Link to='/login'>Login</Link>
+        </div>
+      )}
+    </>
   )
 }
 

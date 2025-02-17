@@ -1,7 +1,7 @@
 import { BrowserRouter } from 'react-router-dom';
 import './global.css';
 import Router from './Router';
-import { MainContextProvider } from './utils/MainContext';
+import { MainContextProvider } from './context/MainContext';
 
 
 

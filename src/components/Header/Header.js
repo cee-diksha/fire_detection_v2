@@ -3,19 +3,21 @@ import { Link } from 'react-router-dom'
 import LiveClock from '../LiveClock/LiveClock'
 import './Header.css'
 import { ExportPdfButton } from '../../utils/ExportPdfButton'
-import { MainContext } from '../../utils/MainContext'
+import { MainContext } from '../../context/MainContext'
 import UserDropDown from '../UserDropDown/UserDropDown'
 import { Tooltip } from '@mui/material'
 import DropDown from '../DropDown/DropDown'
 import FullscreenButton from '../Fullscreen/FullscreenButton'
+import fakeCardData from '../../data/fakeCardData.json'
 
 const Header = () => {
-    const {isLogin, setIsLogin} = useContext(MainContext)
+    const {isLogin, setIsLogin, isDemo} = useContext(MainContext)
     const [theme,setTheme] = useState('dark')
     const [isSettingsPg, setIsSettingsPg] = useState(false)
     const settingsRoute = ["/settings", "/login"]
     const dashboardRoute = ["/"]
     const loginRoute = ["/login"]
+    const [data,setData] = useState([])
 
     const handleThemeChange =  () => {
         if(theme==="dark") {
@@ -28,8 +30,13 @@ const Header = () => {
     }
 
     useEffect(() => {
-        if(window.location.pathname === "/settings") setIsSettingsPg(true)
-    }, [])
+        if(window.location.pathname === "/settings"){
+            setIsSettingsPg(true)
+        }else{
+            setIsSettingsPg(false)
+        }
+    }, [window.location.pathname])
+    
   return (
     <div className='header-container'>
       <div className='header-mn'>
@@ -55,7 +62,7 @@ const Header = () => {
         <div className='header-sec2'>
             {window.location.pathname === "/" && 
                 <>
-                    <ExportPdfButton/>
+                    <ExportPdfButton data={data}/>
                     {/* <DropDown cardData={cardData}/> */}
                 </>
             }

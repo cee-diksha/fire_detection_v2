@@ -1,13 +1,23 @@
-import React, { useState } from 'react';
-// import Switch from '@mui/material/Switch'; 
+import React, { useEffect, useState } from 'react';
+import Switch from '@mui/material/Switch'; 
+import './Settings.css'
+import {motion} from 'motion/react'
 
-const SettingsTable = React.memo(({tableData, settingsSocket}) => {
+const animate = {opacity:0.7}
+const animate2 = {opacity:0.5,scale:0.99}
+const transition = {duration:0.1,ease:'linear'}
+
+const SettingsTable = ({tableData, settingsSocket}) => {
     const [showModal, setShowModal] = useState(false);
     const [replaced, setReplaced] = useState({})
     const [updatedData, setUpdatedData] = useState(tableData) //saving the table data in a local state to update the details whenever user makes any change
 
-
+    useEffect(()=>{
+        setUpdatedData(tableData);
+    },[tableData])
+    
     const handleSwitchChange = (nodeid, field) => {
+        
         setUpdatedData((prevData) =>
             prevData.map((item) =>
                 item.nodeid === nodeid ? { ...item, [field]: !item[field] } : item
@@ -61,10 +71,7 @@ const SettingsTable = React.memo(({tableData, settingsSocket}) => {
 
     return (
         <div className='settings-table-resetbtn-wrapper'>
-            <div id="btn-wrapper-table">
-                <button id="save-changes" onClick={saveChanges}>Save Changes</button>
-                <button onClick={() => setShowModal(true)}>Reset Database</button>
-            </div>
+            
             {/* {showModal && <ConfimationModal open={true} handleClose={setShowModal} />} */}
             <div className='table-container'>
                 <table>
@@ -91,17 +98,17 @@ const SettingsTable = React.memo(({tableData, settingsSocket}) => {
                     {updatedData.map((item, index) => (
                         <tr key={item.nodeid} style={{ opacity: item.isDeleted ? 0.5 : 1 }}>
                             <td>{index + 1}</td>
-                            <td>{item.nodeid}</td>
-                            <td style={{ textTransform: "capitalize" }}>{item.nodetype}</td>
-                            <td>
-                                {/* <input
+                            <td>{item.nodeId}</td>
+                            <td style={{ textTransform: "capitalize" }}>{item.nodeType}</td>
+                            {/* <td>
+                                 <input
                                     type="text"
                                     style={{ width: "60%" }}
                                     defaultValue={item.axis}
                                     onChange={(e) => handleFieldChange(item.nodeid, 'axis', e.target.value)}
                                     disabled={item.isDeleted}
-                                /> */}
-                            </td>
+                                /> 
+                            </td> */}
                             <td>
                                 <input
                                     type="text"
@@ -127,32 +134,32 @@ const SettingsTable = React.memo(({tableData, settingsSocket}) => {
                             </td>
                             <td>
                                 {item.smoke !== null ? (
-                                    // <Switch
-                                    //     sx={{
-                                    //         '& .MuiSwitch-thumb': { backgroundColor: "#3F3F3F" },
-                                    //         '& .MuiSwitch-track': { backgroundColor: "#3F3F3F" }
-                                    //     }}
-                                    //     checked={item.smoke}
-                                    //     onChange={() => handleSwitchChange(item.nodeid, 'smoke')}
-                                    //     disabled={item.isDeleted || item.nodetype === 'repeater' || item.nodetype === 'trigger unit'}
-                                    // />
-                                    null
+                                    <Switch
+                                        sx={{
+                                            '& .MuiSwitch-thumb': { backgroundColor: "#3F3F3F" },
+                                            '& .MuiSwitch-track': { backgroundColor: "#3F3F3F" }
+                                        }}
+                                        checked={item.smoke}
+                                        onChange={() => handleSwitchChange(item.nodeid, 'smoke')}
+                                        disabled={item.isDeleted || item.nodeType.toLowerCase() === 'repeater' || item.nodeType.toLowerCase() === 'suppressor'}
+                                    />
+                                    
                                 ) : (
                                     "NA" 
                                 )}
                             </td>
                             <td>
                                 {item.supp !== null ? (
-                                    // <Switch
-                                    //     sx={{
-                                    //         '& .MuiSwitch-thumb': { backgroundColor: "#3F3F3F" },
-                                    //         '& .MuiSwitch-track': { backgroundColor: "#3F3F3F" }
-                                    //     }}
-                                    //     checked={item.supp}
-                                    //     onChange={() => handleSwitchChange(item.nodeid, 'supp')}
-                                    //     disabled={item.isDeleted || item.nodetype === 'repeater' || item.nodetype === 'trigger unit'}
-                                    // />
-                                    null
+                                     <Switch
+                                         sx={{
+                                             '& .MuiSwitch-thumb': { backgroundColor: "#3F3F3F" },
+                                             '& .MuiSwitch-track': { backgroundColor: "#3F3F3F" }
+                                         }}
+                                         checked={item.supp}
+                                         onChange={() => handleSwitchChange(item.nodeid, 'supp')}
+                                         disabled={item.isDeleted || item.nodeType.toLowerCase() === 'repeater' || item.nodeType.toLowerCase === 'suppressor'}
+                                     />
+                                
                                 ) : (
                                     "NA" 
                                 )}
@@ -185,14 +192,14 @@ const SettingsTable = React.memo(({tableData, settingsSocket}) => {
                                 />
                             </td>
                              <td>
-                                <button onClick={() => saveSpecificDeviceData(item.nodeid)}>
-                                    Save
-                                </button>
+                                <motion.button id='save' whileHover={{opacity:0.7}} whileTap={{opacity:0.5,scale:0.99}} className="bttn-mn" onClick={() => saveSpecificDeviceData(item.nodeid)}>
+                                    <label>Save</label>
+                                </motion.button>
                             </td>
                             <td>
-                                <button onClick={() => handleDeleteRow(item.nodeid)}>
-                                    {item.isDeleted ? "Undo" : "Delete"}
-                                </button>
+                                <motion.button whileHover={{opacity:0.7}} whileTap={{opacity:0.5,scale:0.99}} className="bttn-mn" onClick={() => handleDeleteRow(item.nodeid)}>
+                                    <label>{item.isDeleted ? "Undo" : "Delete"}</label>
+                                </motion.button>
                             </td>
                             {/* <td>
                                 <input
@@ -209,8 +216,14 @@ const SettingsTable = React.memo(({tableData, settingsSocket}) => {
 
                 </table>
             </div>
+            
+            <div id="btn-wrapper-table" className='flex-end-row'>
+                <motion.button whileHover={animate} whileTap={animate2} transition={transition} className='bttn-mn' id="save-all-changes" onClick={saveChanges}><label htmlFor="save-all-changes">Save Changes</label></motion.button>
+                <motion.button whileHover={{opacity:0.7}} whileTap={{opacity:0.5,scale:0.99}} className='bttn-mn' id="reset-database" onClick={() => setShowModal(true)}><label htmlFor="reset-database">Reset Database</label></motion.button>
+            </div>
+               
         </div>
     );
-});
+};
 
 export default SettingsTable;

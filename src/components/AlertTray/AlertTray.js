@@ -1,9 +1,10 @@
 import React, {useEffect, useState } from 'react'
 import fakeCardData from '../../data/fakeCardData.json'
 import noCardData from '../../data/noCardData.json'
-import { FIRE_TEMP } from '../../libs/Constants'
+import { FIRE_TEMP, URL } from '../../libs/Constants'
 import DeviceCard from '../../components/DeviceCard/DeviceCard'
 import './AlertTray.css'
+
 
 const getPriority = (statusArray, temp, batp) => {
   if (batp === 0) return 5; // 'replace' (highest priority)
@@ -14,42 +15,25 @@ const getPriority = (statusArray, temp, batp) => {
   return Infinity; // Normal cards (no priority)
 };
 
-const AlertTray = () => {
+const AlertTray = ({socket,data}) => {
 
-  const [cardsData, setcardsData] = useState(fakeCardData);
+  const [cardsData, setcardsData] = useState([]);
   const [AlertCards, setAlertCards] = useState([]);
 
-/* 
-  logic to get card data and refresh specific card data
-  useEffect(() => {
-    sendMessage({ CARDDATA: 1 });
-
-    const handleMessage = (event) => {
-      const data = JSON.parse(event.data);
-      
-      if (data.type === "CARDDATA") {
-        setFakeCardData(data.payload || []);
-      }
-
-      if (data.type === "REFRESHED_CARD") {
-        setFakeCardData((prevCards) =>
-          prevCards.map((card) =>
-            card.nodeId === data.payload.nodeId ? data.payload : card
-          )
-        );
-      }
-    };
-
-    socket.addEventListener("message", handleMessage);
-    return () => {
-      socket.removeEventListener("message", handleMessage);
-    };
-  }, [sendMessage, socket]); */
+  useEffect(()=>{
+    setcardsData(data)
+  },[data])
 
   const refreshCard = (nodeId) => {
     console.log('Refreshing Node ',nodeId)
-    // sendMessage({ 'REFRESH': nodeId });
+    // dashBoardSocket.emit("REFRESH", nodeId)
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify({ "REFRESH" : nodeId }));
+    } else {
+      console.warn("webSocket not connected");
+    }
   };
+
 
     useEffect(() => {
         const filteredAndSorted = cardsData
@@ -69,9 +53,9 @@ const AlertTray = () => {
         <div className='alert-tray'>
             {AlertCards.length > 0 && (
                 <>
-                {AlertCards.map((card,index)=>{
+                {AlertCards.map((card)=>{
                     return(
-                        <DeviceCard {...card} refreshCard={refreshCard}/>
+                        <DeviceCard {...card} refreshCard={refreshCard} key={card.nodeId} />
                     )
                 })}
                 </>

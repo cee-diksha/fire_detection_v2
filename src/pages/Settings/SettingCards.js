@@ -1,25 +1,19 @@
+import { totalUnits } from "../../utils/TotalUnits"
+
 const TotalSuppressionCard = ({totalDevices}) => {
     return(
-        <div className="total-cards">
-            <div className="total-label">
-                <h4>Total Supression Units</h4>
-            </div>  
-            <div className="total-num">
-                {totalDevices}
-            </div>      
+        <div className="total-crd">
+                <span>Total Supression Units</span>            
+                <span  id="device-qty">{totalDevices}</span>                 
         </div>
     )
 }
 
 const TotalSmokeCard = ({totalDevices}) => {
     return(
-        <div className="total-cards">
-            <div className="total-label">
-                <h4>Total Smoke Sensors</h4>
-            </div>  
-            <div className="total-num">
-                {totalDevices}
-            </div>      
+        <div className="total-crd">
+                <span>Total <br/>Sensors</span>
+                <span id="device-qty">{totalDevices}</span>            
         </div>
     )
 }
@@ -27,24 +21,22 @@ const TotalSmokeCard = ({totalDevices}) => {
 
 const TotalRepeaterCard = ({totalDevices}) => {
     return(
-        <div className="total-cards">
-            <div className="total-label">
-                <h4>Total Repeaters</h4>
-            </div>  
-            <div className="total-num">
-            {totalDevices}
-            </div>      
+        <div className="total-crd">
+            <span>Total <br/>Repeaters</span>
+            <span  id="device-qty">{totalDevices}</span>
         </div>
     )
 }
 
-export const SettingCards = ({totalDevices}) => {
-    console.log(totalDevices, "DEVICE TOTAL")
+export const SettingCards = ({tableData}) => {
+    const repeater = totalUnits(tableData, "repeater")
+    const sensor = totalUnits(tableData, "sensor")
+    const suppressor = totalUnits(tableData, "suppressor")
     return(
-       <>
-            <TotalSuppressionCard totalDevices = {totalDevices.T}/>
-            <TotalSmokeCard totalDevices = {totalDevices.S} />
-            <TotalRepeaterCard totalDevices = {totalDevices.R} />
-       </>
+       <div className="st-card-tray flex-start-row flex-wrap">
+            <TotalSuppressionCard totalDevices = {suppressor}/>
+            <TotalSmokeCard totalDevices = {sensor} />
+            <TotalRepeaterCard totalDevices = {repeater} />
+       </div>
     )
 }

@@ -1,5 +1,6 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react'
+import './LiveClock.css'
 
 const LiveClock = () => {
     const [currentDateTime, setCurrentDateTime] = useState({
@@ -27,15 +28,17 @@ const LiveClock = () => {
       };
     
       return (
-        <div className='live-clock'>
-          <div className='live-clock-time'>
-            {currentDateTime.time}
-            <span className='live-clock-date'>
+        <div className='lv-clk flex-start-row'>
+          <div>
+            <span className='lv-clk-date'>
               {currentDateTime.date}
             </span>
+            <div className='lv-clk-time'>
+              {currentDateTime.time}
+            </div>
           </div>
          
-          <button onClick={resetClock}>Reset</button>
+          <button id='lv-clk-reset' className='bttn-mn' onClick={resetClock}><label>Reset</label></button>
         </div>
       );
 }

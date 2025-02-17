@@ -11,7 +11,16 @@
       "statusCode": 1,
       "location": "VS Dining Hall",
       "batp": 30,
-      "supp": "unchecked"
+      "parentid":0, 
+      "parentpipe":2,
+      "supp": "unchecked",
+      "replacedby":-1, 
+      "lastpid":1, 
+      "slave":0, 
+      "path":[3], 
+      "length":1, 
+      "tempvalue":-1, 
+      "connectedto":0
     },
     {
       "nodeId": 132,
@@ -25,7 +34,16 @@
       "statusCode": 1,
       "location": "Spare Gear Store",
       "batp": 10,
-      "supp": "checked"
+      "parentid":0, 
+      "parentpipe":2,
+      "supp": "checked",
+      "replacedby":-1, 
+      "lastpid":1, 
+      "slave":0, 
+      "path":[3], 
+      "length":1, 
+      "tempvalue":-1, 
+      "connectedto":0
     },
     {
         "nodeId": 106,
@@ -39,7 +57,16 @@
         "statusCode": 1,
         "location": "ASP",
         "batp": 40,
-        "supp": "checked"
+        "parentid":0, 
+        "parentpipe":2,
+        "supp": "checked",
+        "replacedby":-1, 
+        "lastpid":1, 
+        "slave":0, 
+        "path":[3], 
+        "length":1, 
+        "tempvalue":-1, 
+        "connectedto":0
       },
     {
       "nodeId": 122,
@@ -53,7 +80,16 @@
       "statusCode": 1,
       "location": "Gallery",
       "batp": 10,
-      "supp": "checked"
+      "parentid":0, 
+      "parentpipe":2,
+      "supp": "checked",
+      "replacedby":-1, 
+      "lastpid":1, 
+      "slave":0, 
+      "path":[3], 
+      "length":1, 
+      "tempvalue":-1, 
+      "connectedto":0
     },
     {
       "nodeId": 107,
@@ -67,7 +103,16 @@
       "statusCode": 1,
       "location": "GT Room",
       "batp": 20,
-      "supp": "checked"
+      "parentid":0, 
+      "parentpipe":2,
+      "supp": "checked",
+      "replacedby":-1, 
+      "lastpid":1, 
+      "slave":0, 
+      "path":[3], 
+      "length":1, 
+      "tempvalue":-1, 
+      "connectedto":0
     },
     {
       "nodeId": 112,
@@ -81,7 +126,16 @@
       "statusCode": 0,
       "location": "Eng SS Mess",
       "batp": 0,
-      "supp": "checked"
+      "parentid":0, 
+      "parentpipe":2,
+      "supp": "checked",
+      "replacedby":-1, 
+      "lastpid":1, 
+      "slave":0, 
+      "path":[3], 
+      "length":1, 
+      "tempvalue":-1, 
+      "connectedto":0
     },
     {
       "nodeId": 114,
@@ -95,7 +149,16 @@
       "statusCode": 1,
       "location": "Fwd SS Mess",
       "batp": 80,
-      "supp": "checked"
+      "parentid":0, 
+      "parentpipe":2,
+      "supp": "checked",
+      "replacedby":-1, 
+      "lastpid":1, 
+      "slave":0, 
+      "path":[3], 
+      "length":1, 
+      "tempvalue":-1, 
+      "connectedto":0
     },
     {
       "nodeId": 101,
@@ -109,7 +172,15 @@
       "statusCode": 1,
       "location": "MCO",
       "batp": 80,
-      "supp": "checked"
+      "parentid":0, 
+      "parentpipe":2,
+      "supp": "checked",
+      "replacedby":-1, 
+      "lastpid":1, 
+      "slave":0, 
+      "path":[3], 
+      "length":1, 
+      "tempvalue":-1, 
+      "connectedto":0
     }
   ]
-  

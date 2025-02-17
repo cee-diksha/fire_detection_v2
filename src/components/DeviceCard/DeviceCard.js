@@ -65,7 +65,7 @@ const DeviceCard = ({
   // Sets alertType based on status array, batp and temp
   useEffect(() => {
     const getAlertAndStatusDisplay = (statusArray, temperature, battery) => {
-      if (battery === 0) return { alertType: "replace", statusDisplay: ["needs replacement"], hasSmoke: false, hasFire: false };
+      if (battery <= 5) return { alertType: "replace", statusDisplay: ["needs replacement"], hasSmoke: false, hasFire: false };
   
       const normalizedStatus = statusArray
         .map((s) => s.toLowerCase().replace(/\s+/g, ""))
@@ -120,7 +120,6 @@ const DeviceCard = ({
   
     const { alertType, statusDisplay, hasSmoke, hasFire, hasRise } = getAlertAndStatusDisplay(status, temp, batp);
     
-    console.log(statusDisplay)
     setAlertType(alertType);
     setStatusDisplay(statusDisplay);
     setHasSmoke(hasSmoke);
@@ -139,13 +138,7 @@ const DeviceCard = ({
     else if(alarmOn && (hasFire || hasRise || hasSmoke)){
       setCardAlarm(false)
     }
-  },[alarmOn,hasFire])  
-
-
-  useEffect(()=>{
-    console.log(cardAlarm)
-  },[cardAlarm])
-
+  },[alarmOn,hasFire])
 
   //handles temp and battery styling
   useEffect(() => {

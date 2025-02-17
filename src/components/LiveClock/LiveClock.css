@@ -1,0 +1,22 @@
+.lv-clk{
+    background: var(--primary-clr);
+    padding:10px;
+    border-radius: 10px;
+    color:white;
+    font-weight: 500;
+    gap:30px;
+}
+
+.lv-clk-date{
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+.lv-clk-time{
+    font-size: 20px;
+    font-weight: 700;
+}
+
+#lv-clk-reset{
+    background: var(--card-clr);
+}

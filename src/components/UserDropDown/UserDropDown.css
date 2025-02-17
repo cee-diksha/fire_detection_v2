@@ -1,0 +1,8 @@
+#drop-down{
+    padding:4px;
+    position:relative;
+    cursor:pointer;
+    width:130px;
+    background:var(--card-clr);
+    border-radius:10px;
+}

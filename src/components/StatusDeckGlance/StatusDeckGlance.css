@@ -1,0 +1,11 @@
+.sdg-mn{
+    gap:10px;
+    height: 190px;
+}
+
+@media screen and (max-width:1050px) {
+    .sdg-mn{
+        flex-direction: column;
+        height: 380px;
+    }    
+}

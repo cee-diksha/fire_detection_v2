@@ -1,0 +1,22 @@
+.alert-tray{
+    display: flex;
+    justify-content:space-between;
+    width: 100%;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    row-gap: 20px;;
+}
+
+.no-alert{
+    width:100%;
+    height:160px;
+    border-radius: 10px;
+    border: 2px dashed var(--border-clr)
+}
+
+.no-alert h2{
+    margin: 0;
+}
+.no-alert span{
+    opacity: 0.5;
+}

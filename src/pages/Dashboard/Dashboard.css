@@ -1,0 +1,9 @@
+.db-secondary{
+    width:30%;
+    gap:10px;
+}
+
+.db-primary{
+    width:68%;
+    gap:10px;
+}

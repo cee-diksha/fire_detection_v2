@@ -1,0 +1,198 @@
+/* dark theme (default) */
+:root {
+    --bg-mn-clr: #1A1C1D;
+    --card-clr:#333333;
+    --text-clr: #ffffff;
+    --text-clr-light:rgb(158, 158, 158)f;
+    --primary-clr: #AA1616;
+    --dropdown-focused: #505050;
+    --border-clr: rgba(255, 255, 255, 0.367);
+
+    --activate:linear-gradient(131.96deg, #52df75ee 13.55%, #6cd787f1 83.5%);
+
+    --fire-alert: linear-gradient(123.49deg, #C70A0A 0.07%, #610505 99.93%);
+    --temp-alert: linear-gradient(122.68deg, #f46b34 0.55%, #9d3d18 99.45%);
+    --smoke-alert:linear-gradient(122.78deg, #ABABAB 0.48%, #6A6A6A 99.52%);
+    --battery-alert:linear-gradient(122.46deg, #FFA500 0.71%, #996300 99.29%);
+    --replace-alert:linear-gradient(123.16deg, #3C418A 0.2%, #1F2147 99.8%);
+    --normal:linear-gradient(134.6deg, #2FD74E 0.89%, #197129 99.11%);
+
+    --fire-alert-on: linear-gradient(133.4deg, #F51F1F 4.73%, #8F1212 95.27%);
+
+    --invert-filter:0;
+
+    --font-1:'Inter', sans-serif;
+    --padding-mn:30px;
+}
+
+.light {
+    --bg-mn-clr: #e9e7e7;
+    --card-clr: #bfbfbf;
+    --text-clr: #000000;
+    --primary-clr: #AA1616;
+    --dropdown-focused: #f0f0f0;
+    --bg-color-table: #d6d6d6;
+    --border-clr: rgba(26, 26, 26, 0.367);
+
+    --activate:linear-gradient(131.96deg, #34C759 13.55%, #6CD787 83.5%);
+
+    --fire-alert: linear-gradient(123.49deg, #C70A0A 0.07%, #610505 99.93%);
+    --temp-alert: linear-gradient(122.68deg, #EA4909 0.55%, #842905 99.45%);
+    --smoke-alert:linear-gradient(122.78deg, #ABABAB 0.48%, #6A6A6A 99.52%);
+    --battery-alert:linear-gradient(122.46deg, #FFA500 0.71%, #996300 99.29%);
+    --replace-alert:linear-gradient(123.16deg, #3C418A 0.2%, #1F2147 99.8%);
+    --normal:linear-gradient(134.6deg, #2FD74E 0.89%, #197129 99.11%);
+
+    --invert-filter:1;
+}
+
+a, span, button, div, input, textarea,section,main,svg,p,h1,h2,h3,h4{
+    transition: color 200ms cubic-bezier(0.9, 0.31, 0, 0.63);
+}
+div, html,input,textarea,section,main,body{
+transition: background-color 200ms cubic-bezier(0.9, 0.31, 0, 0.63);
+}
+
+svg{
+transition:stroke 200ms cubic-bezier(0.9, 0.31, 0, 0.63);
+}
+text{
+    fill: var(--text-clr) !important;
+  }
+  
+
+button{
+transition: background-color 200ms cubic-bezier(0.9, 0.31, 0, 0.63);
+}
+
+button{
+transition: background 200ms cubic-bezier(0.9, 0.31, 0, 0.63);
+}
+
+svg,text{
+transition: fill 200ms cubic-bezier(0.9, 0.31, 0, 0.63) ;
+}
+svg path{
+transition: fill 200ms cubic-bezier(0.9, 0.31, 0, 0.63) ;
+}
+
+input,
+textarea,
+button,
+ul,
+li,
+div,
+select,
+a {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+*{
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+body{
+    width:100%;
+    margin: 0;
+    box-sizing: border-box;
+    color:var(--text-clr);
+    overflow-x: hidden;   
+}
+
+body,html{
+    scrollbar-width: thin;
+}
+
+body, label{
+    font-family: var(--font-1);
+}
+
+p,h5,h1{
+    margin: 0;
+}
+
+.main-content{
+    
+    margin-top: 72px;
+    overflow: hidden;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0px -5px 10px rgba(0, 0, 0, 0.25);
+}
+
+.page{
+    background: var(--bg-mn-clr);
+    padding: 10px var(--padding-mn);
+    color:var(--text-clr);
+    min-height: 100vh;
+}
+
+.width-100{
+    width:100%;
+}
+
+/* flex pre classes */
+.flex-space-row{
+    display:flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.flex-wrap{
+    flex-wrap: wrap;
+}
+
+.flex-start-row{
+    display:flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.flex-center-row{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-start-col{
+    display:flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column;
+}
+
+.flex-center-col{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+div{
+    box-sizing: border-box;
+        
+}
+
+.bttn-mn{
+    outline:none;
+    border:none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    background-color: var(--card-clr);
+    color:var(--text-clr)
+}
+
+.bttn-mn label{
+    cursor: pointer;
+}
+
+@media screen and (max-width:1150px) {
+    :root{
+        --padding-mn:12px;
+    }
+    
+}

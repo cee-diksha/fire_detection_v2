@@ -1,0 +1,91 @@
+.header-container{
+    width: 100%;
+    align-items: center;
+    justify-content:center;
+    flex-direction: column;
+    display: flex;
+    background: var(--bg-mn-clr);
+}
+
+.header-mn{
+    width:100%;
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+    padding:10px var(--padding-mn);
+    box-sizing: border-box;  
+    padding-top:var(--padding-mn); 
+}
+
+.header-ship-nm{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:10px;
+    color:var(--text-clr);
+}
+
+.ship-logo-div{
+    border-radius: 5px;
+    height:60px;
+    width:70px;
+    overflow: hidden;
+}
+
+.ship-logo-div img{
+    height: 100%;
+    width: 100%;
+    object-fit:cover;
+}
+
+.header-search-login{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.header-icon-div{
+    height: 44px;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    gap:6px;
+    cursor: pointer;
+}
+
+.header-icon-div p{
+    margin: 0;
+    width:50%
+}
+
+.header-icon-div button{
+    border: none;
+    background: none;
+    height: 100%;
+    padding:0px;
+    margin:0px;
+    outline: none;
+    cursor: pointer;
+}
+
+.header-icon-div img{
+    object-fit: cover;
+    height: 100%;
+    filter:invert(var(--invert-filter))
+}
+
+.header-sec2{
+    display:flex;
+    gap:20px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.sttngs-time{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

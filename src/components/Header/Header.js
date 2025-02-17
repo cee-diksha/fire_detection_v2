@@ -1,9 +1,114 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import LiveClock from '../LiveClock/LiveClock'
+import './Header.css'
+import { ExportPdfButton } from '../../utils/ExportPdfButton'
+import { MainContext } from '../../utils/MainContext'
+import UserDropDown from '../UserDropDown/UserDropDown'
+import { Tooltip } from '@mui/material'
+import DropDown from '../DropDown/DropDown'
+import FullscreenButton from '../Fullscreen/FullscreenButton'
 
 const Header = () => {
+    const {isLogin, setIsLogin} = useContext(MainContext)
+    const [theme,setTheme] = useState('dark')
+    const [isSettingsPg, setIsSettingsPg] = useState(false)
+    const settingsRoute = ["/settings", "/login"]
+    const dashboardRoute = ["/"]
+    const loginRoute = ["/login"]
+
+    const handleThemeChange =  () => {
+        if(theme==="dark") {
+            setTheme("light")
+            document.body.classList.add('light');
+        } else {
+            setTheme("dark")
+            document.body.classList.remove('light');
+        }
+    }
+
+    useEffect(() => {
+        if(window.location.pathname === "/settings") setIsSettingsPg(true)
+    }, [])
   return (
-    <div>
-      this is header
+    <div className='header-container'>
+      <div className='header-mn'>
+
+        <div className='header-sec1'>
+            {!isSettingsPg && (
+                <div className='header-ship-nm'>
+                    <div className='ship-logo-div'> 
+                        <img src="/static/images/crest.jpg" alt="ship" />
+                    </div>
+                    <h2 >INS VIKRANT</h2>
+                </div>
+            )}
+
+            {isSettingsPg && 
+            (
+                <div className='sttngs-time'>
+                    <LiveClock />
+                </div>
+            )}
+        </div>
+            
+        <div className='header-sec2'>
+            {window.location.pathname === "/" && 
+                <>
+                    <ExportPdfButton/>
+                    {/* <DropDown cardData={cardData}/> */}
+                </>
+            }
+
+            <div className='header-search-login'>
+                {/* handles theme */}
+                <Tooltip title={theme==='light'?'Dark Mode':'Light Mode'} disableInteractive>
+                    <div className='header-icon-div' style={{cursor:'pointer'}} onClick={handleThemeChange}>
+                        <img src={theme==="dark" ? '/static/images/sun.svg' : '/static/images/moon.svg'} alt="theme-icon" />
+                    </div>
+                </Tooltip>
+
+                {/* show settings icon */}
+                {isLogin && !settingsRoute.includes(window.location.pathname) && 
+                        <Link to={"/settings"}>
+                            <Tooltip title="Settings" disableInteractive>
+                            <div className='header-icon-div'>
+                                    <img src='/static/images/settings.svg' alt="settings"/>                           
+                            </div>
+                            </Tooltip>
+                        </Link>
+                }
+
+                {/* show dashboard icon */}
+                {!dashboardRoute.includes(window.location.pathname) &&
+                    <Link to="/">
+                         <Tooltip title="Dashboard" disableInteractive>
+                            <div className='header-icon-div'>                       
+                                    <img src='/static/images/home.svg' alt='dashboard' />
+                            </div>
+                        </Tooltip>
+                    </Link>
+                }
+
+                {/* show login icon if not logged in, otherwise show userdropdown */}
+                {isLogin && !loginRoute.includes(window.location.pathname) ? 
+                <UserDropDown setIsLogin = {setIsLogin} /> : 
+                window.location.pathname === "/login" ? null :  
+                <Link to="/login">
+                    <Tooltip title="Login">
+                        <div className='header-icon-div'>
+                            <img src="/static/images/login.svg" alt="login"/>
+                        </div>
+                    </Tooltip>
+                </Link>}
+                
+                
+                <FullscreenButton/>
+                
+                
+            </div>
+        </div>
+    </div>
     </div>
   )
 }

@@ -1,0 +1,14 @@
+.chrt-mn{
+    width:100%;
+    background: var(--card-clr);
+    border-radius: 10px;
+    position: relative;
+}
+
+.chrt-mn p{
+    position: absolute;
+    top:10px;
+    margin: 0;
+    width:100%;
+    text-align: center;
+}

@@ -1,0 +1,79 @@
+.logo-head{
+    width:99.9vw;
+    padding:10px var(--padding-mn);
+    box-sizing: border-box;
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    background-color: var(--bg-main-clr);
+    position: fixed;
+    z-index: -1;
+    top:0px;
+    left:0px;
+}
+
+.logo-mn{
+    height: 100%;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    gap:10px;
+}
+
+.logo-mn img{
+    object-fit: cover;
+    height: 52px;
+}
+
+.logo-mn-txt{
+    display: flex;
+    flex-direction: column;
+    width: 120px;
+    gap:0px;
+}
+
+#logo-name{
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 110%;
+    color:#AA1616
+}
+
+#logo-name-2{
+    font-size: 13px;
+    font-weight: 600;
+    color:#484848;
+    width: 100%;
+    line-height: 100%;
+}
+
+#crimson-logo{
+    font-size: 12px;
+}
+
+#crimson-logo span{
+    margin-left:8px;
+}
+
+.logo-head-txt{
+    display: flex;
+    flex-direction: row;
+    font-size: 18px;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-head-txt img{
+    height: 40px;
+    object-fit: contain;
+}
+
+.logo-head-txt span{
+    margin: 0;
+    font-weight: 700;
+    line-height: 100%;
+    font-size: 22px;
+    color:#AA1616;  
+}

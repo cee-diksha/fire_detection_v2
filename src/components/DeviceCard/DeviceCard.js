@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import './DeviceCard.css';
 import { FIRE_TEMP } from '../../libs/Constants';
 import { Tooltip } from '@mui/material';
 import {motion} from 'motion/react'
 import MarkFault from '../Modals/MarkFault';
 import { Link } from 'react-router-dom';
+import { MainContext } from '../../context/MainContext';
 
 /**
  * 
@@ -47,6 +48,8 @@ const DeviceCard = ({
     supp = "unchecked",
     refreshCard
   }) => {
+
+    const {isDemo} = useContext(MainContext);
 
   const [isLowBattery,setIsLowBattery] = useState(false);
   const [statusDisplay,setStatusDisplay] = useState([])
@@ -189,7 +192,8 @@ const DeviceCard = ({
   }
 
   return (
-    <Link to={`/info/${nodeId}`}>
+    <Link to={isDemo?`/info/${nodeId}`:'/'}>
+      {console.log(isDemo)}
     <motion.div className={`dv-crd-mn ${alertType}`}>
 
         <motion.div className='dv-crd-alert-border' animate={cardAlarm?{opacity:[0,1,0]}:{opacity:0}} transition={cardAlarm?repeatTransition:{}}/>

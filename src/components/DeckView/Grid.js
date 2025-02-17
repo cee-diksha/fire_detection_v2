@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import "./DeckView.css"
+
 
 const Grid = ({ data, deckNo }) => {
 
@@ -48,10 +50,13 @@ const Grid = ({ data, deckNo }) => {
       <div className="grid-container">
         {boxes.map((boxId) => {
           const boxClass = getBoxClass(boxId); 
+          console.log(boxClass, "boxclass")
           return (
             <div
             id={`box-${boxId}`}
             className={`box ${boxClass}`} 
+            // id="box"
+            // className="box"
             >
             {boxId}
             </div>

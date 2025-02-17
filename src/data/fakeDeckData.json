@@ -1,13 +1,56 @@
 [
     {
-        "id": "4", "deck": 4, "devices": [
-            { "comp": 11, "node_info": [{ "node": 132, "status": ["Low Bat", "temp rise"]}] }
-        ]
+       "deck": 4,
+        "danger": [],
+        "normal": [],
+        "temprise": [11],
+        "lowbattery": [11],
+        "deleted": [],
+        "smoke": []
     },
     {
-        "id": "5", "deck": 5, "devices": [
-            { "comp": 12, "node_info": [{ "node": 109, "status": ["Low Bat", "Smoke", "Temp rise"] }] },
-            { "comp" : 11, "node_info": [{"node" : 106, "status": ["Low Bat", "temp rise"]}, { "node": 122, "status": ["Low Bat", "Smoke"] }, { "node": 112, "status": ["Low Bat", "Smoke"] }, { "node": 107, "status": ["Low Bat"] }, { "node": 114, "status": [] }, { "node": 101, "status": [] }]}
-        ]
+        "deck": 5,
+        "danger": [11, 12],
+        "normal": [],
+        "temprise": [12, 11],
+        "lowbattery": [12, 11],
+        "deleted": [],
+        "smoke": []
+    },
+    {
+        "deck": 1,
+        "danger": [],
+        "normal": [],
+        "temprise": [],
+        "lowbattery": [],
+        "deleted": [],
+        "smoke": []
+    },
+    {
+        "deck": 2,
+        "danger": [],
+        "normal": [],
+        "temprise": [],
+        "lowbattery": [],
+        "deleted": [],
+        "smoke": []
+    },
+    {
+        "deck": 3,
+        "danger": [],
+        "normal": [],
+        "temprise": [],
+        "lowbattery": [],
+        "deleted": [],
+        "smoke": []
+    },
+    {
+       "deck": 6,
+        "danger": [],
+        "normal": [],
+        "temprise": [],
+        "lowbattery": [],
+        "deleted": [],
+        "smoke": []
     }
 ]

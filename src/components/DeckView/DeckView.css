@@ -1,3 +1,78 @@
 .dk-vw-mn{
-    padding-top:30px
+    padding-top:30px;
+    width:100%;
+    display:flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
+
+.status-grid-modal{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.grid-container{
+    display: grid;
+    grid-template-columns: repeat(10, 34px); 
+    grid-gap: 6px;
+}
+
+.box {
+    width: 36px;
+    height: 26px;
+    background-color: lightgray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    color: #000000;
+  }
+
+  .danger {
+    background-color: #ff7b7b;
+    color: #ffffff;
+    animation: blinking 1s infinite;
+  }
+
+  .temprise {
+    background-color: #ff9a03;
+    color: #ffffff;
+  }
+
+  .lowbattery {
+    background-color: #ffeb32;
+    color: #000000;
+  }
+
+  .deleted{
+    background-color: #696666;
+    color: #ffffff;
+  }
+
+  .smoke{
+    background-color: #a5c4b9;
+    color: #ffffff;
+  }
+
+  .normal {
+    background-color: #b7ff86;
+    color: #000000;
+  }
+  
+  @keyframes blinking {
+    0% {
+      background-color: #ff7b7b;
+    }
+    50% {
+      color: #000000;
+      background-color: rgb(255, 255, 255);
+    }
+    100% {
+      background-color: #ff7b7b;
+    }
+  }

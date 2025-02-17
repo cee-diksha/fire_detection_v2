@@ -1,0 +1,10 @@
+.specific-device-charts{
+    width:50%;
+    display: flex;
+    flex-direction: column;
+    gap:30px;
+}
+
+.log-wrapper{
+    gap:30px;
+}

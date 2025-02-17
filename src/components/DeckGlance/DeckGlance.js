@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FIRE_TEMP, TOTAL_DECKS } from '../../libs/Constants'
 import './DeckGlance.css'
 import fakeCardData from '../../data/fakeCardData.json'
@@ -15,7 +15,6 @@ const DeckGlance = () => {
 
   return (
     <div className='deck-gl-mn width-100'>
-        
       {Array.from({ length: TOTAL_DECKS }).map((_,index)=>{
          const deckNo = index + 1;
          const dangerDeckNos = deck.map(item => item.deckno);

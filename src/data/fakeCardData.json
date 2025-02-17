@@ -22,21 +22,21 @@
       "tempvalue":-1, 
       "connectedto":0,
       "alertlogstemp": [
-        { "time": "1700 hrs", "message": "Working fine" },
-        { "time": "1800 hrs", "message": "Working fine" },
-        { "time": "1600 hrs", "message": "Temperature rise and smoke detected" },
-        { "time": "2000 hrs", "message": "Temperature rising" },
-        { "time": "2100 hrs", "message": "Temperature rising" },
-        { "time": "2200 hrs", "message": "Temperature above critical" }
+        { "time": "1700 hrs", "value": "25", "message": "Working fine" },
+        { "time": "1800 hrs", "value": "25", "message": "Working fine" },
+        { "time": "1600 hrs", "value": "65", "message": "Temperature rise and smoke detected" },
+        { "time": "2000 hrs", "value": "70", "message": "Temperature rising" },
+        { "time": "2100 hrs", "value": "78", "message": "Temperature above critical" },
+        { "time": "2200 hrs", "value": "80", "message": "Fire Detected" }
     ], 
     "alertlogsbattery": [
-        { "time": "1600 hrs", "message": "Battery level at 50%" },
-        { "time": "1700 hrs", "message": "Battery level at 43%" },
-        { "time": "1800 hrs", "message": "Battery level at 33%" },
-        { "time": "1900 hrs", "message": "Battery level at 30% — warning: battery low" },
-        { "time": "2000 hrs", "message": "Battery level at 20% — critical battery level" },
-        { "time": "2100 hrs", "message": "Battery level at 15% — urgent replacement required" },
-        { "time": "2200 hrs", "message": "Battery level at 15% — urgent replacement required"  }
+      { "time": "1600 hrs", "value": "50", "message": "Battery level at 50%" },
+      { "time": "1700 hrs", "value": "43", "message": "Battery level at 43%" },
+      { "time": "1800 hrs", "value": "33", "message": "Battery level at 33%" },
+      { "time": "1900 hrs", "value": "30", "message": "Battery level at 30% — warning: battery low" },
+      { "time": "2000 hrs", "value": "20", "message": "Battery level at 20% — critical battery level" },
+      { "time": "2100 hrs", "value": "15", "message": "Battery level at 15% — urgent replacement required" },
+      { "time": "2200 hrs", "value": "15", "message": "Battery level at 15% — urgent replacement required"  }
     ]
     },
     {
@@ -62,21 +62,21 @@
       "tempvalue":-1, 
       "connectedto":0,
       "alertlogstemp": [
-        { "time": "1700 hrs", "message": "Working fine" },
-        { "time": "1800 hrs", "message": "Working fine" },
-        { "time": "1600 hrs", "message": "Temperature rise detected" },
-        { "time": "2000 hrs", "message": "Temperature rising" },
-        { "time": "2100 hrs", "message": "Temperature rising" },
-        { "time": "2200 hrs", "message": "Temperature above critical" }
+        { "time": "1700 hrs", "value": "40", "message": "Working fine" },
+        { "time": "1800 hrs", "value": "25", "message": "Working fine" },
+        { "time": "1600 hrs", "value": "65", "message": "Temperature rise and smoke detected" },
+        { "time": "2000 hrs", "value": "68", "message": "Temperature rising" },
+        { "time": "2100 hrs", "value": "72", "message": "Temperature rising" },
+        { "time": "2200 hrs", "value": "72", "message": "Temperature still rising" }
     ], 
     "alertlogsbattery": [
-        { "time": "1600 hrs", "message": "Battery level at 50%" },
-        { "time": "1700 hrs", "message": "Battery level at 43%" },
-        { "time": "1800 hrs", "message": "Battery level at 33%" },
-        { "time": "1900 hrs", "message": "Battery level at 30% — warning: battery low" },
-        { "time": "2000 hrs", "message": "Battery level at 20% — critical battery level" },
-        { "time": "2100 hrs", "message": "Battery level at 15% — urgent replacement required" },
-        { "time": "2200 hrs", "message": "Battery level at 15% — urgent replacement required"  }
+        { "time": "1600 hrs", "value": "50", "message": "Battery level at 50%" },
+        { "time": "1700 hrs", "value": "43", "message": "Battery level at 43%" },
+        { "time": "1800 hrs", "value": "33", "message": "Battery level at 33%" },
+        { "time": "1900 hrs", "value": "30", "message": "Battery level at 30% — warning: battery low" },
+        { "time": "2000 hrs", "value": "20", "message": "Battery level at 20% — critical battery level" },
+        { "time": "2100 hrs", "value": "15", "message": "Battery level at 15% — urgent replacement required" },
+        { "time": "2200 hrs", "value": "15", "message": "Battery level at 15% — urgent replacement required"  }
     ]
     },
     {
@@ -102,14 +102,22 @@
         "tempvalue":-1, 
         "connectedto":0,
         "alertlogstemp": [
-          { "time": "1700 hrs", "message": "Working fine" },
-          { "time": "1800 hrs", "message": "Working fine" },
-          { "time": "1600 hrs", "message": "Temperature rise detected" },
-          { "time": "2000 hrs", "message": "Temperature rising" },
-          { "time": "2100 hrs", "message": "Temperature rising" },
-          { "time": "2200 hrs", "message": "Temperature above critical" }
+          { "time": "1700 hrs", "value": "25", "message": "Working fine" },
+          { "time": "1800 hrs", "value": "25", "message": "Working fine" },
+          { "time": "1600 hrs", "value": "65", "message": "Temperature rise and smoke detected" },
+          { "time": "2000 hrs", "value": "70", "message": "Temperature rising" },
+          { "time": "2100 hrs", "value": "74", "message": "Temperature rising" },
+          { "time": "2200 hrs", "value": "74", "message": "Temperature above critical" }
       ], 
-      "alertlogsbattery": []
+      "alertlogsbattery": [
+        { "time": "1600 hrs", "value": "50", "message": "Battery level at 50%" },
+        { "time": "1700 hrs", "value": "43", "message": "Battery level at 43%" },
+        { "time": "1800 hrs", "value": "33", "message": "Battery level at 33%" },
+        { "time": "1900 hrs", "value": "30", "message": "Battery level at 30% — warning: battery low" },
+        { "time": "2000 hrs", "value": "20", "message": "Battery level at 20% — critical battery level" },
+        { "time": "2100 hrs", "value": "15", "message": "Battery level at 15% — urgent replacement required" },
+        { "time": "2200 hrs", "value": "15", "message": "Battery level at 15% — urgent replacement required"  }
+      ]
       },
     {
       "nodeId": 122,
@@ -134,23 +142,24 @@
       "tempvalue":-1, 
       "connectedto":0,
       "alertlogstemp": [
-        { "time": "1700 hrs", "message": "Working fine" },
-        { "time": "1800 hrs", "message": "Working fine" },
-        { "time": "1600 hrs", "message": "Temperature rise and smoke detected" },
-        { "time": "2000 hrs", "message": "Temperature rising" },
-        { "time": "2100 hrs", "message": "Temperature rising" },
-        { "time": "2200 hrs", "message": "Temperature above critical" }
+        { "time": "1700 hrs", "value": "25", "message": "Working fine" },
+        { "time": "1800 hrs", "value": "25", "message": "Working fine" },
+        { "time": "1600 hrs", "value": "65", "message": "Temperature rise and smoke detected" },
+        { "time": "2000 hrs", "value": "70", "message": "Temperature rising" },
+        { "time": "2100 hrs", "value": "74", "message": "Temperature rising" },
+        { "time": "2200 hrs", "value": "74", "message": "Temperature above critical" }
     ], 
     "alertlogsbattery": [
-        { "time": "1600 hrs", "message": "Battery level at 50%" },
-        { "time": "1700 hrs", "message": "Battery level at 43%" },
-        { "time": "1800 hrs", "message": "Battery level at 33%" },
-        { "time": "1900 hrs", "message": "Battery level at 30% — warning: battery low" },
-        { "time": "2000 hrs", "message": "Battery level at 20% — critical battery level" },
-        { "time": "2100 hrs", "message": "Battery level at 15% — urgent replacement required" },
-        { "time": "2200 hrs", "message": "Battery level at 15% — urgent replacement required"  }
+      { "time": "1600 hrs", "value": "50", "message": "Battery level at 50%" },
+      { "time": "1700 hrs", "value": "43", "message": "Battery level at 43%" },
+      { "time": "1800 hrs", "value": "33", "message": "Battery level at 33%" },
+      { "time": "1900 hrs", "value": "30", "message": "Battery level at 30% — warning: battery low" },
+      { "time": "2000 hrs", "value": "20", "message": "Battery level at 20% — critical battery level" },
+      { "time": "2100 hrs", "value": "15", "message": "Battery level at 15% — urgent replacement required" },
+      { "time": "2200 hrs", "value": "15", "message": "Battery level at 15% — urgent replacement required"  }
     ]
     },
+    
     {
       "nodeId": 107,
       "nodeType": "Repeater",
@@ -175,13 +184,13 @@
       "connectedto":0,
       "alertlogstemp": [], 
       "alertlogsbattery": [
-        { "time": "1600 hrs", "message": "Battery level at 50%" },
-        { "time": "1700 hrs", "message": "Battery level at 43%" },
-        { "time": "1800 hrs", "message": "Battery level at 33%" },
-        { "time": "1900 hrs", "message": "Battery level at 30% — warning: battery low" },
-        { "time": "2000 hrs", "message": "Battery level at 20% — critical battery level" },
-        { "time": "2100 hrs", "message": "Battery level at 15% — urgent replacement required" },
-        { "time": "2200 hrs", "message": "Battery level at 15% — urgent replacement required"  }
+        { "time": "1600 hrs", "value": "50", "message": "Battery level at 50%" },
+        { "time": "1700 hrs", "value": "43", "message": "Battery level at 43%" },
+        { "time": "1800 hrs", "value": "33", "message": "Battery level at 33%" },
+        { "time": "1900 hrs", "value": "30", "message": "Battery level at 30% — warning: battery low" },
+        { "time": "2000 hrs", "value": "20", "message": "Battery level at 20% — critical battery level" },
+        { "time": "2100 hrs", "value": "15", "message": "Battery level at 15% — urgent replacement required" },
+        { "time": "2200 hrs", "value": "15", "message": "Battery level at 15% — urgent replacement required"  }
       ]
     },
     {
@@ -208,26 +217,26 @@
       "connectedto":0,
       "alertlogstemp": [], 
       "alertlogsbattery": [
-        { "time": "1600 hrs", "message": "Battery level at 50%" },
-        { "time": "1700 hrs", "message": "Battery level at 43%" },
-        { "time": "1800 hrs", "message": "Battery level at 33%" },
-        { "time": "1900 hrs", "message": "Battery level at 30% — warning: battery low" },
-        { "time": "2000 hrs", "message": "Battery level at 20% — critical battery level" },
-        { "time": "2100 hrs", "message": "Battery level at 15% — urgent replacement required" },
-        { "time": "2200 hrs", "message": "Battery level at 15% — urgent replacement required"  }
+        { "time": "1600 hrs", "value": "50", "message": "Battery level at 50%" },
+        { "time": "1700 hrs", "value": "43", "message": "Battery level at 43%" },
+        { "time": "1800 hrs", "value": "33", "message": "Battery level at 33%" },
+        { "time": "1900 hrs", "value": "30", "message": "Battery level at 30% — warning: battery low" },
+        { "time": "2000 hrs", "value": "20", "message": "Battery level at 20% — critical battery level" },
+        { "time": "2100 hrs", "value": "15", "message": "Battery level at 15% — urgent replacement required" },
+        { "time": "2200 hrs", "value": "15", "message": "Battery level at 15% — urgent replacement required"  }
       ]
     },
     {
       "nodeId": 114,
-      "nodeType": "Suppressor",
-      "deckno": 5,
-      "compno": 11,
-      "status": [],
-      "temp": null,
+      "nodeType": "Sensor",
+      "deckno": 6,
+      "compno": 5,
+      "status": ["Smoke"],
+      "temp": 79,
       "smoke": null,
       "lastupdate": "12:21:5 4/2/25",
       "statusCode": 1,
-      "location": "Fwd SS Mess",
+      "location": "MCO",
       "batp": 80,
       "parentid":0, 
       "parentpipe":2,
@@ -239,8 +248,47 @@
       "length":1, 
       "tempvalue":-1, 
       "connectedto":0,
-      "alertlogstemp": [], 
+      "alertlogstemp": [
+        { "time": "1700 hrs", "value": "25", "message": "Working fine" },
+        { "time": "1800 hrs", "value": "25", "message": "Working fine" },
+        { "time": "1600 hrs", "value": "65", "message": "Temperature rise and smoke detected" },
+        { "time": "2000 hrs", "value": "70", "message": "Temperature rising" },
+        { "time": "2100 hrs", "value": "74", "message": "Temperature rising" },
+        { "time": "2200 hrs", "value": "90", "message": "Temperature above critical" }
+    ], 
       "alertlogsbattery": []
+    }, {
+      "nodeId": 124,
+      "nodeType": "Suppressor",
+      "deckno": 2,
+      "compno": 5,
+      "status": ["Low Bat"],
+      "temp": 40,
+      "smoke": null,
+      "lastupdate": "12:21:5 4/2/25",
+      "statusCode": 1,
+      "location": "Fwd SS Mess",
+      "batp": 10,
+      "parentid":0, 
+      "parentpipe":2,
+      "supp": "checked",
+      "replacedby":-1, 
+      "lastpid":1, 
+      "slave":0, 
+      "path":[3], 
+      "length":1, 
+      "tempvalue":-1, 
+      "connectedto":0,
+      "alertlogstemp": [], 
+      "alertlogsbattery": [
+        { "time": "1600 hrs", "value": "50", "message": "Battery level at 50%" },
+        { "time": "1700 hrs", "value": "43", "message": "Battery level at 43%" },
+        { "time": "1800 hrs", "value": "33", "message": "Battery level at 33%" },
+        { "time": "1900 hrs", "value": "30", "message": "Battery level at 30% — warning: battery low" },
+        { "time": "2000 hrs", "value": "22", "message": "Battery level at 22% — critical battery level" },
+        { "time": "2100 hrs", "value": "15", "message": "Battery level at 15% — urgent replacement required" },
+        { "time": "2200 hrs", "value": "10", "message": "Battery level at 10% — urgent replacement required"  }
+      ]
     },
     {
       "nodeId": 101,

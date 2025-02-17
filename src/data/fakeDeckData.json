@@ -1,0 +1,13 @@
+[
+    {
+        "id": "4", "deck": 4, "devices": [
+            { "comp": 11, "node_info": [{ "node": 132, "status": ["Low Bat", "temp rise"]}] }
+        ]
+    },
+    {
+        "id": "5", "deck": 5, "devices": [
+            { "comp": 12, "node_info": [{ "node": 109, "status": ["Low Bat", "Smoke", "Temp rise"] }] },
+            { "comp" : 11, "node_info": [{"node" : 106, "status": ["Low Bat", "temp rise"]}, { "node": 122, "status": ["Low Bat", "Smoke"] }, { "node": 112, "status": ["Low Bat", "Smoke"] }, { "node": 107, "status": ["Low Bat"] }, { "node": 114, "status": [] }, { "node": 101, "status": [] }]}
+        ]
+    }
+]

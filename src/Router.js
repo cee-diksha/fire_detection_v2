@@ -9,6 +9,7 @@ import Settings from './pages/Settings/Settings.js'
 import Dashboard from './pages/Dashboard/Dashboard.js'
 import RavenLogo from './components/RavenLogo/RavenLogo.js'
 import Login from './pages/Login/Login.js'
+import SpecificDevice from './pages/SpecificDevice/SpecificDevice.js'
 
 const MainLayout = () => {
   
@@ -56,6 +57,14 @@ const Router = () => {
             element={
               <Suspense fallback={<Loading />}>
                 <Login />
+              </Suspense>
+            }
+          />
+          <Route
+            path="info/:id"
+            element={
+              <Suspense fallback={<Loading />}>
+                <SpecificDevice />
               </Suspense>
             }
           />

@@ -20,13 +20,19 @@ const AlertTray = ({socket,data}) => {
   const [cardsData, setcardsData] = useState([]);
   const [AlertCards, setAlertCards] = useState([]);
 
+  const handleTouch = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
   useEffect(()=>{
     setcardsData(data)
   },[data])
 
-  const refreshCard = (nodeId) => {
+  const refreshCard = (e,nodeId) => {
     console.log('Refreshing Node ',nodeId)
     // dashBoardSocket.emit("REFRESH", nodeId)
+    handleTouch(e)
     if (socket && socket.readyState === WebSocket.OPEN) {
       socket.send(JSON.stringify({ "REFRESH" : nodeId }));
     } else {

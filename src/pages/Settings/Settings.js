@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import SettingsTable from '../../components/SettingsTable';
-import { SettingCards } from './SettingCards.js';
+import SettingsTable from './SettingsTable.js';
+import {SettingCards} from "./SettingCards.js"
 import { io } from 'socket.io-client';
 import { URL } from '../../lib/constants.js';
 

@@ -1,14 +1,5 @@
 [
     {
-       "deck": 4,
-        "danger": [],
-        "normal": [],
-        "temprise": [11],
-        "lowbattery": [11],
-        "deleted": [],
-        "smoke": []
-    },
-    {
         "deck": 5,
         "danger": [11, 12],
         "normal": [],
@@ -17,6 +8,24 @@
         "deleted": [],
         "smoke": []
     },
+    {
+        "deck": 6,
+         "danger": [5],
+         "normal": [],
+         "temprise": [],
+         "lowbattery": [],
+         "deleted": [],
+         "smoke": []
+     },
+     {
+        "deck": 4,
+         "danger": [],
+         "normal": [],
+         "temprise": [11],
+         "lowbattery": [11],
+         "deleted": [],
+         "smoke": []
+     },
     {
         "deck": 1,
         "danger": [],
@@ -37,15 +46,6 @@
     },
     {
         "deck": 3,
-        "danger": [],
-        "normal": [],
-        "temprise": [],
-        "lowbattery": [],
-        "deleted": [],
-        "smoke": []
-    },
-    {
-       "deck": 6,
         "danger": [],
         "normal": [],
         "temprise": [],

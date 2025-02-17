@@ -4,6 +4,7 @@ import { FIRE_TEMP } from '../../libs/Constants';
 import { Tooltip } from '@mui/material';
 import {motion} from 'motion/react'
 import MarkFault from '../Modals/MarkFault';
+import { Link } from 'react-router-dom';
 
 /**
  * 
@@ -164,22 +165,31 @@ const DeviceCard = ({
     }
   }, [temp, batp]);
 
+  const handleTouch = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
   //logic to handle suppresor activation
-  const handleSuppressor = ()=>{
+  const handleSuppressor = (e)=>{
+    handleTouch(e)
     console.log('suppresor pressed')
   }
 
   //logic to handle marking faulty
-  const handleMarkFaulty = ()=>{
+  const handleMarkFaulty = (e)=>{
+    handleTouch(e)
     setIsFault(true)
   }
 
   //logic to handle alarm
-  const handleAlarmToggle = () =>{
+  const handleAlarmToggle = (e) =>{
+    handleTouch(e)
     setAlarmOn(!alarmOn)
   }
 
   return (
+    <Link to={`/info/${nodeId}`}>
     <motion.div className={`dv-crd-mn ${alertType}`}>
 
         <motion.div className='dv-crd-alert-border' animate={cardAlarm?{opacity:[0,1,0]}:{opacity:0}} transition={cardAlarm?repeatTransition:{}}/>
@@ -293,7 +303,7 @@ const DeviceCard = ({
 
               {/* Refresh */}
                 <Tooltip title="Refresh" slotProps={{popper: {modifiers: [{name: 'offset',options: {offset: [0, -10]}}]}}} placement="bottom" disableInteractive>
-                  <motion.div whileHover={hover} whileTap={hover2} className='dv-crd-bttn' onClick={() => refreshCard(nodeId)}>
+                  <motion.div whileHover={hover} whileTap={hover2} className='dv-crd-bttn' onClick={(e) => refreshCard(e,nodeId)}>
                     <img src="/static/images/refresh.svg" alt="" />
                   </motion.div>
                 </Tooltip>
@@ -321,6 +331,7 @@ const DeviceCard = ({
 
         
     </motion.div>
+    </Link>
   )
 }
 

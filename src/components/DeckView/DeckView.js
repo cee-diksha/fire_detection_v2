@@ -4,7 +4,7 @@ import './DeckView.css'
 const DeckView = () => {
   return (
     <div className='dk-vw-mn'>
-      dasfsdfsd
+      deck view
     </div>
   )
 }

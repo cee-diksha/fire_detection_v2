@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import SettingsTable from './SettingsTable.js';
 import {SettingCards} from "./SettingCards.js"
 import { io } from 'socket.io-client';
-import { URL } from '../../lib/constants.js';
+import { URL } from '../../libs/Constants.js';
 
 const Settings = () => {
   // a new socket instance for this page

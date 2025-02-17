@@ -3,10 +3,9 @@ import { Link } from 'react-router-dom'
 import LiveClock from '../LiveClock/LiveClock'
 import './Header.css'
 import { ExportPdfButton } from '../../utils/ExportPdfButton'
-import { MainContext } from '../../utils/MainContext'
+import { MainContext } from '../../context/MainContext'
 import UserDropDown from '../UserDropDown/UserDropDown'
 import { Tooltip } from '@mui/material'
-import DropDown from '../DropDown/DropDown'
 import FullscreenButton from '../Fullscreen/FullscreenButton'
 
 const Header = () => {

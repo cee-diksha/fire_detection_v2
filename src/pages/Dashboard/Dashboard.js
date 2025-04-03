@@ -21,11 +21,6 @@ const Dashboard = () => {
   const reconnectAttempts = useRef(0);
   const pollingRef = useRef(null);
 
-  useEffect(()=>{
-    console.log('data changed in dashboard',data)
-  },[data])
-
-
   useEffect(() => {
     if (!isDemo) {
       setData([]);
@@ -38,53 +33,6 @@ const Dashboard = () => {
      return () => stopPolling();
   }, [isDemo]);
 
-  useEffect(() => {
-    if (isDemo || !socketRef.current) return; // Only proceed if not in demo mode
-  
-    const handleMessage = (event) => {
-      try {
-        let cardData = JSON.parse(event.data);
-        console.log("Received data:", cardData);
-  
-        if (!Array.isArray(cardData)) {
-          cardData = [cardData];
-        }
-  
-        // Update state with new card data
-        setData((prevData) => {
-          const updated = [...prevData];
-          cardData.forEach((newDevice) => {
-            const existingIndex = updated.findIndex((device) => device.nodeId === newDevice.nodeId);
-            if (existingIndex !== -1) {
-              const existingDevice = updated[existingIndex];
-              const hasChanged = Object.keys(newDevice).some(
-                (key) => newDevice[key] !== existingDevice[key]
-              );
-              if (hasChanged) {
-                updated[existingIndex] = newDevice;
-              }
-            } else {
-              updated.push(newDevice);
-            }
-          });
-          return updated;
-        });
-      } catch (error) {
-        console.error("Error parsing WebSocket message:", error);
-      }
-    };
-  
-    // Listen for incoming messages
-    socketRef.current.addEventListener("message", handleMessage);
-  
-    return () => {
-      // Cleanup listener
-      socketRef.current.removeEventListener("message", handleMessage);
-    };
-  }, [isDemo, socketRef]); // Added isDemo as a dependency
-
-  
-  
 
   const updateCard = () => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {

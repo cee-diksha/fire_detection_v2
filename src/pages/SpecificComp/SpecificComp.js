@@ -39,54 +39,66 @@ const SpecificComp = () => {
     }, [deck, comp, isDemo, socketRef]);
 
     useEffect(() => {
-            if (isDemo || !socketRef.current) return;
-        
-            const handleMessage = (event) => {
-                try {
-                    const response = JSON.parse(event.data);
-                    console.log("Received data:", response);
-        
-                    if (!Array.isArray(response)) {
-                        response = [response]; // Ensure response is always an array
-                    }
-        
-                    setDevices((prevDevices) => {
-                        const updatedDevices = [...prevDevices];
-        
-                        response.forEach((newDevice) => {
-                            const existingIndex = updatedDevices.findIndex(
-                                (device) => device.nodeId === newDevice.nodeId
-                            );
-        
-                            if (existingIndex !== -1) {
-                                const existingDevice = updatedDevices[existingIndex];
-        
-                                // Check if any field has changed
-                                const hasChanged = Object.keys(newDevice).some(
-                                    (key) => newDevice[key] !== existingDevice[key]
-                                );
-        
-                                if (hasChanged) {
-                                    updatedDevices[existingIndex] = newDevice;
-                                }
-                            } else {
-                                updatedDevices.push(newDevice);
-                            }
-                        });
-        
-                        return updatedDevices;
-                    });
-                } catch (error) {
-                    console.error("Error parsing WebSocket message:", error);
+        if (isDemo || !socketRef.current) return;
+    
+        const handleMessage = (event) => {
+            try {
+                let response = JSON.parse(event.data);
+                console.log("Received data:", response);
+    
+                if (!Array.isArray(response)) {
+                    response = [response]; // Ensure response is always an array
                 }
-            };
-        
-            socketRef.current.addEventListener("message", handleMessage);
-        
-            return () => {
-                socketRef.current.removeEventListener("message", handleMessage);
-            };
-        }, [isDemo, socketRef]);
+    
+                // Filter devices based on deck and comp params
+                const filteredDevices = response.filter(
+                    (device) => 
+                        device.deckno.toString() === deck.toString() &&
+                        device.compno.toString() === comp.toString()
+                );
+    
+                if (filteredDevices.length === 0) {
+                    console.warn("No matching devices found for the given deck and comp.");
+                    return;
+                }
+    
+                setDevices((prevDevices) => {
+                    const updatedDevices = [...prevDevices];
+    
+                    filteredDevices.forEach((newDevice) => {
+                        const existingIndex = updatedDevices.findIndex(
+                            (device) => device.nodeId === newDevice.nodeId
+                        );
+    
+                        if (existingIndex !== -1) {
+                            const existingDevice = updatedDevices[existingIndex];
+    
+                            // Check if any field has changed
+                            const hasChanged = Object.keys(newDevice).some(
+                                (key) => newDevice[key] !== existingDevice[key]
+                            );
+    
+                            if (hasChanged) {
+                                updatedDevices[existingIndex] = newDevice;
+                            }
+                        } else {
+                            updatedDevices.push(newDevice);
+                        }
+                    });
+    
+                    return updatedDevices;
+                });
+            } catch (error) {
+                console.error("Error parsing WebSocket message:", error);
+            }
+        };
+    
+        socketRef.current.addEventListener("message", handleMessage);
+    
+        return () => {
+            socketRef.current.removeEventListener("message", handleMessage);
+        };
+    }, [isDemo, socketRef, deck, comp]);
 
     const refreshCard = (event, nodeId) => {
         event.preventDefault();

@@ -60,6 +60,7 @@ const MainContextProvider = (props) => {
       setConnectedState("error");
     };
 
+    
     // Handle incoming messages
     socket.onmessage = (event) => {
       try {
@@ -67,9 +68,10 @@ const MainContextProvider = (props) => {
         console.log("Received WebSocket data:", newData);
 
         if (!Array.isArray(newData)) {
-          newData = [newData]; // Ensure it's always an array
+          newData = [newData];
         }
 
+        // ✅ Update `data` while minimizing re-renders
         setData((prevData) => {
           const updated = [...prevData];
           newData.forEach((newDevice) => {
@@ -92,6 +94,8 @@ const MainContextProvider = (props) => {
         console.error("Error parsing WebSocket message:", error);
       }
     };
+
+
   };
 
   const cleanUpWebSocket = () => {
@@ -119,6 +123,11 @@ const MainContextProvider = (props) => {
       console.warn("WebSocket not connected");
     }
   };
+
+    useEffect(()=>{
+      console.log('data changed in maincontext',data)
+    },[data])
+  
 
   return (
     <MainContext.Provider

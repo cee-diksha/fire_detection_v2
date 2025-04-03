@@ -34,7 +34,6 @@ const Grid = ({ data, deckNo }) => {
   }, [dangerComp, normalComp, tempriseComp, lowbatteryComp, deletedComp, smokeComp]);
 
   const getBoxClass = (boxId) => {
-    console.log("test")
     if (highlightedId.dangerComp.includes(boxId)) return "dk-danger";
     if (highlightedId.tempriseComp.includes(boxId)) return "dk-temprise";
     if (highlightedId.lowbatteryComp.includes(boxId)) return "dk-lowbattery";

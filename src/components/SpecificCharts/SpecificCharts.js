@@ -2,7 +2,6 @@ import { LineChart } from "@mui/x-charts"
 import '../Charts/Charts.css'
 
 export const SpecificBattChart = ({batt, status}) => {
-    console.log(batt, status, "battbatt")
     const time = batt.map(item => item.time)
     const battery = batt.map(item => item.value)
     const lineColor =  "orange"
@@ -36,7 +35,6 @@ export const SpecificBattChart = ({batt, status}) => {
 }
 
 export const SpecificTempChart = ({temperature, status}) => {
-    console.log(temperature, status, "speciifc temp chart")
     const time = temperature.map(item => item.time)
     const temp = temperature.map(item => item.value)
     const lineColor = 'red'

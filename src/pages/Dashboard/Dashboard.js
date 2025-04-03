@@ -1,137 +1,140 @@
-import React, { useContext, useEffect, useState ,useRef} from 'react'
-import './Dashboard.css'
-import AlertLedger from '../../components/AlertLedger/AlertLedger'
-import AlertTray from '../../components/AlertTray/AlertTray'
-import StatusDeckGlance from '../../components/StatusDeckGlance/StatusDeckGlance'
-import { BatteryChart, SmokeChart, TempChart } from '../../components/Charts/Charts'
-import fakeCardData from '../../data/fakeCardData.json'
-import noCardData from '../../data/noCardData.json'
-import DeckView from '../../components/DeckView/DeckView'
-import DemoButton from '../../components/DemoButton/DemoButton'
-import { MainContext } from '../../context/MainContext'
-import { URL } from '../../libs/Constants'
+import React, { useContext, useEffect, useState, useRef } from 'react';
+import './Dashboard.css';
+import AlertLedger from '../../components/AlertLedger/AlertLedger';
+import AlertTray from '../../components/AlertTray/AlertTray';
+import StatusDeckGlance from '../../components/StatusDeckGlance/StatusDeckGlance';
+import { BatteryChart, SmokeChart, TempChart } from '../../components/Charts/Charts';
+import fakeCardData from '../../data/fakeCardData.json';
+import DeckView from '../../components/DeckView/DeckView';
+import DemoButton from '../../components/DemoButton/DemoButton';
+import { MainContext } from '../../context/MainContext';
+import { URL } from '../../libs/Constants';
+import { RECONNECT_INTERVAL } from '../../libs/Constants';
+import {motion} from 'motion/react'
+
+const MAX_RECONNECT_ATTEMPTS = 20;
+const POLLING_INTERVAL = 10000; // 10 seconds
 
 const Dashboard = () => {
-  const [data, setData] = useState([])
-  const {isDemo, setIsDemo} = useContext(MainContext)
+  const { sendMessage ,isDemo, socketRef, data,setData} = useContext(MainContext);
+  
+  const reconnectAttempts = useRef(0);
+  const pollingRef = useRef(null);
 
-  const socketRef = useRef(null);
-  // const updateIntervalRef = useRef(null);
+  useEffect(()=>{
+    console.log('data changed in dashboard',data)
+  },[data])
+
 
   useEffect(() => {
-    if (isDemo === false) {
+    if (!isDemo) {
       setData([]);
-      if (socketRef.current) {
-        socketRef.current.close(); // Close any existing connection
-      }
-
-      const dashBoardSocket = new WebSocket("ws://192.168.43.121:1880/ws/dashboard");
-      socketRef.current = dashBoardSocket;
-
-      dashBoardSocket.onopen = () => {
-        console.log("Connected to WebSocket Server!");
-        dashBoardSocket.send(JSON.stringify({ GETCARD: 1 })); // Send initial request
-
-        // Start sending UPDATE events every 10 seconds
-        // updateIntervalRef.current = setInterval(() => {
-        //   if (socketRef.current?.readyState === WebSocket.OPEN) {
-        //     console.log("Sending UPDATE event");
-        //     socketRef.current.send(JSON.stringify({ UPDATEDATA: 1 }));
-        //   }
-        // }, 10000);
-      };
-
-      dashBoardSocket.onmessage = (event) => {
-        console.log(event, "event check");
-        try {
-          const cardData = JSON.parse(event.data);
-          if (cardData) {
-            console.log("Received Card Data:", cardData);
-            setData((prevData) => {
-              const updated = [...prevData];
-              cardData.forEach((newDevice) => {
-                const existing = updated.findIndex((device) => device.nodeId === newDevice.nodeId);
-                if (existing !== -1) {
-                  const existingDevice = updated[existing];
-
-                  // Check if data has changed
-                  const hasChanged = Object.keys(newDevice).some(
-                    (key) => newDevice[key] !== existingDevice[key]
-                  );
-
-                  if (hasChanged) {
-                    updated[existing] = newDevice; // Update only if there are changes
-                  }
-                } else {
-                  updated.push(newDevice);
-                }
-              });
-              return updated;
-            });
-          }
-        } catch (error) {
-          console.error("Error parsing WebSocket message:", error);
-        }
-      };
-
-      dashBoardSocket.onclose = (event) => {
-        console.log("WebSocket Disconnected.", event);
-        // clearInterval(updateIntervalRef.current); // Stop sending updates
-        if (!event.wasClean) {
-          console.warn("WebSocket closed unexpectedly, attempting to reconnect...");
-          reconnectWebSocket();
-        }
-      };
-
-      dashBoardSocket.onerror = (error) => {
-        console.error("WebSocket Error:", error);
-      };
-
-      // Cleanup WebSocket connection on unmount
-      return () => {
-        dashBoardSocket.close();
-        // clearInterval(updateIntervalRef.current); // Clear the interval on unmount
-      };
+      sendMessage({ GETCARD: 1 });
+      startPolling();
     } else {
       setData(fakeCardData);
-      if (socketRef.current) {
-        socketRef.current.close();
-        socketRef.current = null;
-      }
-      // clearInterval(updateIntervalRef.current);
+      stopPolling()
     }
+     return () => stopPolling();
   }, [isDemo]);
 
-  const reconnectWebSocket = () => {
-    setTimeout(() => {
-      if (!socketRef.current || socketRef.current.readyState === WebSocket.CLOSED) {
-        console.log("Reconnecting WebSocket...");
-        setIsDemo(false)
+  useEffect(() => {
+    if (!socketRef.current) return;
+  
+    const handleMessage = (event) => {
+      try {
+        let cardData = JSON.parse(event.data);
+        console.log("Received data:", cardData);
+  
+        if (!Array.isArray(cardData)) {
+          cardData = [cardData];
+        }
+  
+        // Update state with new card data
+        setData((prevData) => {
+          const updated = [...prevData];
+          cardData.forEach((newDevice) => {
+            const existingIndex = updated.findIndex((device) => device.nodeId === newDevice.nodeId);
+            if (existingIndex !== -1) {
+              const existingDevice = updated[existingIndex];
+              const hasChanged = Object.keys(newDevice).some(
+                (key) => newDevice[key] !== existingDevice[key]
+              );
+              if (hasChanged) {
+                updated[existingIndex] = newDevice;
+              }
+            } else {
+              updated.push(newDevice);
+            }
+          });
+          return updated;
+        });
+      } catch (error) {
+        console.error("Error parsing WebSocket message:", error);
       }
-    }, 5000); // Wait 5 seconds before reconnecting
-  };
+    };
+  
+    // Listen for incoming messages
+    socketRef.current.addEventListener("message", handleMessage);
+  
+    return () => {
+      // Cleanup listener
+      socketRef.current.removeEventListener("message", handleMessage);
+    };
+  }, [socketRef]);
+  
   
 
-  return (       
-    <div className='page'>
-    <div className='width-100 flex-space-row'>
-      <div className='db-secondary flex-start-col'>
-        <DemoButton/>
-        <StatusDeckGlance data={data}/>
-        <TempChart data={data}/> 
-        <BatteryChart data={data}/>
-        <SmokeChart data={data}/>       
-      </div>
+  const updateCard = () => {
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      console.log('Sending UPDATEDATA request...');
+      socketRef.current.send(JSON.stringify({ "UPDATEDATA": 1 }));
+    } else {
+      console.warn("WebSocket not connected");
+    }
+  };
 
-      <div className='flex-start-col db-primary'>
-        {/* Alert ledger */}
-        <AlertLedger/>
-        <AlertTray socket={socketRef.current} data={data} />
-        <DeckView/>
-      </div>  
-    </div>    
-  </div>
-  )
-}
+  const startPolling = () => {
+    stopPolling(); // Prevent duplicate intervals
+    console.log("Attempting to start polling...");
+  
+    if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) {
+      console.warn("WebSocket is not open, delaying polling start...");
+      setTimeout(startPolling, 2000); // Retry in 2 seconds
+      return;
+    }
+  
+    console.log("Starting polling for UPDATEDATA every 10 seconds...");
+    pollingRef.current = setInterval(updateCard, POLLING_INTERVAL);
+  };
+  
+  const stopPolling = () => {
+    if (pollingRef.current) {
+      console.log("Stopping polling...");
+      clearInterval(pollingRef.current);
+      pollingRef.current = null;
+    }
+  };
+
+  return (
+    <div className='page'>
+      <div className='width-100 flex-space-row'>
+        <div className='db-secondary flex-start-col'>
+          <DemoButton />
+          <StatusDeckGlance data={data} />
+          <TempChart data={data} />
+          <BatteryChart data={data} />
+          <SmokeChart data={data} />
+        </div>
+
+        <div className='flex-start-col db-primary'>
+          <AlertLedger />
+          <AlertTray socket={socketRef.current} data={data} />
+          <DeckView data={data}/>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Dashboard;

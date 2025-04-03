@@ -7,3 +7,28 @@
     width:68%;
     gap:10px;
 }
+
+.db-modal{
+    position: fixed;
+    z-index: 99;
+    border-radius: 10px;
+    bottom:20px;
+    left:20px;
+    display:flex;
+    align-items: start;
+    justify-content: center;
+    padding:20px;
+    background:var(--card-clr);
+    filter:drop-shadow(0px 0px 20px black);
+    font-weight: 600;
+}
+
+.db-status-on{
+    background: rgb(4, 85, 4);
+    color:white;
+}
+
+.db-status-off{
+    background: rgb(198, 27, 27);
+    color:white;
+}

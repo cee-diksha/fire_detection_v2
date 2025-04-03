@@ -34,32 +34,39 @@ const Grid = ({ data, deckNo }) => {
   }, [dangerComp, normalComp, tempriseComp, lowbatteryComp, deletedComp, smokeComp]);
 
   const getBoxClass = (boxId) => {
-    if (highlightedId.dangerComp.includes(boxId)) return "danger";
-    if (highlightedId.tempriseComp.includes(boxId)) return "temprise";
-    if (highlightedId.lowbatteryComp.includes(boxId)) return "lowbattery";
-    if (highlightedId.deletedComp.includes(boxId)) return "deleted";
-    if (highlightedId.smokeComp.includes(boxId)) return "smoke";
-    if (highlightedId.normalComp.includes(boxId)) return "normal";
+    console.log("test")
+    if (highlightedId.dangerComp.includes(boxId)) return "dk-danger";
+    if (highlightedId.tempriseComp.includes(boxId)) return "dk-temprise";
+    if (highlightedId.lowbatteryComp.includes(boxId)) return "dk-lowbattery";
+    if (highlightedId.deletedComp.includes(boxId)) return "dk-deleted";
+    if (highlightedId.smokeComp.includes(boxId)) return "dk-smoke";
+    if (highlightedId.normalComp.includes(boxId)) return "dk-normal";
     return "box"; // default class
   };
 
   const boxes = Array.from({ length: 60 }, (_, index) => index + 1); 
-
+console.log(boxes, "boxes")
   return (
     <div style={{ marginRight: "14px" }}>
       <div className="grid-container">
         {boxes.map((boxId) => {
+          console.log(boxId, "test")
           const boxClass = getBoxClass(boxId); 
-          console.log(boxClass, "boxclass")
           return (
-            <div
-            id={`box-${boxId}`}
-            className={`box ${boxClass}`} 
-            // id="box"
-            // className="box"
-            >
-            {boxId}
-            </div>
+            <Link
+            key={boxId}
+              style={{ textDecoration: "none" }}
+              to={`/deck/${deckNo}/${boxId}`}
+              >
+              <div
+              id={`box-${boxId}`}
+              className={`box ${boxClass}`} 
+              // id="box"
+              // className="box"
+              >
+              {boxId}
+              </div>
+            </Link>
           );
         })}
       </div>

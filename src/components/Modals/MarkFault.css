@@ -6,7 +6,7 @@
 }
 
 .md-mn h6{
-    margin:2px;
+    margin:0px;
     text-align: center;
 }
 
@@ -30,7 +30,15 @@
     border-radius: 5px;
 }
 
+.md-mn h6{
+    margin: 0px;
+}
+
 .modal-light{
     padding-block: 5px;
     opacity: 0.6;
+    font-weight: 400;
+    margin-bottom: 12px;
+    font-size: 14px;
+    text-align: center;
 }

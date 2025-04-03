@@ -6,14 +6,15 @@ import DeviceCard from '../../components/DeviceCard/DeviceCard'
 import './AlertTray.css'
 
 
-const getPriority = (statusArray, temp, batp) => {
-  if (batp === 0) return 5; // 'replace' (highest priority)
-  if (temp >= FIRE_TEMP) return 1; // 'fire'
-  if (statusArray.includes("Temp rise")) return 2; // 'temprise'
-  if (statusArray.includes("Smoke")) return 3; // 'smoke'
-  if (statusArray.includes("Low Bat") || statusArray.includes("low bat")) return 4; // 'lowbat'
+const getPriority = (statusArray, tempvalue, batp, statusCode) => {
+  if (statusCode === 0 || batp === 0) return 999; // Replace (Always last)
+  if (tempvalue >= FIRE_TEMP) return 1; // Fire (Highest priority)
+  if (statusArray.includes("smoke")) return 2; // Smoke
+  if (statusArray.includes("tempvalue rise")) return 3; // Tempvalue rise
+  if (statusArray.includes("low bat")) return 4; // Low Battery
   return Infinity; // Normal cards (no priority)
 };
+
 
 const AlertTray = ({socket,data}) => {
 
@@ -42,14 +43,25 @@ const AlertTray = ({socket,data}) => {
 
 
     useEffect(() => {
-        const filteredAndSorted = cardsData
-            .filter(
-            (card) =>
-                card.batp <= 20 ||
-                card.temp >= FIRE_TEMP ||
-                card.status.length > 0
-            )
-            .sort((a, b) => getPriority(a.status, a.temp, a.batp) - getPriority(b.status, b.temp, b.batp));
+      const filteredAndSorted = cardsData
+  .filter(
+    (card) =>
+      card.batp <= 20 ||
+      card.tempvalue >= FIRE_TEMP ||
+      card.status.some(statusItem => statusItem.trim() !== "")
+  )
+  .sort((a, b) => {
+    const priorityA = getPriority(a.status, a.tempvalue, a.batp, a.statusCode);
+    const priorityB = getPriority(b.status, b.tempvalue, b.batp, b.statusCode);
+
+    if (priorityA !== priorityB) {
+      return priorityA - priorityB; // Sort by priority
+    }
+
+    return b.tempvalue - a.tempvalue; // If same priority, sort by highest tempvalue first
+  });
+
+    
 
         setAlertCards(filteredAndSorted.length > 0 ? filteredAndSorted : []);
         }, [cardsData]);
@@ -57,6 +69,7 @@ const AlertTray = ({socket,data}) => {
   return (
     <>
         <div className='alert-tray'>
+       
             {AlertCards.length > 0 && (
                 <>
                 {AlertCards.map((card)=>{
@@ -71,7 +84,8 @@ const AlertTray = ({socket,data}) => {
                     <h2>No alerts detected.</h2>
                     <span>All devices are functioning normally</span>
                 </div>
-            )}          
+            )}  
+            
         </div>  
   </>   
   )

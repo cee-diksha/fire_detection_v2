@@ -2,7 +2,7 @@ import { Modal } from "@mui/material"
 import { useState } from "react"
 import './MarkFault.css'
 
-const MarkFault = ({open, handleClose}) => {
+const SuppressorToggle = ({open, handleClose}) => {
     const [reason, setReason] = useState("")
   
     const submit = (e) => {
@@ -41,12 +41,14 @@ const MarkFault = ({open, handleClose}) => {
         onClick={handleTouch}
         >
         <div className="md-mn flex-center-col">
-            <h6 >Provide a reason for the fault in the selected device. <br>
-            </br> <span className="modal-light">This information will help in troubleshooting and resolving the issue more effectively.</span></h6>
+            <div>
+            <h6 >Enter Access Code</h6>
+            <span className="modal-light">Provide credentials to toggle suppressor.</span>
+            </div>
             <input type="text" onChange={handleInput} onClick={handleTouch}/>
             <div className="modal-bttn-container flex-center-row">
-            <button id="modal-bttn" className="bttn-mn" onClick={submit}><label>Submit</label></button>
-            <button id="modal-bttn" className="bttn-mn" onClick={cancel}><label>Cancel</label></button>
+              <button id="modal-bttn" className="bttn-mn" onClick={submit}><label>Submit</label></button>
+              <button id="modal-bttn" className="bttn-mn" onClick={cancel}><label>Cancel</label></button>
             </div>
         </div>
       </Modal>
@@ -54,4 +56,4 @@ const MarkFault = ({open, handleClose}) => {
     )
   }
 
-  export default MarkFault
+  export default SuppressorToggle

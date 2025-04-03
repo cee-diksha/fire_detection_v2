@@ -8,3 +8,22 @@
 .log-wrapper{
     gap:30px;
 }
+
+
+.specific-alert{
+    width:100%;
+    min-width: 170px;
+    height: fit-content;
+    padding:20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    text-transform: capitalize;
+    color:white;
+    font-size: 18px;
+}
+
+.specific-alert h4{
+    margin:0;
+}

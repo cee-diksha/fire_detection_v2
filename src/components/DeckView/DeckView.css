@@ -33,34 +33,34 @@
     color: #000000;
   }
 
-  .danger {
-    background-color: #ff7b7b;
+  .dk-danger {
+    background-color: #cb2525;
     color: #ffffff;
     animation: blinking 1s infinite;
   }
 
-  .temprise {
+  .dk-temprise {
     background-color: #ff9a03;
     color: #ffffff;
   }
 
-  .lowbattery {
+  .dk-lowbattery {
     background-color: #ffeb32;
     color: #000000;
   }
 
-  .deleted{
+  .dk-deleted{
     background-color: #696666;
     color: #ffffff;
   }
 
-  .smoke{
+  .dk-smoke{
     background-color: #a5c4b9;
     color: #ffffff;
   }
 
-  .normal {
-    background-color: #b7ff86;
+  .dk-normal{
+    background-color: #29a15b;
     color: #000000;
   }
   

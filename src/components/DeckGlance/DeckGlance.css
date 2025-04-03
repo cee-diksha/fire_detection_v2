@@ -27,8 +27,17 @@
     padding:2px;
 }
 
+.deck-gl-crd a {
+    width: 100% !important;
+    text-align: center;
+}
+
 .deck-gl-crd p{
     margin: 0;
     font-size: 12px;
     color:var(--text-clr)
+}
+
+.deck-gl-mn a{
+    width:inherit;
 }

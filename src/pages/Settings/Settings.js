@@ -19,17 +19,17 @@ const Settings = () => {
       setTableData(fakeCardData);
     } else {
       setTableData([]);
-      const settingsSocket = new WebSocket(`${URL}/ws/settings`)
+      const settingsSocket = new WebSocket(`${URL}/ws`)
 
       settingsSocket.onopen = () => {
-        console.log("Connected to WebSocket Server!");
+        console.log("Connected to Settings WebSocket Server!");
         settingsSocket.send(JSON.stringify({ GETCARD: 1 })); // Send initial message
       };
 
       settingsSocket.onmessage = (event) => {
-        console.log(event, "event chekc")
         try {
-          const cardData = JSON.parse(event.data);
+          const rawData = JSON.parse(event.data);
+          const cardData = Object.values(rawData.settingparameter)
           if (cardData) {
             console.log("Received Card Data:", cardData);
             setTableData((prevData) => {
@@ -54,12 +54,12 @@ const Settings = () => {
             })
           }
         } catch (error) {
-          console.error("Error parsing WebSocket message:", error);
+          console.error("Error parsing Settings WebSocket message:", error);
         }
       }
 
       settingsSocket.onclose = () => {
-        console.log("WebSocket Disconnected.");
+        console.log("Settings WebSocket Disconnected.");
       };
       setSocket(settingsSocket);
 
@@ -82,7 +82,7 @@ const Settings = () => {
           </div>
         </div>
        
-        <SettingsTable tableData={tableData} socket={socket} />
+        <SettingsTable tableData={tableData} settingsSocket={socket} />
        
       </div>
   )}

@@ -2,8 +2,9 @@
 :root {
     --bg-mn-clr: #1A1C1D;
     --card-clr:#333333;
+    --card-clr-light:#33333379;
     --text-clr: #ffffff;
-    --text-clr-light:rgb(158, 158, 158)f;
+    --text-clr-light:rgb(158, 158, 158);
     --primary-clr: #AA1616;
     --dropdown-focused: #505050;
     --border-clr: rgba(255, 255, 255, 0.367);
@@ -15,7 +16,7 @@
     --smoke-alert:linear-gradient(122.78deg, #ABABAB 0.48%, #6A6A6A 99.52%);
     --battery-alert:linear-gradient(122.46deg, #FFA500 0.71%, #996300 99.29%);
     --replace-alert:linear-gradient(123.16deg, #3C418A 0.2%, #1F2147 99.8%);
-    --normal:linear-gradient(134.6deg, #2FD74E 0.89%, #197129 99.11%);
+    --normal:linear-gradient(134.6deg, #40874d 0.89%, #197129 99.11%);
 
     --fire-alert-on: linear-gradient(133.4deg, #F51F1F 4.73%, #8F1212 95.27%);
 
@@ -23,6 +24,10 @@
 
     --font-1:'Inter', sans-serif;
     --padding-mn:30px;
+
+    --card-width:24%;
+    --card-min-width: 240px;
+    --card-max-width: 256px;
 }
 
 .light {
@@ -41,7 +46,7 @@
     --smoke-alert:linear-gradient(122.78deg, #ABABAB 0.48%, #6A6A6A 99.52%);
     --battery-alert:linear-gradient(122.46deg, #FFA500 0.71%, #996300 99.29%);
     --replace-alert:linear-gradient(123.16deg, #3C418A 0.2%, #1F2147 99.8%);
-    --normal:linear-gradient(134.6deg, #2FD74E 0.89%, #197129 99.11%);
+    --normal:linear-gradient(134.6deg, #3c7e48 0.89%, #197129 99.11%);
 
     --invert-filter:1;
 }
@@ -134,6 +139,7 @@ p,h5,h1{
     align-items: flex-start;
     justify-content: flex-start;
     flex-direction: column;
+    position: relative;
 }
 
 .width-100{

@@ -38,10 +38,17 @@ const SettingsTable = ({tableData, settingsSocket}) => {
         setUpdatedData(updated)
     };
 
-    const saveSpecificDeviceData = (nodeid) => {
+    const saveSpecificDeviceData = (item) => {
+        const data = {
+            temp:60,
+            nodeid:item.nodeId.toString(),
+            location:item.location,
+            deckno:item.deckno,
+            compno:item.compno
+        }
         //  to send data of a specific device to the settingsSocket
-        const data = updatedData.filter(item => item.nodeid === nodeid)
-        settingsSocket.emit("ws", {data})
+        console.log(`Saving data for node ${item.nodeId}`,JSON.stringify({ "save": data}))
+        settingsSocket.send(JSON.stringify({ "save": data}))
     }
 
     const saveChanges = () => {
@@ -50,9 +57,8 @@ const SettingsTable = ({tableData, settingsSocket}) => {
         // console.log(data, "checking dataa");
         // handleReplace()
         // setDeviceInfo(data);
-        updatedData.forEach(row => {
-            settingsSocket.emit("ws", row)
-        })
+        console.log('Saving all data', JSON.stringify({ "saveall": 1}))
+        settingsSocket.send(JSON.stringify({ "saveall": 1}))
     };
 
      // const handleReplace = () => {
@@ -119,7 +125,7 @@ const SettingsTable = ({tableData, settingsSocket}) => {
                                 />
                             </td>
                             <td>
-                                {item.temp === null ? "NA" :   <>
+                                {item.tempvalue === null ? "NA" :   <>
                                     <input
                                         type="number"
                                         id="tempInput"
@@ -192,7 +198,7 @@ const SettingsTable = ({tableData, settingsSocket}) => {
                                 />
                             </td>
                              <td>
-                                <motion.button id='save' whileHover={{opacity:0.7}} whileTap={{opacity:0.5,scale:0.99}} className="bttn-mn" onClick={() => saveSpecificDeviceData(item.nodeid)}>
+                                <motion.button id='save' whileHover={{opacity:0.7}} whileTap={{opacity:0.5,scale:0.99}} className="bttn-mn" onClick={() => saveSpecificDeviceData(item)}>
                                     <label>Save</label>
                                 </motion.button>
                             </td>

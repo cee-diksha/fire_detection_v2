@@ -5,12 +5,13 @@
     padding: 12px;
     gap: 12px;
     position: relative;
-    width: 24%;
-    min-width: 240px;
-    max-width: 256px;
+    width: var(--card-width);
+    min-width: var(--card-min-width);
+    max-width: var(--card-max-width);
     border-radius: 10px;
     color:white;
     position: relative;
+    background-color:#303030;
 }
 
 .blink{
@@ -53,6 +54,10 @@
     background: var(--replace-alert);
 }
 
+.normal{
+    background:var(--normal)
+}
+
 .dv-crd-alert-border{
     width:100%;
     height: 100%;
@@ -78,7 +83,7 @@
 }
 
 .dv-crd-status p{
-    font-size: 14px;
+    font-size: 12px;
     text-transform: capitalize;
     margin:0;
 }
@@ -324,6 +329,3 @@
     justify-content: center;
 }
 
-#dv-alarm{
-
-}

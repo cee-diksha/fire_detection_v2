@@ -1,11 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
 import './DeviceCard.css';
-import { FIRE_TEMP } from '../../libs/Constants';
 import { Tooltip } from '@mui/material';
 import {motion} from 'motion/react'
 import MarkFault from '../Modals/MarkFault';
 import { Link } from 'react-router-dom';
 import { MainContext } from '../../context/MainContext';
+import { getAlertAndStatusDisplay } from '../../utils/AlertAndStatusDisplay';
+import SuppressorToggle from '../Modals/SuppressorToggle';
 
 /**
  * 
@@ -14,7 +15,7 @@ import { MainContext } from '../../context/MainContext';
  * @param {number} deckno // deck no.
  * @param {number} compno //compartment no.
  * @param {object} status //array of device status
- * @param {number} temp //device temprature
+ * @param {number} tempvalue //device temprature
  * @param {string} smoke //is detecting smoke or not. val "checked"/"unchecked"
  * @param {string} lastupdate //date time string
  * @param {number} statusCode //status of the device
@@ -29,7 +30,7 @@ import { MainContext } from '../../context/MainContext';
 //animation vars
 const hover = {background:"rgba(255, 255, 255, 0.6)"}
 const hover2 = {background:"rgba(255, 255, 255, 0.8)"}
-const repeatTransition = {repeat:Infinity,duration:0.5} //temp bat alarm
+const repeatTransition = {repeat:Infinity,duration:0.5} //tempvalue bat alarm
 
 
 //main
@@ -39,7 +40,7 @@ const DeviceCard = ({
     deckno = 0,
     compno = 0,
     status = [],
-    temp = 0,
+    tempvalue = 0,
     smoke = "unchecked",
     lastupdate = '0/0/0 00:00:00',
     statusCode = 0,
@@ -68,70 +69,18 @@ const DeviceCard = ({
   const [batImg, setBatImg] = useState("battery.svg");
   const [isFault, setIsFault] = useState(false);
 
-  // Sets alertType based on status array, batp and temp
-  useEffect(() => {
-    const getAlertAndStatusDisplay = (statusArray, temperature, battery) => {
-      if (battery <= 5) return { alertType: "replace", statusDisplay: ["needs replacement"], hasSmoke: false, hasFire: false };
-  
-      const normalizedStatus = statusArray
-        .map((s) => s.toLowerCase().replace(/\s+/g, ""))
-        .filter(Boolean);
-  
-      let alert = "";
-      let displayList = [];
-      let hasFire = false;
-      let hasRise = normalizedStatus.includes("temprise")
-      let hasSmoke = normalizedStatus.includes("smoke");
-  
-      if (temperature >= FIRE_TEMP) {
-        hasFire = true;
-        alert = "fire";
-        displayList.push("fire");
-      }
-  
-      if (hasSmoke) {
-        displayList.push("smoke");
-      }
-  
-      const priorityOrder = ["temprise", "lowbat"];
-      for (const statusItem of priorityOrder) {
-        if (normalizedStatus.includes(statusItem)) {
-          if (statusItem === "temprise" && hasFire) continue;
-          displayList.push(statusItem === "temprise" ? "Temp rise" : "Low battery");
-        }
-      }
-  
-      if (!alert) {
-        if (displayList.length > 0) {
-          switch (displayList[0]) {
-            case "Temp rise":
-              alert = "temprise";
-              break;
-            case "smoke":
-              alert = "smoke";
-              break;
-            case "Low battery":
-              alert = "lowbat";
-              break;
-            default:
-              break;
-          }
-        } else {
-          alert = "";
-        }
-      }
-  
-      return { alertType: alert, statusDisplay: displayList, hasSmoke, hasFire, hasRise };
-    };
-  
-    const { alertType, statusDisplay, hasSmoke, hasFire, hasRise } = getAlertAndStatusDisplay(status, temp, batp);
+  const [showSuppressor, setShowSuppressor] = useState(false);
+
+  // Sets alertType based on status array, batp and tempvalue
+  useEffect(() => {  
+    const { alertType, statusDisplay, hasSmoke, hasFire, hasRise } = getAlertAndStatusDisplay(status, tempvalue, batp, statusCode);
     
     setAlertType(alertType);
     setStatusDisplay(statusDisplay);
     setHasSmoke(hasSmoke);
     setHasFire(hasFire);
     setHasRise(hasRise)
-  }, [status, temp, batp]); //updated whenever status, temp or batp change
+  }, [status, tempvalue, batp]); //updated whenever status, tempvalue or batp change
 
   //card alarm state based on fire and toggle alarm
   useEffect(()=>{
@@ -146,9 +95,9 @@ const DeviceCard = ({
     }
   },[alarmOn,hasFire])
 
-  //handles temp and battery styling
+  //handles tempvalue and battery styling
   useEffect(() => {
-    if (temp > 55) {
+    if (tempvalue > 55) {
       setTempColor("red");
       setTempImg("temperature-high");
     } else {
@@ -166,7 +115,7 @@ const DeviceCard = ({
       setBatColor("green");
       setBatImg("battery");
     }
-  }, [temp, batp]);
+  }, [tempvalue, batp]);
 
   const handleTouch = (event) => {
     event.preventDefault();
@@ -176,6 +125,7 @@ const DeviceCard = ({
   //logic to handle suppresor activation
   const handleSuppressor = (e)=>{
     handleTouch(e)
+    setShowSuppressor(true)
     console.log('suppresor pressed')
   }
 
@@ -192,8 +142,7 @@ const DeviceCard = ({
   }
 
   return (
-    <Link to={isDemo?`/info/${nodeId}`:'/'}>
-      {console.log(isDemo)}
+    <Link to={`/info/${nodeId}`}>
     <motion.div className={`dv-crd-mn ${alertType}`}>
 
         <motion.div className='dv-crd-alert-border' animate={cardAlarm?{opacity:[0,1,0]}:{opacity:0}} transition={cardAlarm?repeatTransition:{}}/>
@@ -246,16 +195,17 @@ const DeviceCard = ({
             
             {/* Suppressor ON/OFF */}
             {alertType==="fire" && (
-              <div className='dv-activate' onClick={handleSuppressor}>
+              <div className='dv-activate'>
                 {/* If Suppression is Manual */}
                 {supp === "unchecked" && (
-                  <div className='dv-circle'>
+                  <div className='dv-circle' onClick={handleSuppressor}>
                     <img src="/static/images/device/suppressor.svg" alt="" />
                     <div className='dv-circle-text'>
                       <p>Activate</p>
                     </div>
                   </div>
                 )}
+                {showSuppressor && <SuppressorToggle open={true} handleClose={setShowSuppressor}/>}
 
                 {/* If Suppression is Auto */}
                 {supp === "checked" && (
@@ -272,13 +222,37 @@ const DeviceCard = ({
         </div>
 
         {/* Main info Tray : Battery, Temprature, Smoke */}
-        <div className="dv-crd-info-tray" style={{justifyContent:nodeType.toLowerCase()!=='sensor'?'center':''}}>
+        {alertType==="replace" && (
+            <div className="dv-crd-info-tray" style={{justifyContent:nodeType.toLowerCase()!=='sensor'?'center':''}}>
+            {nodeType.toLowerCase() === 'sensor' && 
+              (
+                <>
+                  <div id="temp-info-card" className="dv-crd-info-crd">
+                  <img  style={{filter:'grayscale(10)'}} src={`/static/images/${tempImg}.svg`} alt="" />
+                    <span style={{ color:'grey' }}>{tempvalue}°C</span>
+                  </div>
+                  <motion.div id="smoke-info-card" className={`dv-crd-info-crd`}>
+                    <img src="/static/images/smoke.svg" alt="" />
+                  </motion.div>
+                </>
+              )
+            }
+            
+            <div id="battery-info-card" className="dv-crd-info-crd">
+              <img style={{filter:'grayscale(10)'}} src={`/static/images/${batImg}.svg`} alt=""/>
+              <span style={{ color: "grey" }}>{batp}%</span>
+            </div>
+
+        </div>
+        )}
+        {alertType!=="replace" && (
+            <div className="dv-crd-info-tray" style={{justifyContent:nodeType.toLowerCase()!=='sensor'?'center':''}}>
             {nodeType.toLowerCase() === 'sensor' && 
               (
                 <>
                   <div id="temp-info-card" className="dv-crd-info-crd">
                   <img src={`/static/images/${tempImg}.svg`} alt="" />
-                    <span className={`${tempColor!=="green"?"blink":""}`} style={{ color: tempColor }}>{temp}°C</span>
+                    <span className={`${tempColor!=="green"?"blink":""}`} style={{ color: tempColor }}>{tempvalue}°C</span>
                   </div>
                   <motion.div id="smoke-info-card" className={`dv-crd-info-crd ${hasSmoke?"blink":""}`}>
                     <img src="/static/images/smoke.svg" alt="" />
@@ -291,7 +265,10 @@ const DeviceCard = ({
               <img src={`/static/images/${batImg}.svg`} alt=""/>
               <span className={`${batColor!=="green"?"blink":""}`} style={{ color: batColor }}>{batp}%</span>
             </div>
+
         </div>
+        )}
+        
 
         {/* Refresh Faulty and Alarm button tray */}
         <div className="dv-crd-bttn-tray">

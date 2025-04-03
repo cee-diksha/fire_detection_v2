@@ -1,10 +1,17 @@
 .alert-tray{
     display: flex;
-    justify-content:space-between;
+    justify-content:flex-start;
     width: 100%;
     align-items: flex-start;
     flex-wrap: wrap;
     row-gap: 20px;;
+    gap:10px;
+}
+
+.alert-tray a{
+    width: var(--card-width);
+    min-width: var(--card-min-width);
+    max-width: var(--card-max-width);
 }
 
 .no-alert{

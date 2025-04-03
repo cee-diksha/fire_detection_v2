@@ -21,7 +21,7 @@ export const TempChart = ({data}) => {
   // Sort data by node_id
   const sortedInfo = [...info].sort((a, b) => a.nodeId - b.nodeId);
 
-  const temp = sortedInfo.map(item => Number(item.temp));
+  const temp = sortedInfo.map(item => Number(item.tempvalue));
   const node = sortedInfo.map(item => Number(item.nodeId));
 
   const valueFormatter = (nodeId, context) => {

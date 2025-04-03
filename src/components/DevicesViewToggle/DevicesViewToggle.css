@@ -1,0 +1,50 @@
+.dv-tgl-mn{
+    display:flex;
+    gap:22px;
+    padding:12px;
+    background-color: var(--card-clr);
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.dv-tgl-ttle{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:6px;
+}
+
+.dv-tgl-ttle img{
+    filter:invert(var(--invert-filter))
+}
+
+.dv-tgl-mn p{
+    font-size: 18px;
+    color:var(--text-clr);
+    font-weight: 700;
+}
+
+.dv-tgl-tray{
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    gap:10px;
+}
+
+.dv-tgl-bttn{
+    cursor: pointer;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--card-clr-2);
+    border-radius: 10px;
+    color:var(--text-clr);
+}
+
+.dv-tgl-bttn-active{
+    background-color: var(--text-clr);
+    color:var(--bg-mn-clr)
+}
+

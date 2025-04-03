@@ -1,7 +1,8 @@
 import React from 'react'
 import './NodeInfo.css'
+import DevicesViewToggle from '../DevicesViewToggle/DevicesViewToggle'
 
-const NodeInfo = ({device,isDevice}) => {
+const NodeInfo = ({device,isDevice,isDeck}) => {
   return (
     <div className='specific-top'>
         <div  className='specific-header-location' >
@@ -18,6 +19,7 @@ const NodeInfo = ({device,isDevice}) => {
                     </div>
                 </div>
             )}
+            
             
 
             <div className='flex-start-row' style={{gap:'10px'}}>
@@ -41,6 +43,10 @@ const NodeInfo = ({device,isDevice}) => {
                 )}
                
             </div>
+
+            {isDeck && (
+                <DevicesViewToggle/>
+            )}
 
             </div>
         </div>

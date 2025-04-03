@@ -1,0 +1,15 @@
+.specific-deck-tray{
+    display: flex;
+    gap:20px;
+    flex-wrap: wrap;
+}
+
+.sp-d-head{
+    width:100%;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--text-clr);
+}
+
+.sp-d-sec{
+    width:100%;
+}

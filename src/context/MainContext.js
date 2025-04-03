@@ -10,6 +10,7 @@ const MainContextProvider = (props) => {
   const [connectedState, setConnectedState] = useState("connecting");
   const [isDemo, setIsDemo] = useState(true);
   const [isLogin,setIsLogin] = useState(true)
+  const [viewToggle,setViewToggle] = useState("all")
 
   const socketRef = useRef(null);
   const reconnectAttempts = useRef(0);
@@ -130,7 +131,9 @@ const MainContextProvider = (props) => {
         isDemo,
         setIsDemo,
         isLogin,
-        setIsLogin
+        setIsLogin,
+        viewToggle,
+        setViewToggle
       }}
     >
       {props.children}

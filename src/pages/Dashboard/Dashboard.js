@@ -39,7 +39,7 @@ const Dashboard = () => {
   }, [isDemo]);
 
   useEffect(() => {
-    if (!socketRef.current) return;
+    if (isDemo || !socketRef.current) return; // Only proceed if not in demo mode
   
     const handleMessage = (event) => {
       try {
@@ -81,7 +81,8 @@ const Dashboard = () => {
       // Cleanup listener
       socketRef.current.removeEventListener("message", handleMessage);
     };
-  }, [socketRef]);
+  }, [isDemo, socketRef]); // Added isDemo as a dependency
+
   
   
 

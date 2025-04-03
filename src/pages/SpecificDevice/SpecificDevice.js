@@ -105,10 +105,7 @@ const SpecificDevice = () => {
           };
         } else {
           setData(fakeCardData);
-          if (socketRef.current) {
-            socketRef.current.close();
-            socketRef.current = null;
-          }
+      
           // clearInterval(updateIntervalRef.current);
         }
       }, []);

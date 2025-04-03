@@ -45,12 +45,12 @@ const Grid = ({ data, deckNo }) => {
   };
 
   const boxes = Array.from({ length: 60 }, (_, index) => index + 1); 
-console.log(boxes, "boxes")
+
   return (
     <div style={{ marginRight: "14px" }}>
       <div className="grid-container">
         {boxes.map((boxId) => {
-          console.log(boxId, "test")
+          
           const boxClass = getBoxClass(boxId); 
           return (
             <Link

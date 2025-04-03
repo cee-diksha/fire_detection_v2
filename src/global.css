@@ -3,6 +3,7 @@
     --bg-mn-clr: #1A1C1D;
     --card-clr:#333333;
     --card-clr-light:#33333379;
+    --card-clr-2:rgb(113, 113, 113);
     --text-clr: #ffffff;
     --text-clr-light:rgb(158, 158, 158);
     --primary-clr: #AA1616;
@@ -38,6 +39,7 @@
     --dropdown-focused: #f0f0f0;
     --bg-color-table: #d6d6d6;
     --border-clr: rgba(26, 26, 26, 0.367);
+    --card-clr-2:rgb(229, 229, 229);
 
     --activate:linear-gradient(131.96deg, #34C759 13.55%, #6CD787 83.5%);
 

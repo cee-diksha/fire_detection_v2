@@ -1,7 +1,7 @@
 .dv-tgl-mn{
     display:flex;
     gap:22px;
-    padding:12px;
+    padding:20px;
     background-color: var(--card-clr);
     border-radius: 20px;
     justify-content: center;

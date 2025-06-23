@@ -57,11 +57,11 @@ a, span, button, div, input, textarea,section,main,svg,p,h1,h2,h3,h4{
     transition: color 200ms cubic-bezier(0.9, 0.31, 0, 0.63);
 }
 div, html,input,textarea,section,main,body{
-transition: background-color 200ms cubic-bezier(0.9, 0.31, 0, 0.63);
+    transition: background-color 200ms cubic-bezier(0.9, 0.31, 0, 0.63);
 }
 
 svg{
-transition:stroke 200ms cubic-bezier(0.9, 0.31, 0, 0.63);
+    transition:stroke 200ms cubic-bezier(0.9, 0.31, 0, 0.63);
 }
 text{
     fill: var(--text-clr) !important;
@@ -69,18 +69,18 @@ text{
   
 
 button{
-transition: background-color 200ms cubic-bezier(0.9, 0.31, 0, 0.63);
+    transition: background-color 200ms cubic-bezier(0.9, 0.31, 0, 0.63);
 }
 
 button{
-transition: background 200ms cubic-bezier(0.9, 0.31, 0, 0.63);
+    transition: background 200ms cubic-bezier(0.9, 0.31, 0, 0.63);
 }
 
 svg,text{
-transition: fill 200ms cubic-bezier(0.9, 0.31, 0, 0.63) ;
+    transition: fill 200ms cubic-bezier(0.9, 0.31, 0, 0.63) ;
 }
 svg path{
-transition: fill 200ms cubic-bezier(0.9, 0.31, 0, 0.63) ;
+    transition: fill 200ms cubic-bezier(0.9, 0.31, 0, 0.63) ;
 }
 
 a{

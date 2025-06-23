@@ -1,5 +1,6 @@
-import { createContext, useEffect, useRef, useState } from "react";
-import { RECONNECT_INTERVAL, URL } from "../libs/Constants";
+import { createContext, use, useEffect, useRef, useState } from "react";
+import { FIRE_TEMP, RECONNECT_INTERVAL, URL } from "../libs/Constants";
+import fakeCardData from "../data/fakeCardData.json";
 
 const MainContext = createContext();
 
@@ -10,7 +11,9 @@ const MainContextProvider = (props) => {
   const [connectedState, setConnectedState] = useState("connecting");
   const [isDemo, setIsDemo] = useState(true);
   const [isLogin,setIsLogin] = useState(true)
-  const [viewToggle,setViewToggle] = useState("all")
+  const [viewToggle,setViewToggle] = useState("all");
+  const [fireNodes,setFireNodes] = useState([]);
+  const [smokeNodes,setSmokeNodes] = useState([])
 
   const socketRef = useRef(null);
   const reconnectAttempts = useRef(0);
@@ -18,6 +21,9 @@ const MainContextProvider = (props) => {
   useEffect(() => {
     if (!isDemo) {
       connectWebSocket();
+    }
+    else{
+      setData(fakeCardData);
     }
 
     return () => cleanUpWebSocket();
@@ -63,6 +69,7 @@ const MainContextProvider = (props) => {
     
     // Handle incoming messages
     socket.onmessage = (event) => {
+      console.log("event :",event)
       try {
         let newData = JSON.parse(event.data);
         console.log("Received WebSocket data:", newData);
@@ -70,7 +77,7 @@ const MainContextProvider = (props) => {
         if (!Array.isArray(newData)) {
           newData = [newData];
         }
-
+        
         // ✅ Update `data` while minimizing re-renders
         setData((prevData) => {
           const updated = [...prevData];
@@ -94,8 +101,6 @@ const MainContextProvider = (props) => {
         console.error("Error parsing WebSocket message:", error);
       }
     };
-
-
   };
 
   const cleanUpWebSocket = () => {
@@ -124,9 +129,44 @@ const MainContextProvider = (props) => {
     }
   };
 
-    useEffect(()=>{
-      console.log('data changed in maincontext',data)
-    },[data])
+  useEffect(() => {
+    if(!isDemo) {
+      console.log('updating data in maincontext creating fireNodes array', data);
+  
+    setFireNodes((prev) => {
+      const existingIds = new Set(prev.map((d) => d.nodeId));
+      const newFireNodes = data.filter((device) => {
+        const isTemperatureHigh = device.tempvalue >= FIRE_TEMP;
+        return isTemperatureHigh && !existingIds.has(device.nodeId);
+      });
+      return [...prev, ...newFireNodes];
+    });
+  
+    setSmokeNodes((prev) => {
+      const fireNodeIds = new Set(
+        data
+          .filter((device) => device.tempvalue >= FIRE_TEMP)
+          .map((device) => device.nodeId)
+      );
+      const existingIds = new Set(prev.map((d) => d.nodeId));
+      const newSmokeNodes = data.filter((device) => {
+        const hasSmoke = device.status?.includes('smoke');
+        const isInFireNodes = fireNodeIds.has(device.nodeId);
+        return hasSmoke && !isInFireNodes && !existingIds.has(device.nodeId);
+      });
+      return [...prev, ...newSmokeNodes];
+    });
+    }
+    
+  }, [data]);
+
+  useEffect(()=>{
+    console.log('fire nodes updated',fireNodes)    
+  },[fireNodes])
+
+  useEffect(() => {
+    console.log('smoke nodes updated',smokeNodes)
+  },[smokeNodes])
   
 
   return (
@@ -142,7 +182,11 @@ const MainContextProvider = (props) => {
         isLogin,
         setIsLogin,
         viewToggle,
-        setViewToggle
+        setViewToggle,
+        fireNodes,
+        setFireNodes,
+        smokeNodes,
+        setSmokeNodes
       }}
     >
       {props.children}

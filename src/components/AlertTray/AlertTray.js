@@ -1,9 +1,10 @@
-import React, {useEffect, useState } from 'react'
+import React, {use, useContext, useEffect, useState } from 'react'
 import fakeCardData from '../../data/fakeCardData.json'
 import noCardData from '../../data/noCardData.json'
 import { FIRE_TEMP, URL } from '../../libs/Constants'
 import DeviceCard from '../../components/DeviceCard/DeviceCard'
 import './AlertTray.css'
+import { MainContext } from '../../context/MainContext'
 
 
 const getPriority = (statusArray, tempvalue, batp, statusCode) => {
@@ -17,7 +18,7 @@ const getPriority = (statusArray, tempvalue, batp, statusCode) => {
 
 
 const AlertTray = ({socket,data}) => {
-
+  const { fireNodes, smokeNodes} = useContext(MainContext)
   const [cardsData, setcardsData] = useState([]);
   const [AlertCards, setAlertCards] = useState([]);
 
@@ -48,7 +49,9 @@ const AlertTray = ({socket,data}) => {
     (card) =>
       card.batp <= 20 ||
       card.tempvalue >= FIRE_TEMP ||
-      card.status.some(statusItem => statusItem.trim() !== "")
+      card.status.some(statusItem => statusItem.trim() !== "") ||
+      (Array.isArray(fireNodes) && fireNodes.some(f => f.nodeId === card.nodeId)) ||
+      (Array.isArray(smokeNodes) && smokeNodes.some(f => f.nodeId === card.nodeId))
   )
   .sort((a, b) => {
     const priorityA = getPriority(a.status, a.tempvalue, a.batp, a.statusCode);
@@ -64,7 +67,7 @@ const AlertTray = ({socket,data}) => {
     
 
         setAlertCards(filteredAndSorted.length > 0 ? filteredAndSorted : []);
-        }, [cardsData]);
+        }, [cardsData,fireNodes,smokeNodes]);
 
   return (
     <>

@@ -50,7 +50,7 @@ const DeckView = ({data}) => {
         if (node.tempvalue >= FIRE_TEMP) {
           updatedDecks[deckIndex].danger.push(compNumber);
         }
-        if (node.status.includes("deleted")) {
+        if (node.statusCode === 0) {
           updatedDecks[deckIndex].deleted.push(compNumber);
         }
         if (node.status.includes("smoke")) {

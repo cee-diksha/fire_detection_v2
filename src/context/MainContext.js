@@ -14,6 +14,7 @@ const MainContextProvider = (props) => {
   const [viewToggle,setViewToggle] = useState("all");
   const [fireNodes,setFireNodes] = useState([]);
   const [smokeNodes,setSmokeNodes] = useState([])
+  const lastSeenRef = useRef(new Map());
 
   const socketRef = useRef(null);
   const reconnectAttempts = useRef(0);
@@ -21,6 +22,7 @@ const MainContextProvider = (props) => {
   useEffect(() => {
     if (!isDemo) {
       connectWebSocket();
+      lastSeenRef.current.clear()
     }
     else{
       setData(fakeCardData);
@@ -82,6 +84,7 @@ const MainContextProvider = (props) => {
         setData((prevData) => {
           const updated = [...prevData];
           newData.forEach((newDevice) => {
+            const id = String(newDevice.nodeId);
             const existingIndex = updated.findIndex((device) => device.nodeId === newDevice.nodeId);
             if (existingIndex !== -1) {
               const existingDevice = updated[existingIndex];
@@ -89,10 +92,19 @@ const MainContextProvider = (props) => {
                 (key) => newDevice[key] !== existingDevice[key]
               );
               if (hasChanged) {
+                console.log(`[data] Updating device ${id}`);
                 updated[existingIndex] = newDevice;
+
+                lastSeenRef.current.set(id, Date.now());
+                console.log(`[lastSeenRef] Updated ${id} at ${new Date().toLocaleTimeString()}`);
+                
               }
             } else {
+              console.log(`[data] Adding new device ${id}`);
               updated.push(newDevice);
+
+              lastSeenRef.current.set(id, Date.now());
+              console.log(`[lastSeenRef] Added ${id} at ${new Date().toLocaleTimeString()}`);
             }
           });
           return updated;
@@ -128,10 +140,10 @@ const MainContextProvider = (props) => {
       console.warn("WebSocket not connected");
     }
   };
-
+ 
   useEffect(() => {
     if(!isDemo) {
-      console.log('updating data in maincontext creating fireNodes array', data);
+      console.log('updated data in maincontext', data);
   
     setFireNodes((prev) => {
       const existingIds = new Set(prev.map((d) => d.nodeId));
@@ -159,6 +171,36 @@ const MainContextProvider = (props) => {
     }
     
   }, [data]);
+
+   //Function that checks which devices are dead if we havent recieved data from them
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();
+      console.log("=== Checking for dead devices ===");
+      setData((prevData) => {
+        return prevData.map((device) => {
+          const id = String(device.nodeId);
+          const lastSeen = lastSeenRef.current.get(id);
+          const secondsAgo = lastSeen ? Math.floor((now - lastSeen) / 1000) : "never";
+
+          console.log(`[check] Device ${id} last seen: ${secondsAgo}s ago`);
+
+          if (!lastSeen || now - lastSeen > 30000) {
+            if (device.statusCode !== 0) {
+              console.warn(`[mark-dead] Device ${id} marked dead`);
+              return { ...device, statusCode: 0 };
+            }
+          } else if (device.statusCode === 0) {
+            console.info(`[revive] Device ${id} is alive again`);
+            return { ...device, statusCode: 1 };
+          }
+          return device;
+        });
+      });
+    }, 5000);
+  
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(()=>{
     console.log('fire nodes updated',fireNodes)    

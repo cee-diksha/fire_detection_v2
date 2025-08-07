@@ -5,7 +5,7 @@ export const getAlertAndStatusDisplay = (statusArray, temperature, battery, stat
   if (statusCode === 0) {
     return { 
       alertType: "replace", 
-      statusDisplay: ["needs replacement"], 
+      statusDisplay: ["Device offline"], 
       hasSmoke: false, 
       hasFire: false, 
       hasRise: false 
@@ -16,7 +16,7 @@ export const getAlertAndStatusDisplay = (statusArray, temperature, battery, stat
   if (battery <= 5) {
     return { 
       alertType: "replace", 
-      statusDisplay: ["needs replacement"], 
+      statusDisplay: ["Needs Replacement"], 
       hasSmoke: false, 
       hasFire: false, 
       hasRise: false 

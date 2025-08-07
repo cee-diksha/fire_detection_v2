@@ -45,14 +45,15 @@ const AlertTray = ({socket,data}) => {
 
     useEffect(() => {
       const filteredAndSorted = cardsData
-  .filter(
-    (card) =>
-      card.batp <= 20 ||
-      card.tempvalue >= FIRE_TEMP ||
-      card.status.some(statusItem => statusItem.trim() !== "") ||
-      (Array.isArray(fireNodes) && fireNodes.some(f => f.nodeId === card.nodeId)) ||
-      (Array.isArray(smokeNodes) && smokeNodes.some(f => f.nodeId === card.nodeId))
-  )
+      .filter(
+        (card) =>
+          card.statusCode === 0 ||
+          card.batp <= 20 ||
+          card.tempvalue >= FIRE_TEMP ||
+          card.status.some(statusItem => statusItem.trim() !== "") ||
+          (Array.isArray(fireNodes) && fireNodes.some(f => f.nodeId === card.nodeId)) ||
+          (Array.isArray(smokeNodes) && smokeNodes.some(f => f.nodeId === card.nodeId))
+      )      
   .sort((a, b) => {
     const priorityA = getPriority(a.status, a.tempvalue, a.batp, a.statusCode);
     const priorityB = getPriority(b.status, b.tempvalue, b.batp, b.statusCode);

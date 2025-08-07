@@ -16,7 +16,7 @@
     --temp-alert: linear-gradient(122.68deg, #f46b34 0.55%, #9d3d18 99.45%);
     --smoke-alert:linear-gradient(122.78deg, #ABABAB 0.48%, #6A6A6A 99.52%);
     --battery-alert:linear-gradient(122.46deg, #FFA500 0.71%, #996300 99.29%);
-    --replace-alert:linear-gradient(123.16deg, #3C418A 0.2%, #1F2147 99.8%);
+    --replace-alert:linear-gradient(123.16deg, #2e2e2e 0.2%, #0b0b0b 99.8%);
     --normal:linear-gradient(134.6deg, #40874d 0.89%, #197129 99.11%);
 
     --fire-alert-on: linear-gradient(133.4deg, #F51F1F 4.73%, #8F1212 95.27%);

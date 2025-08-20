@@ -1,6 +1,7 @@
 import React from 'react';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import { Tooltip } from '@mui/material';
 
 const shipName = "ShipName"; // replace with actual ship name
 const currentDate = new Date();
@@ -8,7 +9,7 @@ const formattedDate = currentDate.toLocaleString();
 const userName = "user"
 
 // download dashboard report
-export const ExportPdfButton = ({ data }) => {
+export const ExportPdfButton = ({ data, theme}) => {
   const handleExport = () => {
     const doc = new jsPDF();
 
@@ -71,11 +72,12 @@ export const ExportPdfButton = ({ data }) => {
   };
 
   return (
-    <button id='generate-bttn' onClick={handleExport} className='bttn-mn'>
-      <label htmlFor="generete-bttn">
-        Generate Report
-      </label>
-    </button>
+    <Tooltip title={'Generate Report'} disableInteractive>
+        <div className='header-icon-div' style={{cursor:'pointer'}} onClick={handleExport} >
+            <img src={'/static/images/report.svg'} alt="report-icon" />
+        </div>
+    </Tooltip>
+
   );
 };
 

@@ -47,10 +47,10 @@ const AlertTray = ({socket,data}) => {
       const filteredAndSorted = cardsData
       .filter(
         (card) =>
-          card.statusCode === 0 ||
-          card.batp <= 20 ||
-          card.tempvalue >= FIRE_TEMP ||
-          card.status.some(statusItem => statusItem.trim() !== "") ||
+          card?.statusCode === 0 ||
+          card?.batp <= 20 ||
+          card?.tempvalue >= FIRE_TEMP ||
+          card?.status?.some(statusItem => statusItem.trim() !== "") ||
           (Array.isArray(fireNodes) && fireNodes.some(f => f.nodeId === card.nodeId)) ||
           (Array.isArray(smokeNodes) && smokeNodes.some(f => f.nodeId === card.nodeId))
       )      

@@ -54,48 +54,48 @@ const Router = () => {
       <Routes>
         <Route element={<MainLayout location={location}/>}>
           <Route
-            index
-            element={
+              index
+              element={
               <Suspense fallback={<Loading />}>
                 <Dashboard />
               </Suspense>
             }
           />
           <Route
-            path="settings"
-            element={
+              path="settings"
+              element={
               <Suspense fallback={<Loading />}>
                 <Settings />
               </Suspense>
             }
           />
           <Route
-            path="login"
-            element={
+              path="login"
+              element={
               <Suspense fallback={<Loading />}>
                 <Login />
               </Suspense>
             }
           />
           <Route
-            path="info/:id"
-            element={
+              path="info/:id"
+              element={
               <Suspense fallback={<Loading />}>
                 <SpecificDevice />
               </Suspense>
             }
           />
            <Route
-            path="deck/:deck"
-            element={
+              path="deck/:deck"
+              element={
               <Suspense fallback={<Loading />}>
                 <SpecificDeck />
               </Suspense>
             }
           />
            <Route
-          path="deck/:deck/:comp"
-          element={
+            path="deck/:deck/:comp"
+            element={
             <Suspense fallback={<Loading />}>
               <SpecificComp />
             </Suspense>

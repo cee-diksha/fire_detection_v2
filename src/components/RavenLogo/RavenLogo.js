@@ -15,7 +15,7 @@ const RavenLogo = () => {
             <img src="/static/images/redraven-xs.svg" alt="redraven logo" />
             <div className='logo-mn-txt'>
               <span id='logo-name'>RedRaven™</span>
-              <span id='logo-name-2'>Wireless Detection Systems</span>
+              <span id='logo-name-2'>Wireless Detection System</span>
             </div>
           </div>
     </div>

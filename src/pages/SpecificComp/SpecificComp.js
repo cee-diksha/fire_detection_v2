@@ -11,7 +11,7 @@ const MAX_RECONNECT_ATTEMPTS = 20;
 
 const SpecificComp = () => {
     const { deck, comp } = useParams();
-    const { isDemo, socketRef, sendMessage } = useContext(MainContext);
+    const { isDemo, socketRef, sendMessage, data } = useContext(MainContext);
 
     
     const [device, setDevice] = useState({ compno: comp, deckno: deck, location: 'No location set' });
@@ -21,14 +21,13 @@ const SpecificComp = () => {
 
     useEffect(() => {
         if (!isDemo) {
-            setDevices([]);
+            const filteredData = data.filter(item =>
+                item.deckno.toString() === deck.toString() &&
+                item.compno.toString() === comp.toString()
+            );
+            console.log("Filtered devices:", filteredData);
+            setDevices(filteredData);
 
-            if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-                console.log("Sending COMP request:", { compno: comp, deckno: deck });
-                sendMessage({ "COMP": { "compno": comp, "deckno": deck } });
-            } else {
-                console.warn("WebSocket not connected yet. Waiting...");
-            }
         } else {
             const filteredData = fakeCardData.filter(item =>
                 item.deckno.toString() === deck.toString() &&
@@ -36,69 +35,7 @@ const SpecificComp = () => {
             );
             setDevices(filteredData);
         }
-    }, [deck, comp, isDemo, socketRef]);
-
-    useEffect(() => {
-        if (isDemo || !socketRef.current) return;
-    
-        const handleMessage = (event) => {
-            try {
-                let response = JSON.parse(event.data);
-                console.log("Received data:", response);
-    
-                if (!Array.isArray(response)) {
-                    response = [response]; // Ensure response is always an array
-                }
-    
-                // Filter devices based on deck and comp params
-                const filteredDevices = response.filter(
-                    (device) => 
-                        device.deckno.toString() === deck.toString() &&
-                        device.compno.toString() === comp.toString()
-                );
-    
-                if (filteredDevices.length === 0) {
-                    console.warn("No matching devices found for the given deck and comp.");
-                    return;
-                }
-    
-                setDevices((prevDevices) => {
-                    const updatedDevices = [...prevDevices];
-    
-                    filteredDevices.forEach((newDevice) => {
-                        const existingIndex = updatedDevices.findIndex(
-                            (device) => device.nodeId === newDevice.nodeId
-                        );
-    
-                        if (existingIndex !== -1) {
-                            const existingDevice = updatedDevices[existingIndex];
-    
-                            // Check if any field has changed
-                            const hasChanged = Object.keys(newDevice).some(
-                                (key) => newDevice[key] !== existingDevice[key]
-                            );
-    
-                            if (hasChanged) {
-                                updatedDevices[existingIndex] = newDevice;
-                            }
-                        } else {
-                            updatedDevices.push(newDevice);
-                        }
-                    });
-    
-                    return updatedDevices;
-                });
-            } catch (error) {
-                console.error("Error parsing WebSocket message:", error);
-            }
-        };
-    
-        socketRef.current.addEventListener("message", handleMessage);
-    
-        return () => {
-            socketRef.current.removeEventListener("message", handleMessage);
-        };
-    }, [isDemo, socketRef, deck, comp]);
+    }, [deck, comp, isDemo, data]);
 
     const refreshCard = (event, nodeId) => {
         event.preventDefault();

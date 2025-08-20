@@ -23,8 +23,6 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!isDemo) {
-      setData([]);
-      sendMessage({ GETCARD: 1 });
       startPolling();
     } else {
       setData(fakeCardData);

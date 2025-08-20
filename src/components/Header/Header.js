@@ -59,12 +59,7 @@ const Header = () => {
         </div>
             
         <div className='header-sec2'>
-            {window.location.pathname === "/" && 
-                <>
-                    <ExportPdfButton data={data}/>
-                    {/* <DropDown cardData={cardData}/> */}
-                </>
-            }
+         
 
             <div className='header-search-login'>
                 {/* handles theme */}
@@ -73,6 +68,13 @@ const Header = () => {
                         <img src={theme==="dark" ? '/static/images/sun.svg' : '/static/images/moon.svg'} alt="theme-icon" />
                     </div>
                 </Tooltip>
+
+                {window.location.pathname === "/" && 
+                <>
+                    <ExportPdfButton data={data} theme={theme}/>
+                    {/* <DropDown cardData={cardData}/> */}
+                </>
+            }
 
                 {/* show settings icon */}
                 {isLogin && !settingsRoute.includes(window.location.pathname) && 

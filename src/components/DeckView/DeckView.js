@@ -24,7 +24,6 @@ const DeckView = ({data}) => {
   ]);
 
   useEffect(() => {
-    // Create a new deckview copy to update
     const updatedDecks = deckview.map((deck) => ({
       ...deck,
       danger: [],
@@ -41,6 +40,9 @@ const DeckView = ({data}) => {
       const deckIndex = updatedDecks.findIndex((d) => d.deck === deckNumber);
 
       if (deckIndex !== -1) {
+        if (node.statusCode === 0) {
+          updatedDecks[deckIndex].deleted.push(compNumber);
+        }
         if (node.status.includes("low bat")) {
           updatedDecks[deckIndex].lowbattery.push(compNumber);
         }
@@ -50,9 +52,7 @@ const DeckView = ({data}) => {
         if (node.tempvalue >= FIRE_TEMP) {
           updatedDecks[deckIndex].danger.push(compNumber);
         }
-        if (node.statusCode === 0) {
-          updatedDecks[deckIndex].deleted.push(compNumber);
-        }
+       
         if (node.status.includes("smoke")) {
           updatedDecks[deckIndex].smoke.push(compNumber);
         }

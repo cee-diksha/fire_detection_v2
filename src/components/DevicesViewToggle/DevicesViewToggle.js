@@ -17,7 +17,7 @@ const DevicesViewToggle = () => {
         <div id='device-v-tggle-div' className='dv-tgl-mn'>
             <div className='dv-tgl-ttle'>
                 <img src='/static/images/toggle.svg' alt="Toggle Icon" />
-                <p>View :</p>
+                <p>View </p>
             </div>
 
             <div className='dv-tgl-tray'>

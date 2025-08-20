@@ -8,12 +8,15 @@ const MAX_RECONNECT_ATTEMPTS = 15;
 
 const MainContextProvider = (props) => {
   const [data, setData] = useState([]);
+  const [deviceLogs, setDeviceLogs] = useState({});
+
   const [connectedState, setConnectedState] = useState("connecting");
   const [isDemo, setIsDemo] = useState(true);
   const [isLogin,setIsLogin] = useState(true)
   const [viewToggle,setViewToggle] = useState("all");
   const [fireNodes,setFireNodes] = useState([]);
   const [smokeNodes,setSmokeNodes] = useState([])
+  
   const lastSeenRef = useRef(new Map());
 
   const socketRef = useRef(null);
@@ -21,6 +24,7 @@ const MainContextProvider = (props) => {
 
   useEffect(() => {
     if (!isDemo) {
+      setData([]);
       connectWebSocket();
       lastSeenRef.current.clear()
     }
@@ -48,7 +52,6 @@ const MainContextProvider = (props) => {
       setConnectedState("connected");
       reconnectAttempts.current = 0;
 
-      // Send GETCARD: 1 when the socket is connected
       socket.send(JSON.stringify({ GETCARD: 1 }));
     };
 
@@ -68,19 +71,27 @@ const MainContextProvider = (props) => {
       setConnectedState("error");
     };
 
-    
-    // Handle incoming messages
+
     socket.onmessage = (event) => {
       console.log("event :",event)
       try {
         let newData = JSON.parse(event.data);
         console.log("Received WebSocket data:", newData);
 
+        if (newData.isDeviceLog) {
+          setDeviceLogs(prev => ({
+            ...prev,
+            [newData.nodeId]: newData
+          }));
+          return;
+        }
+
         if (!Array.isArray(newData)) {
           newData = [newData];
         }
+
         
-        // ✅ Update `data` while minimizing re-renders
+      
         setData((prevData) => {
           const updated = [...prevData];
           newData.forEach((newDevice) => {
@@ -173,19 +184,29 @@ const MainContextProvider = (props) => {
   }, [data]);
 
    //Function that checks which devices are dead if we havent recieved data from them
-  useEffect(() => {
+   useEffect(() => {
+    if (isDemo) return;
+  
     const interval = setInterval(() => {
       const now = Date.now();
       console.log("=== Checking for dead devices ===");
+  
       setData((prevData) => {
         return prevData.map((device) => {
           const id = String(device.nodeId);
           const lastSeen = lastSeenRef.current.get(id);
+  
+          let timeout = 50000;
+          if (device.nodeType === "Repeater" || device.nodeType === "Suppressor") {
+            timeout = 120000;
+          }
+  
           const secondsAgo = lastSeen ? Math.floor((now - lastSeen) / 1000) : "never";
-
-          console.log(`[check] Device ${id} last seen: ${secondsAgo}s ago`);
-
-          if (!lastSeen || now - lastSeen > 30000) {
+          console.log(
+            `[check] Device ${id} (${device.nodeType}) last seen: ${secondsAgo}s ago (timeout=${timeout / 1000}s)`
+          );
+  
+          if (!lastSeen || now - lastSeen > timeout) {
             if (device.statusCode !== 0) {
               console.warn(`[mark-dead] Device ${id} marked dead`);
               return { ...device, statusCode: 0 };
@@ -194,13 +215,15 @@ const MainContextProvider = (props) => {
             console.info(`[revive] Device ${id} is alive again`);
             return { ...device, statusCode: 1 };
           }
+  
           return device;
         });
       });
     }, 5000);
   
     return () => clearInterval(interval);
-  }, []);
+  }, [isDemo]);
+  
 
   useEffect(()=>{
     console.log('fire nodes updated',fireNodes)    
@@ -220,6 +243,7 @@ const MainContextProvider = (props) => {
         data,
         setData,  // Allow components to update the card data
         isDemo,
+        deviceLogs, 
         setIsDemo,
         isLogin,
         setIsLogin,

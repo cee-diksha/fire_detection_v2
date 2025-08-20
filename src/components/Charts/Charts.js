@@ -15,7 +15,7 @@ export const TempChart = ({data}) => {
 
  
   useEffect(() => {
-    setInfo(cardData.filter(item => item.nodeType.toLowerCase() === "sensor"));
+    setInfo(cardData.filter(item => item?.nodeType?.toLowerCase() === "sensor"));
   }, [cardData]);
 
   // Sort data by node_id
@@ -127,8 +127,8 @@ export const BatteryChart = ({data}) => {
    }, [data]);
 
    const smokearr = info.map((item) => ({
-     smoke: item.status.includes('Smoke') ? '#ff7b7b' : '#b7ff86', 
-     nodeId: item.nodeId,
+     smoke: item?.status?.includes('Smoke') ? '#ff7b7b' : '#b7ff86', 
+     nodeId: item?.nodeId,
    }));
 
    const nodeIds = smokearr.map((item) => item.nodeId);

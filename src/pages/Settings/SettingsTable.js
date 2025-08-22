@@ -16,27 +16,37 @@ const SettingsTable = ({tableData, settingsSocket}) => {
         setUpdatedData(tableData);
     },[tableData])
     
-    const handleSwitchChange = (nodeid, field) => {
-        
+    const handleSwitchChange = (nodeId, field) => {
+       console.log("toggling", nodeId, field)
         setUpdatedData((prevData) =>
             prevData.map((item) =>
-                item.nodeid === nodeid ? { ...item, [field]: !item[field] } : item
+                item.nodeId === nodeId ? { ...item, [field]: !item[field] } : item
             )
         );
     };
 
-    const handleFieldChange = (nodeid, field, value) => {
+    const handleFieldChange = (nodeId, field, value) => {
         // to handle the data of any input fields and update them in the updateData array
         setUpdatedData((prev) => 
-            prev.map(item => item.nodeid === nodeid ? { ...item, [field]: value } : item)
+            prev.map(item => item.nodeId === nodeId ? { ...item, [field]: value } : item)
         );
     };
 
-    const handleDeleteRow = (nodeid) => {
-        // delete a row from the table
-        const updated =  updatedData.filter(item => item.nodeid === nodeid )
-        setUpdatedData(updated)
-    };
+    const handleDeleteRow = (nodeId) => {
+        // Optimistic UI: remove the row immediately
+        setUpdatedData((prev) => prev.filter((item) => item.nodeId !== nodeId));
+      
+        // Notify backend
+        try {
+          if (settingsSocket && settingsSocket.readyState === WebSocket.OPEN) {
+            settingsSocket.send(JSON.stringify({ "delete":String(nodeId) }));
+          } else {
+            console.warn("settingsSocket not open; delete not sent");
+          }
+        } catch (err) {
+          console.error("Failed to send delete:", err);
+        }
+      };
 
     const saveSpecificDeviceData = (item) => {
         const data = {
@@ -44,7 +54,9 @@ const SettingsTable = ({tableData, settingsSocket}) => {
             nodeid:item.nodeId.toString(),
             location:item.location,
             deckno:item.deckno,
-            compno:item.compno
+            compno:item.compno,
+            supp:item.supp?"checked":"unchecked",
+            smoke:item.smoke?"checked":"unchecked"
         }
         //  to send data of a specific device to the settingsSocket
         console.log(`Saving data for node ${item.nodeId}`,JSON.stringify({ "save": data}))
@@ -60,6 +72,14 @@ const SettingsTable = ({tableData, settingsSocket}) => {
         console.log('Saving all data', JSON.stringify({ "saveall": 1}))
         settingsSocket.send(JSON.stringify({ "saveall": 1}))
     };
+
+    const handleResetDatabase = () => {
+        setUpdatedData([]);
+    
+        console.log('Deleting all nodes', JSON.stringify({ "deleteall": 1}))
+        settingsSocket.send(JSON.stringify({"deleteall": 1 }));
+      };
+      
 
      // const handleReplace = () => {
     //     // const {nodeid, value} = replaced
@@ -77,9 +97,14 @@ const SettingsTable = ({tableData, settingsSocket}) => {
 
     return (
         <div className='settings-table-resetbtn-wrapper'>
-            
-            {/* {showModal && <ConfimationModal open={true} handleClose={setShowModal} />} */}
-            <div className='table-container'>
+            {updatedData.length === 0 && (
+                <div className='no-nodes-st'>
+                    No Devices stored.
+                </div>
+            )}
+            {updatedData.length >= 1 && (
+                <>
+                <div className='table-container'>
                 <table>
                     <thead>
                         <tr>
@@ -89,8 +114,8 @@ const SettingsTable = ({tableData, settingsSocket}) => {
                             {/* <th>3 Axis</th> */}
                             <th>Location</th>
                             <th>Temp Setpoint</th>
-                            <th>Fire/Smoke Sensor</th>
-                            <th>Suppressor</th>
+                            <th>Detect Smoke</th>
+                            <th>Suppressor Manual/Auto</th>
                             <th>Deck No.</th>
                             <th>Comp. No.</th>
                             <th>Connected to Repeater no.</th>
@@ -102,7 +127,7 @@ const SettingsTable = ({tableData, settingsSocket}) => {
 
                     <tbody>
                     {updatedData.map((item, index) => (
-                        <tr key={item.nodeid} style={{ opacity: item.isDeleted ? 0.5 : 1 }}>
+                        <tr key={item.nodeId} style={{ opacity: item.isDeleted ? 0.5 : 1 }}>
                             <td>{index + 1}</td>
                             <td>{item.nodeId}</td>
                             <td style={{ textTransform: "capitalize" }}>{item.nodeType}</td>
@@ -111,7 +136,7 @@ const SettingsTable = ({tableData, settingsSocket}) => {
                                     type="text"
                                     style={{ width: "60%" }}
                                     defaultValue={item.axis}
-                                    onChange={(e) => handleFieldChange(item.nodeid, 'axis', e.target.value)}
+                                    onChange={(e) => handleFieldChange(item.nodeId, 'axis', e.target.value)}
                                     disabled={item.isDeleted}
                                 /> 
                             </td> */}
@@ -120,7 +145,7 @@ const SettingsTable = ({tableData, settingsSocket}) => {
                                     type="text"
                                     style={{ width: "90%" }}
                                     defaultValue={item.location}
-                                    onChange={(e) => handleFieldChange(item.nodeid, 'location', e.target.value)}
+                                    onChange={(e) => handleFieldChange(item.nodeId, 'location', e.target.value)}
                                     disabled={item.isDeleted}
                                 />
                             </td>
@@ -132,7 +157,7 @@ const SettingsTable = ({tableData, settingsSocket}) => {
                                         placeholder="Enter a number"
                                         value={item.temp}
                                         style={{ width: "40%" }}
-                                        onChange={(e) => handleFieldChange(item.nodeid, 'temp', e.target.value)}
+                                        onChange={(e) => handleFieldChange(item.nodeId, 'temp', e.target.value)}
                                         disabled={item.isDeleted}
                                     />
                                     <span> °C</span>
@@ -146,7 +171,7 @@ const SettingsTable = ({tableData, settingsSocket}) => {
                                             '& .MuiSwitch-track': { backgroundColor: "#3F3F3F" }
                                         }}
                                         checked={item.smoke}
-                                        onChange={() => handleSwitchChange(item.nodeid, 'smoke')}
+                                        onChange={() => handleSwitchChange(item.nodeId, 'smoke')}
                                         disabled={item.isDeleted || item.nodeType.toLowerCase() === 'repeater' || item.nodeType.toLowerCase() === 'suppressor'}
                                     />
                                     
@@ -162,7 +187,7 @@ const SettingsTable = ({tableData, settingsSocket}) => {
                                              '& .MuiSwitch-track': { backgroundColor: "#3F3F3F" }
                                          }}
                                          checked={item.supp}
-                                         onChange={() => handleSwitchChange(item.nodeid, 'supp')}
+                                         onChange={() => handleSwitchChange(item.nodeId, 'supp')}
                                          disabled={item.isDeleted || item.nodeType.toLowerCase() === 'repeater' || item.nodeType.toLowerCase === 'suppressor'}
                                      />
                                 
@@ -175,7 +200,7 @@ const SettingsTable = ({tableData, settingsSocket}) => {
                                         type="text"
                                         style={{ width: "60%" }}
                                         defaultValue={item.deckno}
-                                        onChange={(e) => handleFieldChange(item.nodeid, 'deckno', e.target.value)}
+                                        onChange={(e) => handleFieldChange(item.nodeId, 'deckno', e.target.value)}
                                         disabled={item.isDeleted}
                                     />
                             </td>
@@ -184,7 +209,7 @@ const SettingsTable = ({tableData, settingsSocket}) => {
                                         type="text"
                                         style={{ width: "60%" }}
                                         defaultValue={item.compno}
-                                        onChange={(e) => handleFieldChange(item.nodeid, 'compno', e.target.value)}
+                                        onChange={(e) => handleFieldChange(item.nodeId, 'compno', e.target.value)}
                                         disabled={item.isDeleted}
                                     />
                             </td>
@@ -203,7 +228,7 @@ const SettingsTable = ({tableData, settingsSocket}) => {
                                 </motion.button>
                             </td>
                             <td>
-                                <motion.button whileHover={{opacity:0.7}} whileTap={{opacity:0.5,scale:0.99}} className="bttn-mn" onClick={() => handleDeleteRow(item.nodeid)}>
+                                <motion.button whileHover={{opacity:0.7}} whileTap={{opacity:0.5,scale:0.99}} className="bttn-mn" onClick={() => handleDeleteRow(item.nodeId)}>
                                     <label>{item.isDeleted ? "Undo" : "Delete"}</label>
                                 </motion.button>
                             </td>
@@ -225,8 +250,12 @@ const SettingsTable = ({tableData, settingsSocket}) => {
             
             <div id="btn-wrapper-table" className='flex-end-row'>
                 <motion.button whileHover={animate} whileTap={animate2} transition={transition} className='bttn-mn' id="save-all-changes" onClick={saveChanges}><label htmlFor="save-all-changes">Save Changes</label></motion.button>
-                <motion.button whileHover={{opacity:0.7}} whileTap={{opacity:0.5,scale:0.99}} className='bttn-mn' id="reset-database" onClick={() => setShowModal(true)}><label htmlFor="reset-database">Reset Database</label></motion.button>
+                <motion.button whileHover={{opacity:0.7}} whileTap={{opacity:0.5,scale:0.99}} className='bttn-mn' id="reset-database"   onClick={handleResetDatabase}><label htmlFor="reset-database">Reset Database</label></motion.button>
             </div>
+                </>
+            )}
+            {/* {showModal && <ConfimationModal open={true} handleClose={setShowModal} />} */}
+            
                
         </div>
     );

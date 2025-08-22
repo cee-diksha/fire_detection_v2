@@ -7,6 +7,21 @@
     margin-bottom: 10px;
 }
 
+.settings-table-resetbtn-wrapper{
+    width:100%;
+}
+
+.no-nodes-st{
+    width: 100%;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 60%;
+    border-radius: 20px;
+    border: dashed white 2px; 
+}
+
 #btn-wrapper-table{
     gap:10px;
     padding-block: 20px;

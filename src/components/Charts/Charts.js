@@ -126,11 +126,13 @@ export const BatteryChart = ({data}) => {
      setInfo(data); 
    }, [data]);
 
-   const smokearr = info.map((item) => ({
-     smoke: item?.status?.includes('Smoke') ? '#ff7b7b' : '#b7ff86', 
+   const smokearr = info
+   .filter((item) => item?.nodeType?.toLowerCase() === "sensor") // keep only sensors
+   .map((item) => ({
+     smoke: item?.status?.includes("Smoke") ? "#ff7b7b" : "#b7ff86",
      nodeId: item?.nodeId,
    }));
-
+   
    const nodeIds = smokearr.map((item) => item.nodeId);
    const barColors = smokearr.map((item) => item.smoke);
    const yAxisData = Array(nodeIds.length).fill(1); 

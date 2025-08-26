@@ -146,6 +146,7 @@ const MainContextProvider = (props) => {
 
   const sendMessage = (message) => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      console.log("Sending message to dashboard socket:", JSON.stringify(message));
       socketRef.current.send(JSON.stringify(message));
     } else {
       console.warn("WebSocket not connected");

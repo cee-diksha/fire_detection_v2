@@ -22,16 +22,17 @@ const Settings = () => {
       const settingsSocket = new WebSocket(`${URL}/ws`)
 
       settingsSocket.onopen = () => {
-        console.log("Connected to Settings WebSocket Server!");
+        console.log("[settings] Connected to Settings WebSocket Server!");
         settingsSocket.send(JSON.stringify({ GETCARD: 1 })); // Send initial message
       };
 
       settingsSocket.onmessage = (event) => {
         try {
           const rawData = JSON.parse(event.data);
+          console.log("[settings] Received message:", rawData);
           const cardData = Object.values(rawData.settingparameter)
           if (cardData) {
-            console.log("Received Card Data:", cardData);
+            console.log("[settings] Received Card Data:", cardData);
             setTableData((prevData) => {
                 const updated = [...prevData]
                 cardData.forEach((newDevice) => {
@@ -54,12 +55,12 @@ const Settings = () => {
             })
           }
         } catch (error) {
-          console.error("Error parsing Settings WebSocket message:", error);
+          console.error("[settings] Error parsing Settings WebSocket message:", error);
         }
       }
 
       settingsSocket.onclose = () => {
-        console.log("Settings WebSocket Disconnected.");
+        console.log("[settings] WebSocket Disconnected.");
       };
       setSocket(settingsSocket);
 

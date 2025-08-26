@@ -10,7 +10,7 @@ import FullscreenButton from '../Fullscreen/FullscreenButton'
 import fakeCardData from '../../data/fakeCardData.json'
 
 const Header = () => {
-    const {isLogin, setIsLogin, isDemo} = useContext(MainContext)
+    const {isLogin, setIsLogin, isDemo, sendMessage} = useContext(MainContext)
     const [theme,setTheme] = useState('dark')
     const [isSettingsPg, setIsSettingsPg] = useState(false)
     const settingsRoute = ["/settings", "/login"]
@@ -35,6 +35,10 @@ const Header = () => {
             setIsSettingsPg(false)
         }
     }, [window.location.pathname])
+
+    const handleMuteAlarm = () => {
+        sendMessage({ "MUTE": 1 });
+    }
     
   return (
     <div className='header-container'>
@@ -63,9 +67,9 @@ const Header = () => {
 
             <div className='header-search-login'>
                 {/* handles theme */}
-                <Tooltip title={theme==='light'?'Dark Mode':'Light Mode'} disableInteractive>
-                    <div className='header-icon-div' style={{cursor:'pointer'}} onClick={handleThemeChange}>
-                        <img src={theme==="dark" ? '/static/images/sun.svg' : '/static/images/moon.svg'} alt="theme-icon" />
+                <Tooltip title={'Mute alarm'} disableInteractive>
+                    <div className='header-icon-div' style={{cursor:'pointer'}} onClick={handleMuteAlarm}>
+                        <img src='/static/images/mute-alarm.svg' alt="theme-icon" />
                     </div>
                 </Tooltip>
 
@@ -75,6 +79,15 @@ const Header = () => {
                     {/* <DropDown cardData={cardData}/> */}
                 </>
             }
+
+                {/* handles theme */}
+                <Tooltip title={theme==='light'?'Dark Mode':'Light Mode'} disableInteractive>
+                    <div className='header-icon-div' style={{cursor:'pointer'}} onClick={handleThemeChange}>
+                        <img src={theme==="dark" ? '/static/images/sun.svg' : '/static/images/moon.svg'} alt="theme-icon" />
+                    </div>
+                </Tooltip>
+
+                
 
                 {/* show settings icon */}
                 {isLogin && !settingsRoute.includes(window.location.pathname) && 

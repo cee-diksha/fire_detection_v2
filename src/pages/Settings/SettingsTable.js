@@ -17,13 +17,20 @@ const SettingsTable = ({tableData, settingsSocket}) => {
     },[tableData])
     
     const handleSwitchChange = (nodeId, field) => {
-       console.log("toggling", nodeId, field)
+        console.log("[settings] toggling", nodeId, field);
+      
         setUpdatedData((prevData) =>
-            prevData.map((item) =>
-                item.nodeId === nodeId ? { ...item, [field]: !item[field] } : item
-            )
+          prevData.map((item) =>
+            item.nodeId === nodeId
+              ? {
+                  ...item,
+                  [field]: item[field] === "checked" ? "unchecked" : "checked",
+                }
+              : item
+          )
         );
-    };
+      };
+      
 
     const handleFieldChange = (nodeId, field, value) => {
         // to handle the data of any input fields and update them in the updateData array
@@ -39,27 +46,28 @@ const SettingsTable = ({tableData, settingsSocket}) => {
         // Notify backend
         try {
           if (settingsSocket && settingsSocket.readyState === WebSocket.OPEN) {
-            settingsSocket.send(JSON.stringify({ "delete":String(nodeId) }));
+            console.log("[settings] Sending delete for nodeId:", JSON.stringify({ "remove": nodeId}));
+            settingsSocket.send(JSON.stringify({ "remove":nodeId }));
           } else {
-            console.warn("settingsSocket not open; delete not sent");
+            console.warn("[settings] settingsSocket not open; delete not sent");
           }
         } catch (err) {
-          console.error("Failed to send delete:", err);
+          console.error("[settings] Failed to send delete:", err);
         }
       };
 
     const saveSpecificDeviceData = (item) => {
         const data = {
-            temp:60,
+            temp:item.temp,
             nodeid:item.nodeId.toString(),
             location:item.location,
             deckno:item.deckno,
             compno:item.compno,
-            supp:item.supp?"checked":"unchecked",
-            smoke:item.smoke?"checked":"unchecked"
+            supp:item.supp,
+            smoke:item.smoke
         }
         //  to send data of a specific device to the settingsSocket
-        console.log(`Saving data for node ${item.nodeId}`,JSON.stringify({ "save": data}))
+        console.log(`[settings] Saving data for node ${item.nodeId}`,JSON.stringify({ "save": data}))
         settingsSocket.send(JSON.stringify({ "save": data}))
     }
 
@@ -69,30 +77,30 @@ const SettingsTable = ({tableData, settingsSocket}) => {
         // console.log(data, "checking dataa");
         // handleReplace()
         // setDeviceInfo(data);
-        console.log('Saving all data', JSON.stringify({ "saveall": 1}))
+        console.log('[settings] Saving all data', JSON.stringify({ "saveall": 1}))
         settingsSocket.send(JSON.stringify({ "saveall": 1}))
     };
 
     const handleResetDatabase = () => {
         setUpdatedData([]);
     
-        console.log('Deleting all nodes', JSON.stringify({ "deleteall": 1}))
+        console.log('[settings] Deleting all nodes', JSON.stringify({ "deleteall": 1}))
         settingsSocket.send(JSON.stringify({"deleteall": 1 }));
       };
       
 
-     // const handleReplace = () => {
-    //     // const {nodeid, value} = replaced
-    //     // const updated =  data.map(item =>
-    //     //     item.nodeid === nodeid ? { ...item, nodeid: value } : item
-    //     // )
+    // const handleReplace = () => {
+    //      const {nodeid, value} = replaced
+    //      const updated =  data.map(item =>
+    //          item.nodeid === nodeid ? { ...item, nodeid: value } : item
+    //      )
 
-    //     // setData(prevData =>
-    //     //     prevData.map(item =>
-    //     //         item.nodeid === nodeid ? { ...item, nodeid: value } : item
-    //     //     )
-    //     // );
-    //     // setDeviceInfo(updated)
+    //      setData(prevData =>
+    //          prevData.map(item =>
+    //              item.nodeid === nodeid ? { ...item, nodeid: value } : item
+    //          )
+    //      );
+    //      setDeviceInfo(updated)
     // }
 
     return (
@@ -170,7 +178,7 @@ const SettingsTable = ({tableData, settingsSocket}) => {
                                             '& .MuiSwitch-thumb': { backgroundColor: "#3F3F3F" },
                                             '& .MuiSwitch-track': { backgroundColor: "#3F3F3F" }
                                         }}
-                                        checked={item.smoke}
+                                        checked={item.smoke==="checked"}
                                         onChange={() => handleSwitchChange(item.nodeId, 'smoke')}
                                         disabled={item.isDeleted || item.nodeType.toLowerCase() === 'repeater' || item.nodeType.toLowerCase() === 'suppressor'}
                                     />
@@ -186,7 +194,7 @@ const SettingsTable = ({tableData, settingsSocket}) => {
                                              '& .MuiSwitch-thumb': { backgroundColor: "#3F3F3F" },
                                              '& .MuiSwitch-track': { backgroundColor: "#3F3F3F" }
                                          }}
-                                         checked={item.supp}
+                                         checked={item.supp==="checked"}
                                          onChange={() => handleSwitchChange(item.nodeId, 'supp')}
                                          disabled={item.isDeleted || item.nodeType.toLowerCase() === 'repeater' || item.nodeType.toLowerCase === 'suppressor'}
                                      />
@@ -248,14 +256,14 @@ const SettingsTable = ({tableData, settingsSocket}) => {
                 </table>
             </div>
             
+   
+                </>
+            )}
+            {/* {showModal && <ConfimationModal open={true} handleClose={setShowModal} />} */}
             <div id="btn-wrapper-table" className='flex-end-row'>
                 <motion.button whileHover={animate} whileTap={animate2} transition={transition} className='bttn-mn' id="save-all-changes" onClick={saveChanges}><label htmlFor="save-all-changes">Save Changes</label></motion.button>
                 <motion.button whileHover={{opacity:0.7}} whileTap={{opacity:0.5,scale:0.99}} className='bttn-mn' id="reset-database"   onClick={handleResetDatabase}><label htmlFor="reset-database">Reset Database</label></motion.button>
             </div>
-                </>
-            )}
-            {/* {showModal && <ConfimationModal open={true} handleClose={setShowModal} />} */}
-            
                
         </div>
     );

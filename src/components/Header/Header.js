@@ -8,6 +8,7 @@ import UserDropDown from '../UserDropDown/UserDropDown'
 import { Tooltip } from '@mui/material'
 import FullscreenButton from '../Fullscreen/FullscreenButton'
 import fakeCardData from '../../data/fakeCardData.json'
+import { SHIP_NAME } from '../../libs/Constants'
 
 const Header = () => {
     const {isLogin, setIsLogin, isDemo, sendMessage} = useContext(MainContext)
@@ -50,7 +51,7 @@ const Header = () => {
                     <div className='ship-logo-div'> 
                         <img src="/static/images/crest.jpg" alt="ship" />
                     </div>
-                    <h2 >INS VIKRANT</h2>
+                    <h2 >{SHIP_NAME}</h2>
                 </div>
             )}
 

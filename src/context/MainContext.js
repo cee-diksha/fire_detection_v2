@@ -88,7 +88,7 @@ const MainContextProvider = (props) => {
           return;
         }
 
-        if(newData.isWeeklyLog){
+        if(newData.isPast){
           console.log("Received weekly log data:", newData);
           setWeeklyLogs(newData);
           return;

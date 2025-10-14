@@ -11,7 +11,7 @@ import fakeCardData from '../../data/fakeCardData.json'
 import { SHIP_NAME } from '../../libs/Constants'
 
 const Header = () => {
-    const {isLogin, setIsLogin, isDemo, sendMessage, isMuteAllEnabled,setIsMuteAllEnabled} = useContext(MainContext)
+    const {isLogin, setIsLogin, isDemo, sendMessage, isMuteAllEnabled, setIsMuteAllEnabled} = useContext(MainContext)
     const [theme,setTheme] = useState('dark')
     const [isSettingsPg, setIsSettingsPg] = useState(false)
     const settingsRoute = ["/settings", "/login"]

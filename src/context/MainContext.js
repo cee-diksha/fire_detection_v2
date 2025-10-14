@@ -9,6 +9,7 @@ const MAX_RECONNECT_ATTEMPTS = 15;
 const MainContextProvider = (props) => {
   const [data, setData] = useState([]);
   const [deviceLogs, setDeviceLogs] = useState({});
+  const [weeklyLogs,setWeeklyLogs] = useState({});
 
   const [connectedState, setConnectedState] = useState("connecting");
   const [isDemo, setIsDemo] = useState(false);
@@ -84,6 +85,12 @@ const MainContextProvider = (props) => {
         if (newData.isAlarmStatus !== undefined) {
           console.log("Received alarm status update:", newData.isAlarmStatus);
           setIsMuteAllEnabled(Boolean(newData.isAlarmStatus));
+          return;
+        }
+
+        if(newData.isWeeklyLog){
+          console.log("Received weekly log data:", newData);
+          setWeeklyLogs(newData);
           return;
         }
 
@@ -278,6 +285,8 @@ const MainContextProvider = (props) => {
         setFallenNodes,
         isMuteAllEnabled,
         setIsMuteAllEnabled,
+        weeklyLogs,
+        setWeeklyLogs
       }}
     >
       {props.children}

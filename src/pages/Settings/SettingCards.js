@@ -70,9 +70,9 @@ const TotalRepeaterCard = ({ totalDevices, onClick, selected }) => {
 };
 
 export const SettingCards = ({ tableData, onFilterChange, selectedFilter }) => {
-  const repeater = totalUnits(tableData, "repeater");
-  const sensor = totalUnits(tableData, "sensor");
-  const suppressor = totalUnits(tableData, "suppressor");
+  const repeater = totalUnits(tableData, "repeater", true);
+  const sensor = totalUnits(tableData, "sensor", true);
+  const suppressor = totalUnits(tableData, "suppressor", true);
 
   return (
     <div className="st-card-tray flex-start-row flex-wrap">

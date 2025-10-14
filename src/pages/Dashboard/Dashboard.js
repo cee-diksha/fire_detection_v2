@@ -14,12 +14,14 @@ import {motion} from 'motion/react'
 
 const MAX_RECONNECT_ATTEMPTS = 20;
 const POLLING_INTERVAL = 10000; // 10 seconds
+const SAVEALL_INTERVAL = 60000; // 60 seconds
 
 const Dashboard = () => {
   const { sendMessage ,isDemo, socketRef, data,setData} = useContext(MainContext);
   
   const reconnectAttempts = useRef(0);
   const pollingRef = useRef(null);
+  const saveAllRef = useRef(null);
 
   useEffect(() => {
     if (!isDemo) {
@@ -30,6 +32,54 @@ const Dashboard = () => {
     }
      return () => stopPolling();
   }, [isDemo]);
+
+  
+  useEffect(() => {
+    if (!isDemo) {
+      startPolling();
+      startSaveAllPolling();
+    } else {
+      setData(fakeCardData);
+      stopPolling();
+      stopSaveAllPolling(); 
+    }
+
+    return () => {
+      stopPolling();
+      stopSaveAllPolling();
+    };
+  }, [isDemo]);
+
+  const sendSaveAll = () => {
+    if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+      console.log('[save]Sending SAVEALL request...');
+      sendMessage({ "SAVEALL": 1 });
+    } else {
+      console.warn("WebSocket not connected for SAVEALL");
+    }
+  };
+
+  const startSaveAllPolling = () => {
+    stopSaveAllPolling();                                                                                                                                                                                                                     
+    console.log("Attempting to start SAVEALL polling...");
+
+    if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) {
+      console.warn("WebSocket not open, delaying SAVEALL polling start...");
+      setTimeout(startSaveAllPolling, 2000);
+      return;
+    }
+
+    console.log("Starting SAVEALL polling every 60 seconds...");
+    saveAllRef.current = setInterval(sendSaveAll, SAVEALL_INTERVAL);
+  };
+
+  const stopSaveAllPolling = () => {
+    if (saveAllRef.current) {
+      console.log("Stopping SAVEALL polling...");
+      clearInterval(saveAllRef.current);
+      saveAllRef.current = null;
+    }
+  };
 
 
   const updateCard = () => {

@@ -64,7 +64,7 @@ const Header = () => {
     
         setTimeout(() => {
           setIsMuteDisabled(false)
-        }, 4000)
+        }, 1200)
       }
     
   return (

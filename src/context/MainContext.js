@@ -11,11 +11,14 @@ const MainContextProvider = (props) => {
   const [deviceLogs, setDeviceLogs] = useState({});
 
   const [connectedState, setConnectedState] = useState("connecting");
-  const [isDemo, setIsDemo] = useState(true);
+  const [isDemo, setIsDemo] = useState(false);
   const [isLogin,setIsLogin] = useState(true)
   const [viewToggle,setViewToggle] = useState("all");
   const [fireNodes,setFireNodes] = useState([]);
-  const [smokeNodes,setSmokeNodes] = useState([])
+  const [smokeNodes,setSmokeNodes] = useState([]);
+  const [fallenNodes, setFallenNodes] = useState([]);
+
+  const [isMuteAllEnabled, setIsMuteAllEnabled] = useState(false);
   
   const lastSeenRef = useRef(new Map());
 
@@ -77,6 +80,12 @@ const MainContextProvider = (props) => {
       try {
         let newData = JSON.parse(event.data);
         console.log("Received WebSocket data:", newData);
+
+        if (newData.isAlarmStatus !== undefined) {
+          console.log("Received alarm status update:", newData.isAlarmStatus);
+          setIsMuteAllEnabled(Boolean(newData.isAlarmStatus));
+          return;
+        }
 
         if (newData.isDeviceLog) {
           setDeviceLogs(prev => ({
@@ -180,6 +189,14 @@ const MainContextProvider = (props) => {
       });
       return [...prev, ...newSmokeNodes];
     });
+
+    setFallenNodes((prev) => {
+      const existingIds = new Set(prev.map((d) => d.nodeId));
+      const newFallenNodes = data.filter((device) => {
+        return device.statusCode === 2 && !existingIds.has(device.nodeId);
+      });
+      return [...prev, ...newFallenNodes];
+    });
     }
     
   }, [data]);
@@ -233,7 +250,10 @@ const MainContextProvider = (props) => {
   useEffect(() => {
     console.log('smoke nodes updated',smokeNodes)
   },[smokeNodes])
-  
+
+  useEffect(() => {
+    console.log("fallen nodes updated", fallenNodes);
+  }, [fallenNodes]);  
 
   return (
     <MainContext.Provider
@@ -253,7 +273,11 @@ const MainContextProvider = (props) => {
         fireNodes,
         setFireNodes,
         smokeNodes,
-        setSmokeNodes
+        setSmokeNodes,
+        fallenNodes,
+        setFallenNodes,
+        isMuteAllEnabled,
+        setIsMuteAllEnabled,
       }}
     >
       {props.children}

@@ -12,6 +12,7 @@ export const getAlertAndStatusDisplay = (statusArray, temperature, battery, stat
     };
   }
 
+
   // Second highest priority: If battery is critically low (<= 5)
   if (battery <= 5) {
     return { 
@@ -33,6 +34,8 @@ export const getAlertAndStatusDisplay = (statusArray, temperature, battery, stat
   let hasRise = normalizedStatus.includes("temprise");
   let hasSmoke = normalizedStatus.includes("smoke");
 
+ 
+
   // Fire condition (High priority)
   if (temperature >= FIRE_TEMP) {
     hasFire = true;
@@ -43,6 +46,12 @@ export const getAlertAndStatusDisplay = (statusArray, temperature, battery, stat
   // Smoke condition
   if (hasSmoke) {
     displayList.push("smoke");
+  }
+
+   // Check for fall
+   if (statusCode === 2){
+    displayList.push("Fall Detected");
+      alert = "replace"
   }
 
   // Check other statuses based on priority

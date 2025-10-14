@@ -11,13 +11,15 @@ import fakeCardData from '../../data/fakeCardData.json'
 import { SHIP_NAME } from '../../libs/Constants'
 
 const Header = () => {
-    const {isLogin, setIsLogin, isDemo, sendMessage} = useContext(MainContext)
+    const {isLogin, setIsLogin, isDemo, sendMessage, isMuteAllEnabled,setIsMuteAllEnabled} = useContext(MainContext)
     const [theme,setTheme] = useState('dark')
     const [isSettingsPg, setIsSettingsPg] = useState(false)
     const settingsRoute = ["/settings", "/login"]
     const dashboardRoute = ["/"]
     const loginRoute = ["/login"]
     const [data,setData] = useState([])
+
+    const [isMuteDisabled, setIsMuteDisabled] = useState(false)
 
     const handleThemeChange =  () => {
         if(theme==="dark") {
@@ -37,9 +39,33 @@ const Header = () => {
         }
     }, [window.location.pathname])
 
-    const handleMuteAlarm = () => {
-        sendMessage({ "MUTE": 1 });
+    const fetchAlarmStatus = () => {
+        console.log("[Header] Fetching alarm status...")
+        sendMessage({ "ALARMSTATUS": 1 })
+      }
+
+    useEffect(() => {
+    if (window.location.pathname === "/") {
+        fetchAlarmStatus()
     }
+    }, [window.location.pathname])
+
+    const handleMuteAlarm = () => {
+        if (isMuteDisabled) return 
+        setIsMuteDisabled(true)
+    
+        const command = isMuteAllEnabled ? "MUTEALLDISABLE" : "MUTEALLENABLE"
+        sendMessage({ [command]: 1 })
+    
+  
+        setTimeout(() => {
+          fetchAlarmStatus()
+        }, 500)
+    
+        setTimeout(() => {
+          setIsMuteDisabled(false)
+        }, 4000)
+      }
     
   return (
     <div className='header-container'>
@@ -67,12 +93,23 @@ const Header = () => {
          
 
             <div className='header-search-login'>
-                {/* handles theme */}
-                <Tooltip title={'Mute alarm'} disableInteractive>
-                    <div className='header-icon-div' style={{cursor:'pointer'}} onClick={handleMuteAlarm}>
-                        <img src='/static/images/mute-alarm.svg' alt="theme-icon" />
-                    </div>
-                </Tooltip>
+                {/* handles mute */}
+                <Tooltip title={isMuteAllEnabled ? 'Unmute All Alarms' : 'Mute All Alarms'} disableInteractive>
+              <div
+                className='header-icon-div'
+                onClick={!isMuteDisabled ? handleMuteAlarm : undefined}
+                style={{
+                  cursor: isMuteDisabled ? 'default' : 'pointer',
+                  opacity: isMuteDisabled ? 0.4 : 1,
+                  pointerEvents: isMuteDisabled ? 'none' : 'auto'
+                }}
+              >
+                <img
+                  src={isMuteAllEnabled ? '/static/images/unmute-alarm.svg' : '/static/images/mute-alarm.svg'}
+                  alt="mute-all-icon"
+                />
+              </div>
+            </Tooltip>
 
                 {window.location.pathname === "/" && 
                 <>

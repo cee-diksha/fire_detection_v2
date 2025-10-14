@@ -46,12 +46,13 @@ const DeviceCard = ({
     statusCode = 0,
     location = "location",
     batp = 0,
+    mute= 0,
     supp = "unchecked",
     acknowledged=false,
     refreshCard
   }) => {
 
-    const {isDemo, fireNodes, smokeNodes, setFireNodes, setSmokeNodes} = useContext(MainContext);
+    const {isDemo, fireNodes, smokeNodes, fallenNodes, setFireNodes, setSmokeNodes,setFallenNodes, sendMessage} = useContext(MainContext);
 
   const [isLowBattery,setIsLowBattery] = useState(false);
   const [statusDisplay,setStatusDisplay] = useState([])
@@ -72,14 +73,20 @@ const DeviceCard = ({
 
   const [showSuppressor, setShowSuppressor] = useState(false);
 
+
+  const [isMuteDisabled, setIsMuteDisabled] = useState(false);
+
+
   //Sets alertType based on status array, batp and tempvalue
   useEffect(() => {
-    let { alertType, statusDisplay, hasSmoke, hasFire, hasRise } = getAlertAndStatusDisplay(status, tempvalue, batp, statusCode);
+    let { alertType, statusDisplay, hasSmoke, hasFire, hasRise } =
+      getAlertAndStatusDisplay(status, tempvalue, batp, statusCode);
   
     const isFireNode = fireNodes.some((node) => node.nodeId === nodeId);
     const isSmokeNode = smokeNodes.some((node) => node.nodeId === nodeId);
+    const isFallenNode = fallenNodes?.some((node) => node.nodeId === nodeId);
   
-    //Override alertType if node is in fire/smoke nodes
+    // Override alertType if node is in fire/smoke/fallen nodes
     if (isFireNode) {
       alertType = "fire";
       hasFire = true;
@@ -87,6 +94,9 @@ const DeviceCard = ({
     } else if (isSmokeNode) {
       alertType = "smoke";
       hasSmoke = true;
+    } else if (isFallenNode) {
+      alertType = "replace";
+      statusDisplay = ["Fall Detected"];
     }
   
     setAlertType(alertType);
@@ -94,22 +104,20 @@ const DeviceCard = ({
     setHasSmoke(hasSmoke);
     setHasFire(hasFire);
     setHasRise(hasRise);
-  }, [status, tempvalue, batp, fireNodes, smokeNodes]); //updated whenever status, tempvalue or batp change
+  }, [status, tempvalue, batp, fireNodes, smokeNodes, fallenNodes]);
+   //updated whenever status, tempvalue or batp change
 
 
 
   //card alarm state based on fire and toggle alarm
-  useEffect(()=>{
-    //if alarm is muted turn card alarm on
-    if(!alarmOn && (hasFire || hasRise || hasSmoke)){
-      setCardAlarm(true)
+  useEffect(() => {
+    const isMuted = mute === 1;
+    if (isMuted && (hasFire || hasRise || hasSmoke)) {
+      setCardAlarm(true);
+    } else {
+      setCardAlarm(false);
     }
-
-    //if alarm is unmuted turn card alarm off
-    else if(alarmOn && (hasFire || hasRise || hasSmoke)){
-      setCardAlarm(false)
-    }
-  },[alarmOn,hasFire])
+  }, [mute, hasFire, hasRise, hasSmoke]);
 
   //handles tempvalue and battery styling
   useEffect(() => {
@@ -152,10 +160,24 @@ const DeviceCard = ({
   }
 
   //logic to handle alarm
-  const handleAlarmToggle = (e) =>{
-    handleTouch(e)
-    setAlarmOn(!alarmOn)
-  }
+  const handleAlarmToggle = (e) => {
+    handleTouch(e);
+  
+    if (isMuteDisabled) return;
+    setIsMuteDisabled(true);
+  
+    const nextMute = mute === 1 ? 0 : 1;
+  
+    sendMessage({ [nextMute ? "MUTEON" : "MUTEOFF"]: nodeId });
+  
+    setTimeout(() => {
+      refreshCard(e, nodeId);
+    }, 1000);
+  
+    setTimeout(() => {
+      setIsMuteDisabled(false);
+    }, 4000);
+  };
 
 
   //handle Acknowledgement
@@ -163,10 +185,12 @@ const DeviceCard = ({
     handleTouch(e)
     setFireNodes((prev) => prev.filter((node) => node.nodeId !== nodeId));
     setSmokeNodes((prev) => prev.filter((node) => node.nodeId !== nodeId));
-  
-    console.log(`Acknowledged node ${nodeId}: removed from fire/smoke nodes`);
+    setFallenNodes((prev) => prev.filter((node) => node.nodeId !== nodeId));
+    console.log(`Acknowledged node ${nodeId}: removed from fire/smoke/fallen nodes`);
     
   }
+
+  const isMuted = mute === 1;
 
   return (
     <Link to={`/info/${nodeId}`}>
@@ -299,7 +323,7 @@ const DeviceCard = ({
 
         {/* Refresh Faulty and Alarm button tray */}
         <div className="dv-crd-bttn-tray">
-            <div className='dv-crd-ref-faulty'>
+            
 
               {/* Mark Faulty */}
                 <Tooltip slotProps={{popper: {modifiers: [{name: 'offset',options: {offset: [0, -10]}}]}}} placement="bottom" title="Mark Faulty" disableInteractive>
@@ -315,16 +339,52 @@ const DeviceCard = ({
                     <img src="/static/images/refresh.svg" alt="" />
                   </motion.div>
                 </Tooltip>
-              </div>
 
-            {/* Alarm - only shown if there's a fire or smoke. only shows for sensors */}
-            {(hasFire || hasRise || hasSmoke) && nodeType.toLowerCase() === 'sensor' && (
-              <Tooltip title={`Acknowledge Fire`} slotProps={{popper: {modifiers: [{name: 'offset',options: {offset: [0, -10]}}]}}} placement="bottom" disableInteractive>
-              <motion.div onClick={handleAcknowledge} whileHover={hover} whileTap={hover2} id='dv-alarm' className='dv-crd-bttn'>
-                <h3 className='dv-crd-ack'>Acknowledge </h3>
-              </motion.div>
-            </Tooltip>
-            )}            
+                 {/* Alarm - only shown if there's a fire or smoke. only shows for sensors */}
+              {(hasFire || hasRise || hasSmoke) && nodeType.toLowerCase() === 'sensor' && (
+                <Tooltip title={`${isMuted ? "Unmute" : "Mute"} Alarm`} slotProps={{popper: {modifiers: [{name: 'offset',options: {offset: [0, -10]}}]}}} placement="bottom" disableInteractive>
+                <motion.div  
+                  onClick={handleAlarmToggle}
+                  whileHover={!isMuteDisabled ? hover : {}}
+                  whileTap={!isMuteDisabled ? hover2 : {}} 
+                  style={{
+                    opacity: isMuteDisabled ? 0.4 : 1,
+                    cursor: isMuteDisabled ? "normal !important" : "pointer !important",
+                  }}
+                  id='dv-alarm' 
+                  className='dv-crd-bttn'>
+                <img src={`/static/images/device/${isMuted?"alarm-mute":"alarm"}.svg`} alt="" />
+                </motion.div>
+              </Tooltip>
+              )}
+
+           
+
+            {((hasFire || hasRise || hasSmoke || 
+              (Array.isArray(fallenNodes) && fallenNodes.some(f => f.nodeId === nodeId))
+              ) && nodeType.toLowerCase() === 'sensor') && (
+              <Tooltip
+                title="Acknowledge"
+                slotProps={{
+                  popper: {
+                    modifiers: [{ name: 'offset', options: { offset: [0, -10] } }],
+                  },
+                }}
+                placement="bottom"
+                disableInteractive
+              >
+                <motion.div
+                  onClick={handleAcknowledge}
+                  whileHover={hover}
+                  whileTap={hover2}
+                  id="dv-alarm"
+                  className="dv-crd-bttn"
+                >
+                  <img src="/static/images/device/acknowledge.svg" alt="Acknowledge" />
+                </motion.div>
+              </Tooltip>
+            )}
+           
         </div>
 
         {/* Last updated  */}

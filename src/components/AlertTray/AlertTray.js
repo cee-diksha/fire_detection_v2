@@ -18,7 +18,7 @@ const getPriority = (statusArray, tempvalue, batp, statusCode) => {
 
 
 const AlertTray = ({socket,data}) => {
-  const { fireNodes, smokeNodes} = useContext(MainContext)
+  const { fireNodes, smokeNodes, fallenNodes } = useContext(MainContext)
   const [cardsData, setcardsData] = useState([]);
   const [AlertCards, setAlertCards] = useState([]);
 
@@ -48,11 +48,13 @@ const AlertTray = ({socket,data}) => {
       .filter(
         (card) =>
           card?.statusCode === 0 ||
+          card?.statusCode === 2 ||
           card?.batp <= 20 ||
           card?.tempvalue >= FIRE_TEMP ||
           card?.status?.some(statusItem => statusItem.trim() !== "") ||
           (Array.isArray(fireNodes) && fireNodes.some(f => f.nodeId === card.nodeId)) ||
-          (Array.isArray(smokeNodes) && smokeNodes.some(f => f.nodeId === card.nodeId))
+          (Array.isArray(smokeNodes) && smokeNodes.some(f => f.nodeId === card.nodeId)) ||
+          (Array.isArray(fallenNodes) && fallenNodes.some(f => f.nodeId === card.nodeId))
       )      
   .sort((a, b) => {
     const priorityA = getPriority(a.status, a.tempvalue, a.batp, a.statusCode);

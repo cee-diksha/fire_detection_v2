@@ -94,7 +94,7 @@ const Header = () => {
 
             <div className='header-search-login'>
                 {/* handles mute */}
-                <Tooltip title={isMuteAllEnabled ? 'Unmute All Alarms' : 'Mute All Alarms'} disableInteractive>
+                <Tooltip title={isMuteAllEnabled ? 'Unmute Hooter' : 'Mute Hooter'} disableInteractive>
               <div
                 className='header-icon-div'
                 onClick={!isMuteDisabled ? handleMuteAlarm : undefined}

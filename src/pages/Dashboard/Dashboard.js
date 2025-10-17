@@ -117,7 +117,7 @@ const Dashboard = () => {
     <div className='page'>
       <div className='width-100 flex-space-row'>
         <div className='db-secondary flex-start-col'>
-          <DemoButton />
+          {/* <DemoButton /> */}
           <StatusDeckGlance data={data} />
           <TempChart data={data} />
           <BatteryChart data={data} />

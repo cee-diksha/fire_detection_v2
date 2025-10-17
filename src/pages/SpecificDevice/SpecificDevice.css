@@ -6,7 +6,21 @@
 }
 
 .log-wrapper{
+    width:40%;
+    min-width: 300px;;
     gap:30px;
+    display:flex;
+    flex-direction:column;
+}
+
+.alert-logs{
+    width:100%;
+}
+
+.alert-logs-in{
+    max-height: 200px;
+    overflow-y: scroll;
+    width: 100%;
 }
 
 

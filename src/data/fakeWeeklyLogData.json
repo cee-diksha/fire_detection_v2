@@ -1,0 +1,32 @@
+[
+    {
+        "nodeId":151,
+        "isPast":true,
+        "isDeviceLog":false,
+        "deviceType":"Sensor",
+        "deckno":1,
+        "compno":2,
+        "logs":{
+            "alertlogstemp":[
+            {
+                "timestamp":"2024-06-10T12:00:00Z",
+                "message":"Temprature rise detected",
+                "value":75
+            },
+            {
+                "timestamp":"2024-06-12T12:00:00Z",
+                "message":"Fire Detected",
+                "value":86
+            }
+        ],
+        "alertlogsbattery":[
+            {
+                "timestamp":"2024-06-13T12:00:00Z",
+                "message":"Battery Low",
+                "value":20
+            }
+        ]
+        }
+        
+    }
+]

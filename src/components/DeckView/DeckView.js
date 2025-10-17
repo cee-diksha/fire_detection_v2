@@ -43,20 +43,20 @@ const DeckView = ({data}) => {
         if (node.statusCode === 0) {
           updatedDecks[deckIndex].deleted.push(compNumber);
         }
-        if (node.status.includes("low bat")) {
+        if (node.status?.includes("low bat")) {
           updatedDecks[deckIndex].lowbattery.push(compNumber);
         }
-        if (node.status.includes("temp rise")) {
+        if (node.statu?.includes("temp rise")) {
           updatedDecks[deckIndex].temprise.push(compNumber);
         }
         if (node.tempvalue >= FIRE_TEMP) {
           updatedDecks[deckIndex].danger.push(compNumber);
         }
        
-        if (node.status.includes("smoke")) {
+        if (node.status?.includes("smoke")) {
           updatedDecks[deckIndex].smoke.push(compNumber);
         }
-        if (node.status.length === 0) {
+        if (node.status?.length === 0) {
           updatedDecks[deckIndex].normal.push(compNumber);
         }
       }

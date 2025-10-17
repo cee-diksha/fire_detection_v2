@@ -80,24 +80,26 @@ const MainContextProvider = (props) => {
       console.log("event :",event)
       try {
         let newData = JSON.parse(event.data);
-        console.log("Received WebSocket data:", newData);
+        console.log("[data]Received WebSocket data:", newData);
 
         if (newData.isAlarmStatus !== undefined) {
-          console.log("Received alarm status update:", newData.isAlarmStatus);
+          console.log("[alarm]Received alarm status update:", newData.isAlarmStatus);
           setIsMuteAllEnabled(Boolean(newData.isAlarmStatus));
           return;
         }
 
-        if(newData.isPast){
-          console.log("Received weekly log data:", newData);
+        if(newData[0]?.isPast){
+          console.log("[logs]Received weekly log data:", newData);
           setWeeklyLogs(newData);
           return;
         }
 
-        if (newData.isDeviceLog) {
+        if (newData[0]?.isDeviceLog) {
+          const deviceLog = newData[0];
+          console.log("[logs]Received device log data:", deviceLog);
           setDeviceLogs(prev => ({
             ...prev,
-            [newData.nodeId]: newData
+            [deviceLog.nodeId]: deviceLog
           }));
           return;
         }

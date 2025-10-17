@@ -22,6 +22,26 @@ const SpecificDevice = () => {
 
   const [affectedDevices, setAffectedDevices] = useState([]);
 
+  const convertToIndianTime = (utcTime) => {
+    if (!utcTime) return "";
+    try {
+      const date = new Date(utcTime);
+      return date.toLocaleString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+      });
+    } catch (err) {
+      console.error("Invalid time:", utcTime, err);
+      return utcTime;
+    }
+  };
+
   useEffect(() => {
     sendMessage({ DEVICELOG: id });
   }, [id]);
@@ -77,12 +97,33 @@ const SpecificDevice = () => {
       const demoData = fakeCardData.find(card => card.nodeId.toString() === id.toString());
       logs = demoData || null;
     } else {
-      logs = deviceLogs?.[id] || null;
+      logs = deviceLogs[id]?.logs || null;
+      console.log("logs in specificlogs", logs);
     }
   
     if (logs) {
-      setAlertLogsBattery(logs.alertlogsbattery || []);
-      setAlertLogsTemp(logs.alertlogstemp || []);
+      // 🧹 Filter out unwanted log entries
+      const filteredBatteryLogs = (logs.alertlogsbattery || []).filter(
+        log => !log.message.toLowerCase().includes("normal")
+      );
+  
+      const filteredTempLogs = (logs.alertlogstemp || []).filter(
+        log => !log.message.toLowerCase().includes("working fine")
+      );
+  
+      // 🕓 Convert UTC → IST
+      const convertedBatteryLogs = filteredBatteryLogs.map(log => ({
+        ...log,
+        time: convertToIndianTime(log.time),
+      }));
+  
+      const convertedTempLogs = filteredTempLogs.map(log => ({
+        ...log,
+        time: convertToIndianTime(log.time),
+      }));
+  
+      setAlertLogsBattery(convertedBatteryLogs);
+      setAlertLogsTemp(convertedTempLogs);
     } else {
       setAlertLogsBattery([]);
       setAlertLogsTemp([]);
@@ -102,9 +143,11 @@ const SpecificDevice = () => {
 
           <div className='alerts-chart-wrapper flex-space-row width-100'>
             <div className='log-wrapper flex-start-col'>
-              {alertLogsTemp.length > 0 && (
+              
                 <div className='alert-logs'>
-                  <h2 style={{ color: "#ff7b7b" }}>Alert Logs - Temperature</h2>
+                  <h2 style={{ color: "#ff7b7b" }}>Critical Alert Logs - Temperature</h2>
+                  {alertLogsTemp.length > 0 ?(
+                  <div className='alert-logs-in'>
                   {alertLogsTemp.map((item, idx) => (
                     <div key={idx} className='single-alert'>
                       <span className='alert-span' style={{ fontWeight: "600" }}>
@@ -113,12 +156,16 @@ const SpecificDevice = () => {
                       <span className='alert-span'>{item.message}</span>
                     </div>
                   ))}
+                  </div>
+                  ):(
+                    <span className='alert-span'>No critical temperature alerts recorded.</span>  
+                  )}
                 </div>
-              )}
-
-              {alertLogsBattery.length > 0 && (
+              
                 <div className='alert-logs'>
-                  <h2 style={{ color: "#FFC648" }}>Alert Logs - Battery</h2>
+                  <h2 style={{ color: "#FFC648" }}>Critical Alert Logs - Battery</h2>
+                  {alertLogsBattery.length > 0 ?(
+                  <div className='alert-logs-in'>
                   {alertLogsBattery.map((item, idx) => (
                     <div key={idx} className='single-alert'>
                       <span className='alert-span' style={{ fontWeight: "600" }}>
@@ -127,8 +174,12 @@ const SpecificDevice = () => {
                       <span className='alert-span'>{item.message}</span>
                     </div>
                   ))}
+                  </div>
+                  ):(
+                    <span className='alert-span'>No critical battery alerts recorded.</span>
+                  )}
                 </div>
-              )}
+              
             </div>
 
             <div className='specific-device-charts'>

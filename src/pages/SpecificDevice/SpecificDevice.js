@@ -143,8 +143,8 @@ const SpecificDevice = () => {
 
           <div className='alerts-chart-wrapper flex-space-row width-100'>
             <div className='log-wrapper flex-start-col'>
-              
-                <div className='alert-logs'>
+                {device?.nodeType != "Repeater" && (
+                  <div className='alert-logs'>
                   <h2 style={{ color: "#ff7b7b" }}>Critical Alert Logs - Temperature</h2>
                   {alertLogsTemp.length > 0 ?(
                   <div className='alert-logs-in'>
@@ -161,6 +161,8 @@ const SpecificDevice = () => {
                     <span className='alert-span'>No critical temperature alerts recorded.</span>  
                   )}
                 </div>
+                )}
+                
               
                 <div className='alert-logs'>
                   <h2 style={{ color: "#FFC648" }}>Critical Alert Logs - Battery</h2>

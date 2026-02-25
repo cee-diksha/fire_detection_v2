@@ -1,4 +1,4 @@
-import React, {use, useContext, useEffect, useState } from 'react'
+import React, { use, useContext, useEffect, useState } from 'react'
 import fakeCardData from '../../data/fakeCardData.json'
 import noCardData from '../../data/noCardData.json'
 import { FIRE_TEMP, URL } from '../../libs/Constants'
@@ -17,7 +17,7 @@ const getPriority = (statusArray, tempvalue, batp, statusCode) => {
 };
 
 
-const AlertTray = ({socket,data}) => {
+const AlertTray = ({ socket, data }) => {
   const { fireNodes, smokeNodes, fallenNodes } = useContext(MainContext)
   const [cardsData, setcardsData] = useState([]);
   const [AlertCards, setAlertCards] = useState([]);
@@ -27,24 +27,14 @@ const AlertTray = ({socket,data}) => {
     event.stopPropagation();
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     setcardsData(data)
-  },[data])
-
-  const refreshCard = (e,nodeId) => {
-    console.log('Refreshing Node ',nodeId)
-    // dashBoardSocket.emit("REFRESH", nodeId)
-    handleTouch(e)
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(JSON.stringify({ "REFRESH" : nodeId }));
-    } else {
-      console.warn("webSocket not connected");
-    }
-  };
+  }, [data])
 
 
-    useEffect(() => {
-      const filteredAndSorted = cardsData
+
+  useEffect(() => {
+    const filteredAndSorted = cardsData
       .filter(
         (card) =>
           card?.statusCode === 0 ||
@@ -55,45 +45,45 @@ const AlertTray = ({socket,data}) => {
           (Array.isArray(fireNodes) && fireNodes.some(f => f.nodeId === card.nodeId)) ||
           (Array.isArray(smokeNodes) && smokeNodes.some(f => f.nodeId === card.nodeId)) ||
           (Array.isArray(fallenNodes) && fallenNodes.some(f => f.nodeId === card.nodeId))
-      )      
-  .sort((a, b) => {
-    const priorityA = getPriority(a.status, a.tempvalue, a.batp, a.statusCode);
-    const priorityB = getPriority(b.status, b.tempvalue, b.batp, b.statusCode);
+      )
+      .sort((a, b) => {
+        const priorityA = getPriority(a.status, a.tempvalue, a.batp, a.statusCode);
+        const priorityB = getPriority(b.status, b.tempvalue, b.batp, b.statusCode);
 
-    if (priorityA !== priorityB) {
-      return priorityA - priorityB; // Sort by priority
-    }
+        if (priorityA !== priorityB) {
+          return priorityA - priorityB; // Sort by priority
+        }
 
-    return b.tempvalue - a.tempvalue; // If same priority, sort by highest tempvalue first
-  });
+        return b.tempvalue - a.tempvalue; // If same priority, sort by highest tempvalue first
+      });
 
-    
 
-        setAlertCards(filteredAndSorted.length > 0 ? filteredAndSorted : []);
-        }, [cardsData,fireNodes,smokeNodes]);
+
+    setAlertCards(filteredAndSorted.length > 0 ? filteredAndSorted : []);
+  }, [cardsData, fireNodes, smokeNodes]);
 
   return (
     <>
-        <div className='alert-tray'>
-       
-            {AlertCards.length > 0 && (
-                <>
-                {AlertCards.map((card)=>{
-                    return(
-                        <DeviceCard {...card} refreshCard={refreshCard} key={card.nodeId} />
-                    )
-                })}
-                </>
-            )}
-            {!AlertCards.length > 0 && (
-                <div className='no-alert flex-center-col'>
-                    <h2>No alerts detected.</h2>
-                    <span>All devices are functioning normally</span>
-                </div>
-            )}  
-            
-        </div>  
-  </>   
+      <div className='alert-tray'>
+
+        {AlertCards.length > 0 && (
+          <>
+            {AlertCards.map((card) => {
+              return (
+                <DeviceCard {...card} key={card.nodeId} />
+              )
+            })}
+          </>
+        )}
+        {!AlertCards.length > 0 && (
+          <div className='no-alert flex-center-col'>
+            <h2>No alerts detected.</h2>
+            <span>All devices are functioning normally</span>
+          </div>
+        )}
+
+      </div>
+    </>
   )
 }
 

@@ -3,24 +3,24 @@ import { FIRE_TEMP } from "../libs/Constants";
 export const getAlertAndStatusDisplay = (statusArray, temperature, battery, statusCode) => {
   // Highest priority: If statusCode is 0, device is dead and needs replacement
   if (statusCode === 0) {
-    return { 
-      alertType: "replace", 
-      statusDisplay: ["Device offline"], 
-      hasSmoke: false, 
-      hasFire: false, 
-      hasRise: false 
+    return {
+      alertType: "replace",
+      statusDisplay: ["Device offline"],
+      hasSmoke: false,
+      hasFire: false,
+      hasRise: false
     };
   }
 
 
   // Second highest priority: If battery is critically low (<= 5)
   if (battery <= 5) {
-    return { 
-      alertType: "replace", 
-      statusDisplay: ["Needs Replacement"], 
-      hasSmoke: false, 
-      hasFire: false, 
-      hasRise: false 
+    return {
+      alertType: "replace",
+      statusDisplay: ["Needs Replacement"],
+      hasSmoke: false,
+      hasFire: false,
+      hasRise: false
     };
   }
 
@@ -34,7 +34,7 @@ export const getAlertAndStatusDisplay = (statusArray, temperature, battery, stat
   let hasRise = normalizedStatus.includes("temprise");
   let hasSmoke = normalizedStatus.includes("smoke");
 
- 
+
 
   // Fire condition (High priority)
   if (temperature >= FIRE_TEMP) {
@@ -48,10 +48,10 @@ export const getAlertAndStatusDisplay = (statusArray, temperature, battery, stat
     displayList.push("smoke");
   }
 
-   // Check for fall
-   if (statusCode === 2){
+  // Check for fall
+  if (statusCode === 2) {
     displayList.push("Fall Detected");
-      alert = "replace"
+    alert = "replace"
   }
 
   // Check other statuses based on priority

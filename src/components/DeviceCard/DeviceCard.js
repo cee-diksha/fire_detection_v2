@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import './DeviceCard.css';
 import { Tooltip } from '@mui/material';
-import {motion} from 'motion/react'
+import { motion } from 'motion/react'
 import MarkFault from '../Modals/MarkFault';
 import { Link } from 'react-router-dom';
 import { MainContext } from '../../context/MainContext';
@@ -28,42 +28,41 @@ import SuppressorToggle from '../Modals/SuppressorToggle';
  */
 
 //animation vars
-const hover = {background:"rgba(255, 255, 255, 0.6)"}
-const hover2 = {background:"rgba(255, 255, 255, 0.8)"}
-const repeatTransition = {repeat:Infinity,duration:0.5} //tempvalue bat alarm
+const hover = { background: "rgba(255, 255, 255, 0.6)" }
+const hover2 = { background: "rgba(255, 255, 255, 0.8)" }
+const repeatTransition = { repeat: Infinity, duration: 0.5 } //tempvalue bat alarm
 
 
 //main
 const DeviceCard = ({
-    nodeId = 0,
-    nodeType = "",
-    deckno = 0,
-    compno = 0,
-    status = [],
-    tempvalue = 0,
-    smoke = "unchecked",
-    lastupdate = '0/0/0 00:00:00',
-    statusCode = 0,
-    location = "location",
-    batp = 0,
-    mute= 0,
-    supp = "unchecked",
-    acknowledged=false,
-    refreshCard
-  }) => {
+  nodeId = 0,
+  nodeType = "",
+  deckno = 0,
+  compno = 0,
+  status = [],
+  tempvalue = 0,
+  smoke = "unchecked",
+  lastupdate = '0/0/0 00:00:00',
+  statusCode = 0,
+  location = "location",
+  batp = 0,
+  mute = 0,
+  supp = "unchecked",
+  acknowledged = false
+}) => {
 
-    const {isDemo, fireNodes, smokeNodes, fallenNodes, setFireNodes, setSmokeNodes,setFallenNodes, sendMessage} = useContext(MainContext);
+  const { isDemo, fireNodes, smokeNodes, fallenNodes, setFireNodes, setSmokeNodes, setFallenNodes, sendMessage, refreshCard } = useContext(MainContext);
 
-  const [isLowBattery,setIsLowBattery] = useState(false);
-  const [statusDisplay,setStatusDisplay] = useState([])
-  const [alertType,setAlertType] = useState("");
+  const [isLowBattery, setIsLowBattery] = useState(false);
+  const [statusDisplay, setStatusDisplay] = useState([])
+  const [alertType, setAlertType] = useState("");
 
-  const [hasSmoke,setHasSmoke] = useState(false);
-  const [hasFire,setHasFire] = useState(false);
-  const [hasRise,setHasRise] = useState(false);
+  const [hasSmoke, setHasSmoke] = useState(false);
+  const [hasFire, setHasFire] = useState(false);
+  const [hasRise, setHasRise] = useState(false);
 
-  const [alarmOn,setAlarmOn] = useState(true);
-  const [cardAlarm,setCardAlarm] = useState(false);
+  const [alarmOn, setAlarmOn] = useState(true);
+  const [cardAlarm, setCardAlarm] = useState(false);
 
   const [tempColor, setTempColor] = useState("green");
   const [tempImg, setTempImg] = useState("temperature.svg");
@@ -81,11 +80,11 @@ const DeviceCard = ({
   useEffect(() => {
     let { alertType, statusDisplay, hasSmoke, hasFire, hasRise } =
       getAlertAndStatusDisplay(status, tempvalue, batp, statusCode);
-  
+
     const isFireNode = fireNodes.some((node) => node.nodeId === nodeId);
     const isSmokeNode = smokeNodes.some((node) => node.nodeId === nodeId);
     const isFallenNode = fallenNodes?.some((node) => node.nodeId === nodeId);
-  
+
     // Override alertType if node is in fire/smoke/fallen nodes
     if (isFireNode) {
       alertType = "fire";
@@ -98,14 +97,14 @@ const DeviceCard = ({
       alertType = "replace";
       statusDisplay = ["Fall Detected"];
     }
-  
+
     setAlertType(alertType);
     setStatusDisplay(statusDisplay);
     setHasSmoke(hasSmoke);
     setHasFire(hasFire);
     setHasRise(hasRise);
   }, [status, tempvalue, batp, fireNodes, smokeNodes, fallenNodes]);
-   //updated whenever status, tempvalue or batp change
+  //updated whenever status, tempvalue or batp change
 
 
 
@@ -147,14 +146,14 @@ const DeviceCard = ({
   };
 
   //logic to handle suppresor activation
-  const handleSuppressor = (e)=>{
+  const handleSuppressor = (e) => {
     handleTouch(e)
     setShowSuppressor(true)
     console.log('suppresor pressed')
   }
 
   //logic to handle marking faulty
-  const handleMarkFaulty = (e)=>{
+  const handleMarkFaulty = (e) => {
     handleTouch(e)
     setIsFault(true)
   }
@@ -162,18 +161,18 @@ const DeviceCard = ({
   //logic to handle alarm
   const handleAlarmToggle = (e) => {
     handleTouch(e);
-  
+
     if (isMuteDisabled) return;
     setIsMuteDisabled(true);
-  
+
     const nextMute = mute === 1 ? 0 : 1;
-  
+
     sendMessage({ [nextMute ? "MUTEON" : "MUTEOFF"]: nodeId });
-  
+
     setTimeout(() => {
       refreshCard(e, nodeId);
     }, 1000);
-  
+
     setTimeout(() => {
       setIsMuteDisabled(false);
     }, 4000);
@@ -181,32 +180,32 @@ const DeviceCard = ({
 
 
   //handle Acknowledgement
-  const handleAcknowledge = (e) =>{
+  const handleAcknowledge = (e) => {
     handleTouch(e)
     setFireNodes((prev) => prev.filter((node) => node.nodeId !== nodeId));
     setSmokeNodes((prev) => prev.filter((node) => node.nodeId !== nodeId));
     setFallenNodes((prev) => prev.filter((node) => node.nodeId !== nodeId));
     console.log(`Acknowledged node ${nodeId}: removed from fire/smoke/fallen nodes`);
-    
+
   }
 
   const isMuted = mute === 1;
 
   return (
     <Link to={`/info/${nodeId}`}>
-    <motion.div className={`dv-crd-mn ${alertType}`}>
+      <motion.div className={`dv-crd-mn ${alertType}`}>
 
-        <motion.div className='dv-crd-alert-border' animate={cardAlarm?{opacity:[0,1,0]}:{opacity:0}} transition={cardAlarm?repeatTransition:{}}/>
+        <motion.div className='dv-crd-alert-border' animate={cardAlarm ? { opacity: [0, 1, 0] } : { opacity: 0 }} transition={cardAlarm ? repeatTransition : {}} />
 
         {/* Device Status */}
         <div className="dv-crd-status">
-          {statusDisplay.map((item,index)=>{
-            return(
+          {statusDisplay.map((item, index) => {
+            return (
               <React.Fragment key={`${nodeId}-status-${index}`}>
                 <p>{item}</p>
                 {index !== statusDisplay.length - 1 && (
                   <img src="/static/images/seperator.svg" alt="" />
-                )}  
+                )}
               </React.Fragment>
             )
           })}
@@ -214,73 +213,73 @@ const DeviceCard = ({
 
         {/* Device Location and Suppressor Active-inactive Card */}
         <div className="dv-crd-lctn-wrapper">
-            {/* Device image, type and id */}
-            <div className='dv-crd-lctn-mn'>
-                {/* Node id and type */}
-                <div className='dv-crd-node-type-div'>
-                  <div className='dv-img flex-start-row'>
-                    <img src={`/static/images/device/${nodeType.toLowerCase()}.svg`} alt={nodeType} />
-                  </div>
-                  <div id='node-type-id' className='flex-start-col'>
-                      <p id='dv-crd-light-txt'>{nodeType}</p>
-                      <p id='node-id'>{nodeId}</p>
-                  </div>
-                </div>
-
-                {/* Location */}
-                <div id='node-location' className='flex-start-col'>
-                  <h5>{location}</h5>
-                  <section>
-                    <div id="node-deck-comp" className='flex-start-row'>
-                      <p id='dv-crd-light-txt'>Deck</p>
-                      <p>{deckno}</p>
-                    </div>
-                    <div id="node-deck-comp" className='flex-start-row'>
-                      <p id='dv-crd-light-txt'>Compartment</p>
-                      <p>{compno}</p>
-                    </div>
-                    
-                  </section>
-                </div>
-            </div>
-            
-            {/* Suppressor ON/OFF */}
-            {alertType==="fire" && (
-              <div className='dv-activate'>
-                {/* If Suppression is Manual */}
-                {supp === "unchecked" && (
-                  <div className='dv-circle' onClick={handleSuppressor}>
-                    <img src="/static/images/device/suppressor.svg" alt="" />
-                    <div className='dv-circle-text'>
-                      <p>Activate</p>
-                    </div>
-                  </div>
-                )}
-                {showSuppressor && <SuppressorToggle open={true} handleClose={setShowSuppressor}/>}
-
-                {/* If Suppression is Auto */}
-                {supp === "checked" && (
-                  <div className='dv-circle active-auto'>
-                    <img src="/static/images/device/suppressor-active.svg" alt="" />
-                    <div className='dv-circle-text '>
-                      <p>Auto Supress Activate</p>
-                    </div>
-                  </div>
-                )}
-                  
+          {/* Device image, type and id */}
+          <div className='dv-crd-lctn-mn'>
+            {/* Node id and type */}
+            <div className='dv-crd-node-type-div'>
+              <div className='dv-img flex-start-row'>
+                <img src={`/static/images/device/${nodeType.toLowerCase()}.svg`} alt={nodeType} />
               </div>
-            )}
+              <div id='node-type-id' className='flex-start-col'>
+                <p id='dv-crd-light-txt'>{nodeType}</p>
+                <p id='node-id'>{nodeId}</p>
+              </div>
+            </div>
+
+            {/* Location */}
+            <div id='node-location' className='flex-start-col'>
+              <h5>{location}</h5>
+              <section>
+                <div id="node-deck-comp" className='flex-start-row'>
+                  <p id='dv-crd-light-txt'>Deck</p>
+                  <p>{deckno}</p>
+                </div>
+                <div id="node-deck-comp" className='flex-start-row'>
+                  <p id='dv-crd-light-txt'>Compartment</p>
+                  <p>{compno}</p>
+                </div>
+
+              </section>
+            </div>
+          </div>
+
+          {/* Suppressor ON/OFF */}
+          {alertType === "fire" && (
+            <div className='dv-activate'>
+              {/* If Suppression is Manual */}
+              {supp === "unchecked" && (
+                <div className='dv-circle' onClick={handleSuppressor}>
+                  <img src="/static/images/device/suppressor.svg" alt="" />
+                  <div className='dv-circle-text'>
+                    <p>Activate</p>
+                  </div>
+                </div>
+              )}
+              {showSuppressor && <SuppressorToggle open={true} handleClose={setShowSuppressor} />}
+
+              {/* If Suppression is Auto */}
+              {supp === "checked" && (
+                <div className='dv-circle active-auto'>
+                  <img src="/static/images/device/suppressor-active.svg" alt="" />
+                  <div className='dv-circle-text '>
+                    <p>Auto Supress Activate</p>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          )}
         </div>
 
         {/* Main info Tray : Battery, Temprature, Smoke */}
-        {alertType==="replace" && (
-            <div className="dv-crd-info-tray" style={{justifyContent:nodeType.toLowerCase()!=='sensor'?'center':''}}>
-            {nodeType.toLowerCase() === 'sensor' && 
+        {alertType === "replace" && (
+          <div className="dv-crd-info-tray" style={{ justifyContent: nodeType.toLowerCase() !== 'sensor' ? 'center' : '' }}>
+            {nodeType.toLowerCase() === 'sensor' &&
               (
                 <>
                   <div id="temp-info-card" className="dv-crd-info-crd">
-                  <img  style={{filter:'grayscale(10)'}} src={`/static/images/${tempImg}.svg`} alt="" />
-                    <span style={{ color:'grey' }}>{tempvalue}°C</span>
+                    <img style={{ filter: 'grayscale(10)' }} src={`/static/images/${tempImg}.svg`} alt="" />
+                    <span style={{ color: 'grey' }}>{tempvalue}°C</span>
                   </div>
                   <motion.div id="smoke-info-card" className={`dv-crd-info-crd`}>
                     <img src="/static/images/smoke.svg" alt="" />
@@ -288,81 +287,81 @@ const DeviceCard = ({
                 </>
               )
             }
-            
+
             <div id="battery-info-card" className="dv-crd-info-crd">
-              <img style={{filter:'grayscale(10)'}} src={`/static/images/${batImg}.svg`} alt=""/>
+              <img style={{ filter: 'grayscale(10)' }} src={`/static/images/${batImg}.svg`} alt="" />
               <span style={{ color: "grey" }}>{batp}%</span>
             </div>
 
-        </div>
+          </div>
         )}
-        {alertType!=="replace" && (
-            <div className="dv-crd-info-tray" style={{justifyContent:nodeType.toLowerCase()!=='sensor'?'center':''}}>
-            {nodeType.toLowerCase() === 'sensor' && 
+        {alertType !== "replace" && (
+          <div className="dv-crd-info-tray" style={{ justifyContent: nodeType.toLowerCase() !== 'sensor' ? 'center' : '' }}>
+            {nodeType.toLowerCase() === 'sensor' &&
               (
                 <>
                   <div id="temp-info-card" className="dv-crd-info-crd">
-                  <img src={`/static/images/${tempImg}.svg`} alt="" />
-                    <span className={`${tempColor!=="green"?"blink":""}`} style={{ color: tempColor }}>{tempvalue}°C</span>
+                    <img src={`/static/images/${tempImg}.svg`} alt="" />
+                    <span className={`${tempColor !== "green" ? "blink" : ""}`} style={{ color: tempColor }}>{tempvalue}°C</span>
                   </div>
-                  <motion.div id="smoke-info-card" className={`dv-crd-info-crd ${hasSmoke?"blink":""}`}>
+                  <motion.div id="smoke-info-card" className={`dv-crd-info-crd ${hasSmoke ? "blink" : ""}`}>
                     <img src="/static/images/smoke.svg" alt="" />
                   </motion.div>
                 </>
               )
             }
-            
+
             <div id="battery-info-card" className="dv-crd-info-crd">
-              <img src={`/static/images/${batImg}.svg`} alt=""/>
-              <span className={`${batColor!=="green"?"blink":""}`} style={{ color: batColor }}>{batp}%</span>
+              <img src={`/static/images/${batImg}.svg`} alt="" />
+              <span className={`${batColor !== "green" ? "blink" : ""}`} style={{ color: batColor }}>{batp}%</span>
             </div>
 
-        </div>
+          </div>
         )}
-        
+
 
         {/* Refresh Faulty and Alarm button tray */}
         <div className="dv-crd-bttn-tray">
-            
 
-              {/* Mark Faulty */}
-                <Tooltip slotProps={{popper: {modifiers: [{name: 'offset',options: {offset: [0, -10]}}]}}} placement="bottom" title="Mark Faulty" disableInteractive>
-                  <motion.div whileHover={hover} whileTap={hover2} className='dv-crd-bttn' onClick={handleMarkFaulty}>
-                    <img src="/static/images/device/faulty.svg" alt="" />
-                  </motion.div>
-                </Tooltip>
-                {isFault && <MarkFault open={true} handleClose={setIsFault} />}
 
-              {/* Refresh */}
-                <Tooltip title="Refresh" slotProps={{popper: {modifiers: [{name: 'offset',options: {offset: [0, -10]}}]}}} placement="bottom" disableInteractive>
-                  <motion.div whileHover={hover} whileTap={hover2} className='dv-crd-bttn' onClick={(e) => refreshCard(e,nodeId)}>
-                    <img src="/static/images/refresh.svg" alt="" />
-                  </motion.div>
-                </Tooltip>
+          {/* Mark Faulty */}
+          <Tooltip slotProps={{ popper: { modifiers: [{ name: 'offset', options: { offset: [0, -10] } }] } }} placement="bottom" title="Mark Faulty" disableInteractive>
+            <motion.div whileHover={hover} whileTap={hover2} className='dv-crd-bttn' onClick={handleMarkFaulty}>
+              <img src="/static/images/device/faulty.svg" alt="" />
+            </motion.div>
+          </Tooltip>
+          {isFault && <MarkFault open={true} handleClose={setIsFault} />}
 
-                 {/* Alarm - only shown if there's a fire or smoke. only shows for sensors */}
-              {(hasFire || hasRise || hasSmoke) && nodeType.toLowerCase() === 'sensor' && (
-                <Tooltip title={`${isMuted ? "Unmute" : "Mute"} Alarm`} slotProps={{popper: {modifiers: [{name: 'offset',options: {offset: [0, -10]}}]}}} placement="bottom" disableInteractive>
-                <motion.div  
-                  onClick={handleAlarmToggle}
-                  whileHover={!isMuteDisabled ? hover : {}}
-                  whileTap={!isMuteDisabled ? hover2 : {}} 
-                  style={{
-                    opacity: isMuteDisabled ? 0.4 : 1,
-                    cursor: isMuteDisabled ? "normal !important" : "pointer !important",
-                  }}
-                  id='dv-alarm' 
-                  className='dv-crd-bttn'>
-                <img src={`/static/images/device/${isMuted?"alarm-mute":"alarm"}.svg`} alt="" />
-                </motion.div>
-              </Tooltip>
-              )}
+          {/* Refresh */}
+          <Tooltip title="Refresh" slotProps={{ popper: { modifiers: [{ name: 'offset', options: { offset: [0, -10] } }] } }} placement="bottom" disableInteractive>
+            <motion.div whileHover={hover} whileTap={hover2} className='dv-crd-bttn' onClick={(e) => refreshCard(e, nodeId)}>
+              <img src="/static/images/refresh.svg" alt="" />
+            </motion.div>
+          </Tooltip>
 
-           
+          {/* Alarm - only shown if there's a fire or smoke. only shows for sensors */}
+          {(hasFire || hasRise || hasSmoke) && nodeType.toLowerCase() === 'sensor' && (
+            <Tooltip title={`${isMuted ? "Unmute" : "Mute"} Alarm`} slotProps={{ popper: { modifiers: [{ name: 'offset', options: { offset: [0, -10] } }] } }} placement="bottom" disableInteractive>
+              <motion.div
+                onClick={handleAlarmToggle}
+                whileHover={!isMuteDisabled ? hover : {}}
+                whileTap={!isMuteDisabled ? hover2 : {}}
+                style={{
+                  opacity: isMuteDisabled ? 0.4 : 1,
+                  cursor: isMuteDisabled ? "normal !important" : "pointer !important",
+                }}
+                id='dv-alarm'
+                className='dv-crd-bttn'>
+                <img src={`/static/images/device/${isMuted ? "alarm-mute" : "alarm"}.svg`} alt="" />
+              </motion.div>
+            </Tooltip>
+          )}
 
-            {((hasFire || hasRise || hasSmoke || 
-              (Array.isArray(fallenNodes) && fallenNodes.some(f => f.nodeId === nodeId))
-              ) && nodeType.toLowerCase() === 'sensor') && (
+
+
+          {((hasFire || hasRise || hasSmoke ||
+            (Array.isArray(fallenNodes) && fallenNodes.some(f => f.nodeId === nodeId))
+          ) && nodeType.toLowerCase() === 'sensor') && (
               <Tooltip
                 title="Acknowledge"
                 slotProps={{
@@ -384,21 +383,21 @@ const DeviceCard = ({
                 </motion.div>
               </Tooltip>
             )}
-           
+
         </div>
 
         {/* Last updated  */}
         <div className="dv-crd-uptd flex-space-row">
-            <p>Last updated:</p>
-            <div className='dv-crd-uptd-date'>
-              <p>
-                {lastupdate}
-              </p>
-            </div>
+          <p>Last updated:</p>
+          <div className='dv-crd-uptd-date'>
+            <p>
+              {lastupdate}
+            </p>
+          </div>
         </div>
 
-        
-    </motion.div>
+
+      </motion.div>
     </Link>
   )
 }

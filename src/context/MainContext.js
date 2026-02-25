@@ -20,7 +20,7 @@ const MainContextProvider = (props) => {
   const [fireNodes, setFireNodes] = useState([]);
   const [smokeNodes, setSmokeNodes] = useState([]);
   const [fallenNodes, setFallenNodes] = useState([]);
-
+ const[ispotentialdead,setispotentialdead]=useState([])
   const [isMuteAllEnabled, setIsMuteAllEnabled] = useState(false);
 
   const lastSeenRef = useRef(new Map());
@@ -55,18 +55,18 @@ const MainContextProvider = (props) => {
 
   const connectWebSocket = () => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-      console.log("Already connected, skipping reconnection.");
+      // console.log("Already connected, skipping reconnection.");
       return;
     }
 
     cleanUpWebSocket();
-    console.log("Connecting to WebSocket Server");
+    // console.log("Connecting to WebSocket Server");
 
     const socket = new WebSocket(`${URL}/ws/dashboard`);
     socketRef.current = socket;
 
     socket.onopen = () => {
-      console.log("Connected to WebSocket Server");
+      // console.log("Connected to WebSocket Server");
       setConnectedState("connected");
       reconnectAttempts.current = 0;
 
@@ -74,9 +74,9 @@ const MainContextProvider = (props) => {
     };
 
     socket.onclose = (event) => {
-      console.log("WebSocket Disconnected.", event);
+      // console.log("WebSocket Disconnected.", event);
       if (!event.wasClean && reconnectAttempts.current < MAX_RECONNECT_ATTEMPTS) {
-        console.warn("WebSocket closed unexpectedly, attempting to reconnect...");
+        // console.warn("WebSocket closed unexpectedly, attempting to reconnect...");
         setConnectedState("reconnecting");
         reconnectWebSocket();
       } else {
@@ -91,26 +91,26 @@ const MainContextProvider = (props) => {
 
 
     socket.onmessage = (event) => {
-      console.log("event :", event)
+      // console.log("event :", event)
       try {
         let newData = JSON.parse(event.data);
         console.log("[data]Received WebSocket data:", newData);
 
         if (newData.isAlarmStatus !== undefined) {
-          console.log("[alarm]Received alarm status update:", newData.isAlarmStatus);
+          // console.log("[alarm]Received alarm status update:", newData.isAlarmStatus);
           setIsMuteAllEnabled(Boolean(newData.isAlarmStatus));
           return;
         }
 
         if (newData[0]?.isPast) {
-          console.log("[logs]Received weekly log data:", newData);
+          // console.log("[logs]Received weekly log data:", newData);
           setWeeklyLogs(newData);
           return;
         }
 
         if (newData[0]?.isDeviceLog) {
           const deviceLog = newData[0];
-          console.log("[logs]Received device log data:", deviceLog);
+          // console.log("[logs]Received device log data:", deviceLog);
           setDeviceLogs(prev => ({
             ...prev,
             [deviceLog.nodeId]: deviceLog
@@ -140,19 +140,21 @@ const MainContextProvider = (props) => {
               //additional fix for the dead nodes
               lastSeenRef.current.set(id, Date.now());
 
+              
+
               if (hasChanged) {
-                console.log(`[data] Updating device ${id}`);
+                // console.log(`[data] Updating device ${id}`);
                 updated[existingIndex] = newDevice;
                 console.log(`[lastSeenRef] Updated ${id} at ${new Date().toLocaleTimeString()}`);
               } else {
-                console.log(`[lastSeenRef] Ping parsed for ${id} without changes at ${new Date().toLocaleTimeString()}`);
+                // console.log(`[lastSeenRef] Ping parsed for ${id} without changes at ${new Date().toLocaleTimeString()}`);
               }
             } else {
-              console.log(`[data] Adding new device ${id}`);
+              // console.log(`[data] Adding new device ${id}`);
               updated.push(newDevice);
 
               lastSeenRef.current.set(id, Date.now());
-              console.log(`[lastSeenRef] Added ${id} at ${new Date().toLocaleTimeString()}`);
+              // console.log(`[lastSeenRef] Added ${id} at ${new Date().toLocaleTimeString()}`);
             }
           });
           return updated;
@@ -165,7 +167,7 @@ const MainContextProvider = (props) => {
 
   const cleanUpWebSocket = () => {
     if (socketRef.current) {
-      console.log("Cleaning up WebSocket connection...");
+      // console.log("Cleaning up WebSocket connection...");
       socketRef.current.onopen = null;
       socketRef.current.onclose = null;
       socketRef.current.onmessage = null;
@@ -177,13 +179,13 @@ const MainContextProvider = (props) => {
 
   const reconnectWebSocket = () => {
     reconnectAttempts.current += 1;
-    console.log(`Reconnecting attempt ${reconnectAttempts.current}...`);
+    // console.log(`Reconnecting attempt ${reconnectAttempts.current}...`);
     setTimeout(connectWebSocket, RECONNECT_INTERVAL);
   };
 
   const sendMessage = (message) => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-      console.log("Sending message to dashboard socket:", JSON.stringify(message));
+      // console.log("Sending message to dashboard socket:", JSON.stringify(message));
       socketRef.current.send(JSON.stringify(message));
     } else {
       console.warn("WebSocket not connected");
@@ -192,7 +194,7 @@ const MainContextProvider = (props) => {
 
   const sendSaveAll = () => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-      console.log('[save]Sending SAVEALL request...');
+      // console.log('[save] Sending SAVEALL request...');
       sendMessage({ "SAVEALL": 1 });
     } else {
       console.warn("WebSocket not connected for SAVEALL");
@@ -201,15 +203,15 @@ const MainContextProvider = (props) => {
 
   const startSaveAllPolling = () => {
     stopSaveAllPolling();
-    console.log("Attempting to start SAVEALL polling...");
+    // console.log("Attempting to start SAVEALL polling...");
 
     if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) {
-      console.warn("WebSocket not open, delaying SAVEALL polling start...");
+      // console.warn("WebSocket not open, delaying SAVEALL polling start...");
       saveAllTimeoutRef.current = setTimeout(startSaveAllPolling, 2000);
       return;
     }
 
-    console.log("Starting SAVEALL polling every 60 seconds...");
+    // console.log("Starting SAVEALL polling every 60 seconds...");
     saveAllRef.current = setInterval(sendSaveAll, SAVEALL_INTERVAL);
   };
 
@@ -219,15 +221,22 @@ const MainContextProvider = (props) => {
       saveAllTimeoutRef.current = null;
     }
     if (saveAllRef.current) {
-      console.log("Stopping SAVEALL polling...");
+      // console.log("Stopping SAVEALL polling...");
       clearInterval(saveAllRef.current);
       saveAllRef.current = null;
     }
   };
 
+  const refreshCard = (e, nodeId) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    // console.log('Refreshing Node ', nodeId);
+    sendMessage({ "REFRESH": nodeId });
+  };
+
   const updateCard = () => {
     if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-      console.log('Sending UPDATEDATA request...');
+      // console.log('Sending UPDATEDATA request...');
       sendMessage({ "UPDATEDATA": 1 });
     } else {
       console.warn("WebSocket not connected");
@@ -236,15 +245,15 @@ const MainContextProvider = (props) => {
 
   const startPolling = () => {
     stopPolling(); // Prevent duplicate intervals
-    console.log("Attempting to start polling...");
+    // console.log("Attempting to start polling...");
 
     if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) {
-      console.warn("WebSocket is not open, delaying polling start...");
+      // console.warn("WebSocket is not open, delaying polling start...");
       pollingTimeoutRef.current = setTimeout(startPolling, 2000); // Retry in 2 seconds
       return;
     }
 
-    console.log("Starting polling for UPDATEDATA every 10 seconds...");
+    // console.log("Starting polling for UPDATEDATA every 10 seconds...");
     pollingRef.current = setInterval(updateCard, POLLING_INTERVAL);
   };
 
@@ -254,7 +263,7 @@ const MainContextProvider = (props) => {
       pollingTimeoutRef.current = null;
     }
     if (pollingRef.current) {
-      console.log("Stopping polling...");
+      // console.log("Stopping polling...");
       clearInterval(pollingRef.current);
       pollingRef.current = null;
     }
@@ -262,7 +271,7 @@ const MainContextProvider = (props) => {
 
   useEffect(() => {
     if (!isDemo) {
-      console.log('updated data in maincontext', data);
+      // console.log('updated data in maincontext', data);
 
       setFireNodes((prev) => {
         const existingIds = new Set(prev.map((d) => d.nodeId));
@@ -305,7 +314,10 @@ const MainContextProvider = (props) => {
 
     const interval = setInterval(() => {
       const now = Date.now();
-      console.log("=== Checking for dead devices ===");
+      // console.log("=== Checking for dead devices ===");
+
+      let toAddPotential = [];
+      let toRemovePotential = [];
 
       setData((prevData) => {
         return prevData.map((device) => {
@@ -318,40 +330,76 @@ const MainContextProvider = (props) => {
           }
 
           const secondsAgo = lastSeen ? Math.floor((now - lastSeen) / 1000) : "never";
-          console.log(
+          /* console.log(
             `[check] Device ${id} (${device.nodeType}) last seen: ${secondsAgo}s ago (timeout=${timeout / 1000}s)`
-          );
+          ); */
 
           if (!lastSeen || now - lastSeen > timeout) {
             if (device.statusCode !== 0) {
-              console.warn(`[mark-dead] Device ${id} marked dead`);
-              return { ...device, statusCode: 0 };
+              if (ispotentialdead.includes(id)) {
+                console.warn(`[mark-dead] Device ${id} completely dead`);
+                return { ...device, statusCode: 0 };
+              } else {
+                console.warn(`[potential-dead] Device ${id} potentially dead`);
+                toAddPotential.push(id);
+                return device;
+              }
             }
-          } else if (device.statusCode === 0) {
-            console.info(`[revive] Device ${id} is alive again`);
-            return { ...device, statusCode: 1 };
+          } else {
+            if (device.statusCode === 0) {
+              console.info(`[potential-dead] Device ${id} is alive again`);
+              toRemovePotential.push(id);
+              return { ...device, statusCode: 1 };
+            } else if (ispotentialdead.includes(id)) {
+              toRemovePotential.push(id);
+            }
           }
 
           return device;
         });
       });
+
+      if (toAddPotential.length > 0 || toRemovePotential.length > 0) {
+        setispotentialdead((prev) => {
+          let next = [...prev];//made shallow copy
+          toRemovePotential.forEach((id) => {//remove those id that were revived
+            next = next.filter((pid) => pid !== id);
+          });
+          toAddPotential.forEach((id) => {//add those id that are potentially dead
+            if (!next.includes(id)) next.push(id);
+          });
+          return next;
+        });
+      }
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [isDemo]);
+  }, [isDemo, ispotentialdead]);
 
 
   useEffect(() => {
-    console.log('fire nodes updated', fireNodes)
+    // console.log('fire nodes updated', fireNodes)
   }, [fireNodes])
 
   useEffect(() => {
-    console.log('smoke nodes updated', smokeNodes)
+    // console.log('smoke nodes updated', smokeNodes)
   }, [smokeNodes])
 
   useEffect(() => {
-    console.log("fallen nodes updated", fallenNodes);
+    // console.log("fallen nodes updated", fallenNodes);
   }, [fallenNodes]);
+
+  // Effect watching potential dead to revive them
+  useEffect(() => {
+    if (ispotentialdead.length > 0) {
+      console.log("[potential-dead] Attempting to revive potentially dead devices:", ispotentialdead);
+      ispotentialdead.forEach(nodeId => {
+        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+          socketRef.current.send(JSON.stringify({ "REFRESH": nodeId }));
+        }
+      });
+    }
+  }, [ispotentialdead]);//rerender when ispotentialdead changes
 
   return (
     <MainContext.Provider
@@ -377,7 +425,8 @@ const MainContextProvider = (props) => {
         isMuteAllEnabled,
         setIsMuteAllEnabled,
         weeklyLogs,
-        setWeeklyLogs
+        setWeeklyLogs,
+        refreshCard
       }}
     >
       {props.children}

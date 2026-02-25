@@ -13,11 +13,11 @@ const SpecificComp = () => {
     const { deck, comp } = useParams();
     const { isDemo, socketRef, sendMessage, data } = useContext(MainContext);
 
-    
+
     const [device, setDevice] = useState({ compno: comp, deckno: deck, location: 'No location set' });
     const [devices, setDevices] = useState([]);
 
-   
+
 
     useEffect(() => {
         if (!isDemo) {
@@ -37,19 +37,8 @@ const SpecificComp = () => {
         }
     }, [deck, comp, isDemo, data]);
 
-    const refreshCard = (event, nodeId) => {
-        event.preventDefault();
-        event.stopPropagation();
 
-        console.log("Refreshing Node", nodeId);
-        
-        if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
-            socketRef.current.send(JSON.stringify({ "REFRESH": nodeId }));
-        } else {
-            console.warn("WebSocket not connected, cannot send REFRESH command.");
-        }
-    };
-    
+
 
     return (
         <div className='page'>
@@ -57,7 +46,7 @@ const SpecificComp = () => {
             <div className='specific-crd-tray'>
                 {devices.length > 0 ? (
                     devices.map((item, index) => (
-                        <DeviceCard key={`Comp-specific-crd-${index}`} {...item} refreshCard={refreshCard} />
+                        <DeviceCard key={`Comp-specific-crd-${index}`} {...item} />
                     ))
                 ) : (
                     <p>No devices found.</p>

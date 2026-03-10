@@ -4,16 +4,16 @@ import { BarChart, LineChart } from "@mui/x-charts";
 import './Charts.css'
 
 
-export const TempChart = ({data}) => {
+export const TempChart = ({ data }) => {
   const [info, setInfo] = useState([]);
-  const [cardData,setCardData] = useState([])
+  const [cardData, setCardData] = useState([])
 
-   //logic to get data
-  useEffect(()=>{
-      setCardData(data)
-    },[data])
+  //logic to get data
+  useEffect(() => {
+    setCardData(data)
+  }, [data])
 
- 
+
   useEffect(() => {
     setInfo(cardData.filter(item => item?.nodeType?.toLowerCase() === "sensor"));
   }, [cardData]);
@@ -23,6 +23,12 @@ export const TempChart = ({data}) => {
 
   const temp = sortedInfo.map(item => Number(item.tempvalue));
   const node = sortedInfo.map(item => Number(item.nodeId));
+
+  // Fix: Provide fallback to prevent NaN SVG stop offset calculations on empty data
+  if (node.length === 0) {
+    node.push(0);
+    temp.push(0);
+  }
 
   const valueFormatter = (nodeId, context) => {
     const nodeItem = sortedInfo.find((item) => item.nodeId === nodeId);
@@ -38,11 +44,11 @@ export const TempChart = ({data}) => {
   return (
     <div className='chrt-mn'>
       <LineChart
-        xAxis={[{ 
-          data: node,  
-          scaleType: 'band', 
-          label: "Node ID",  
-          
+        xAxis={[{
+          data: node,
+          scaleType: 'band',
+          label: "Node ID",
+
         }]}
         yAxis={[{
           min: 0,
@@ -54,11 +60,11 @@ export const TempChart = ({data}) => {
           },
         }]}
         series={[
-            {
-              data: temp,
-              label: 'Temperature(°C)',
-              color: 'transparent',
-            },
+          {
+            data: temp,
+            label: 'Temperature(°C)',
+            color: 'transparent',
+          },
         ]}
         responsive={true}
         height={180}
@@ -68,14 +74,14 @@ export const TempChart = ({data}) => {
 };
 
 
-export const BatteryChart = ({data}) => {
+export const BatteryChart = ({ data }) => {
   const [filteredInfo, setFilteredInfo] = useState([]);
-  const [cardData,setCardData] = useState([])
+  const [cardData, setCardData] = useState([])
 
-   //logic to get data
-  useEffect(()=>{
-      setCardData(data)
-    },[data])
+  //logic to get data
+  useEffect(() => {
+    setCardData(data)
+  }, [data])
 
 
   useEffect(() => {
@@ -88,6 +94,12 @@ export const BatteryChart = ({data}) => {
 
   const battery = filteredInfo.map((item) => item.batp);
   const node = filteredInfo.map((item) => item.nodeId);
+
+  // Fix: Provide fallback to prevent NaN SVG stop offset calculations on empty data
+  if (node.length === 0) {
+    node.push(0);
+    battery.push(0);
+  }
   return (
     <div className='chrt-mn'>
       <LineChart
@@ -103,7 +115,7 @@ export const BatteryChart = ({data}) => {
           colorMap: {
             type: 'piecewise',
             thresholds: [20, 40],
-            colors: ['red', 'orange','green'],
+            colors: ['red', 'orange', 'green'],
           },
         }]}
         series={[{
@@ -119,54 +131,63 @@ export const BatteryChart = ({data}) => {
   );
 };
 
- export const SmokeChart = ({data}) => {
-   const [info, setInfo] = useState([]);
+export const SmokeChart = ({ data }) => {
+  const [info, setInfo] = useState([]);
 
-   useEffect(() => {
-     setInfo(data); 
-   }, [data]);
+  useEffect(() => {
+    setInfo(data);
+  }, [data]);
 
-   const smokearr = info
-   .filter((item) => item?.nodeType?.toLowerCase() === "sensor") // keep only sensors
-   .map((item) => ({
-     smoke: item?.status?.includes("Smoke") ? "#ff7b7b" : "#b7ff86",
-     nodeId: item?.nodeId,
-   }));
-   
-   const nodeIds = smokearr.map((item) => item.nodeId);
-   const barColors = smokearr.map((item) => item.smoke);
-   const yAxisData = Array(nodeIds.length).fill(1); 
+  const smokearr = info
+    .filter((item) => item?.nodeType?.toLowerCase() === "sensor") // keep only sensors
+    .map((item) => ({
+      smoke: item?.status?.includes("Smoke") ? "#ff7b7b" : "#b7ff86",
+      nodeId: item?.nodeId,
+    }));
 
-   const valueFormatter = (nodeId, context) => {
-     const nodeItem = info.find((item) => item.nodeId === nodeId);
-     if (context.location === "tick") {
-       return String(nodeId);  // ensure nodeId is always a string
-     } else if (nodeItem && nodeItem.location) {
-       return `${nodeItem.location} (ID: ${nodeItem.nodeId})`;
-     } else {
-       return String(nodeId);  // fallback to nodeId if no node_name is found
-     }
-   };
-  
-   return (
+  const nodeIds = smokearr.map((item) => item.nodeId);
+  const barColors = smokearr.map((item) => item.smoke);
+  const yAxisData = Array(nodeIds.length).fill(1);
+
+  // Fix: Provide fallback to prevent NaN SVG stop offset calculations on empty data
+  if (nodeIds.length === 0) {
+    nodeIds.push(0);
+    barColors.push("transparent");
+    yAxisData.push(0);
+  }
+
+  const valueFormatter = (nodeId, context) => {
+    const nodeItem = info.find((item) => item.nodeId === nodeId);
+    if (context.location === "tick") {
+      return String(nodeId);  // ensure nodeId is always a string
+    } else if (nodeItem && nodeItem.location) {
+      return `${nodeItem.location} (ID: ${nodeItem.nodeId})`;
+    } else {
+      return String(nodeId);  // fallback to nodeId if no node_name is found
+    }
+  };
+
+  return (
     <div className='chrt-mn'>
-        <p>Smoke</p>
-     <BarChart
-       xAxis={[{ scaleType: 'band', data: nodeIds, label: 'Node ID', colorMap: {
-         type: "ordinal",
-         values: nodeIds,
-         colors: barColors,
-       },  valueFormatter: (nodeId, context) => valueFormatter(nodeId, context)}]} 
-       series={[
-         {
+      <p>Smoke</p>
+      <BarChart
+        xAxis={[{
+          scaleType: 'band', data: nodeIds, label: 'Node ID', colorMap: {
+            type: "ordinal",
+            values: nodeIds,
+            colors: barColors,
+          }, valueFormatter: (nodeId, context) => valueFormatter(nodeId, context)
+        }]}
+        series={[
+          {
             values: '',
-           data: yAxisData,
-         },
-       ]}
-       leftAxis={null}
-       responsive={true}
-       height={150}
-     />
-     </div>
-   );
- };
+            data: yAxisData,
+          },
+        ]}
+        leftAxis={null}
+        responsive={true}
+        height={150}
+      />
+    </div>
+  );
+};

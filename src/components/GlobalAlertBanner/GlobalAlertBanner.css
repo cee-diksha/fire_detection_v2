@@ -1,0 +1,151 @@
+.global-alert-banner {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    width: max-content;
+    max-width: 90vw;
+    background: rgba(20, 10, 10, 0.92);
+    border: 1px solid rgba(255, 60, 60, 0.5);
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(255, 40, 40, 0.25), 0 2px 8px rgba(0, 0, 0, 0.5);
+    padding: 10px 16px;
+    animation: gab-slide-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes gab-slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.gab-inner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* Pulsing red dot */
+.gab-pulse {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ff3c3c;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 0 rgba(255, 60, 60, 0.7);
+    animation: gab-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes gab-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 60, 60, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(255, 60, 60, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 60, 60, 0);
+    }
+}
+
+.gab-items {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.gab-item {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+}
+
+.gab-item:hover {
+    opacity: 0.75;
+}
+
+.gab-item--fire {
+    background: rgba(255, 60, 40, 0.2);
+    color: #ff6b5b;
+    border: 1px solid rgba(255, 60, 40, 0.4);
+}
+
+.gab-item--smoke {
+    background: rgba(255, 165, 0, 0.15);
+    color: #ffa500;
+    border: 1px solid rgba(255, 165, 0, 0.4);
+}
+
+.gab-item--fallen {
+    background: rgba(120, 120, 255, 0.15);
+    color: #9090ff;
+    border: 1px solid rgba(120, 120, 255, 0.4);
+}
+
+.gab-item--battery {
+    background: rgba(255, 220, 0, 0.12);
+    color: #ffd700;
+    border: 1px solid rgba(255, 220, 0, 0.3);
+}
+
+.gab-more {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.gab-more:hover {
+    color: #fff;
+}
+
+.gab-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+    margin-left: 4px;
+}
+
+.gab-btn {
+    font-size: 0.78rem;
+    padding: 4px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.gab-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.gab-dismiss {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 2px 4px;
+    transition: color 0.15s;
+}
+
+.gab-dismiss:hover {
+    color: #fff;
+}

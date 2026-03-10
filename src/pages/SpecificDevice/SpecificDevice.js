@@ -62,66 +62,66 @@ const SpecificDevice = () => {
       alertType === "fire"
         ? "var(--fire-alert)"
         : alertType === "smoke"
-        ? "var(--smoke-alert)"
-        : alertType === "temprise"
-        ? "var(--temp-alert)"
-        : alertType === "lowbat"
-        ? "var(--battery-alert)":
-        alertType === "normal"? "var(--normal)"
-        : "var(--replace-alert)";
+          ? "var(--smoke-alert)"
+          : alertType === "temprise"
+            ? "var(--temp-alert)"
+            : alertType === "lowbat"
+              ? "var(--battery-alert)" :
+              alertType === "normal" ? "var(--normal)"
+                : "var(--replace-alert)";
     setBackground(bg);
   }, [alertType]);
 
   useEffect(() => {
-    if(!isDemo) {
+    if (!isDemo) {
       if (Array.isArray(data)) {
-        const foundDevice = data.find(d => d.nodeId.toString() === id.toString());
+        const foundDevice = data.find(d => d.nodeId?.toString() === id?.toString());
         if (foundDevice) {
           setDevice(foundDevice);
         }
       }
     }
-    else{
-      const foundDevice = fakeCardData.find(d => d.nodeId.toString() === id.toString());
-        if (foundDevice) {
-          setDevice(foundDevice);
-        }
+    else {
+      const foundDevice = fakeCardData.find(d => d.nodeId?.toString() === id?.toString());
+      if (foundDevice) {
+        setDevice(foundDevice);
+      }
     }
-    
-  }, [data, id,isDemo]);
+
+  }, [data, id, isDemo]);
 
   useEffect(() => {
     let logs;
-  
+
     if (isDemo) {
-      const demoData = fakeCardData.find(card => card.nodeId.toString() === id.toString());
+      const demoData = fakeCardData.find(card => card.nodeId?.toString() === id?.toString());
       logs = demoData || null;
     } else {
       logs = deviceLogs[id]?.logs || null;
       console.log("logs in specificlogs", logs);
     }
-  
+
     if (logs) {
       // 🧹 Filter out unwanted log entries
       const filteredBatteryLogs = (logs.alertlogsbattery || []).filter(
         log => !log.message.toLowerCase().includes("normal")
       );
-  
+
       const filteredTempLogs = (logs.alertlogstemp || []).filter(
         log => !log.message.toLowerCase().includes("working fine")
       );
-  
+
       // 🕓 Convert UTC → IST
       const convertedBatteryLogs = filteredBatteryLogs.map(log => ({
         ...log,
         time: convertToIndianTime(log.time),
       }));
-  
+
       const convertedTempLogs = filteredTempLogs.map(log => ({
         ...log,
         time: convertToIndianTime(log.time),
       }));
-  
+
       setAlertLogsBattery(convertedBatteryLogs);
       setAlertLogsTemp(convertedTempLogs);
     } else {
@@ -129,7 +129,7 @@ const SpecificDevice = () => {
       setAlertLogsTemp([]);
     }
   }, [deviceLogs, id, isDemo]);
-  
+
 
   return (
     <div className='page'>
@@ -143,45 +143,45 @@ const SpecificDevice = () => {
 
           <div className='alerts-chart-wrapper flex-space-row width-100'>
             <div className='log-wrapper flex-start-col'>
-                {device?.nodeType != "Repeater" && (
-                  <div className='alert-logs'>
-                  <h2 style={{ color: "#ff7b7b" }}>Critical Alert Logs - Temperature</h2>
-                  {alertLogsTemp.length > 0 ?(
-                  <div className='alert-logs-in'>
-                  {alertLogsTemp.map((item, idx) => (
-                    <div key={idx} className='single-alert'>
-                      <span className='alert-span' style={{ fontWeight: "600" }}>
-                        {item.time} -{" "}
-                      </span>
-                      <span className='alert-span'>{item.message}</span>
-                    </div>
-                  ))}
-                  </div>
-                  ):(
-                    <span className='alert-span'>No critical temperature alerts recorded.</span>  
-                  )}
-                </div>
-                )}
-                
-              
+              {device?.nodeType != "Repeater" && (
                 <div className='alert-logs'>
-                  <h2 style={{ color: "#FFC648" }}>Critical Alert Logs - Battery</h2>
-                  {alertLogsBattery.length > 0 ?(
-                  <div className='alert-logs-in'>
-                  {alertLogsBattery.map((item, idx) => (
-                    <div key={idx} className='single-alert'>
-                      <span className='alert-span' style={{ fontWeight: "600" }}>
-                        {item.time} -{" "}
-                      </span>
-                      <span className='alert-span'>{item.message}</span>
+                  <h2 style={{ color: "#ff7b7b" }}>Critical Alert Logs - Temperature</h2>
+                  {alertLogsTemp.length > 0 ? (
+                    <div className='alert-logs-in'>
+                      {alertLogsTemp.map((item, idx) => (
+                        <div key={idx} className='single-alert'>
+                          <span className='alert-span' style={{ fontWeight: "600" }}>
+                            {item.time} -{" "}
+                          </span>
+                          <span className='alert-span'>{item.message}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                  </div>
-                  ):(
-                    <span className='alert-span'>No critical battery alerts recorded.</span>
+                  ) : (
+                    <span className='alert-span'>No critical temperature alerts recorded.</span>
                   )}
                 </div>
-              
+              )}
+
+
+              <div className='alert-logs'>
+                <h2 style={{ color: "#FFC648" }}>Critical Alert Logs - Battery</h2>
+                {alertLogsBattery.length > 0 ? (
+                  <div className='alert-logs-in'>
+                    {alertLogsBattery.map((item, idx) => (
+                      <div key={idx} className='single-alert'>
+                        <span className='alert-span' style={{ fontWeight: "600" }}>
+                          {item.time} -{" "}
+                        </span>
+                        <span className='alert-span'>{item.message}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <span className='alert-span'>No critical battery alerts recorded.</span>
+                )}
+              </div>
+
             </div>
 
             <div className='specific-device-charts'>

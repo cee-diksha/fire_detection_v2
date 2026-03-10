@@ -180,7 +180,7 @@ const Settings = () => {
       setFilteredData(tableData);
     } else {
       console.log(tableData)
-      setFilteredData(tableData.filter(d => d.nodeType.toLowerCase() === filter));
+      setFilteredData(tableData.filter(d => d?.nodeType?.toLowerCase() === filter));
     }
   }, [tableData, filter]);
 
@@ -193,7 +193,7 @@ const Settings = () => {
       {isLogin ? (
         <div className="page">
           <div className="st-head flex-space-row">
-            <SettingCards tableData={tableData} onFilterChange={handleFilterChange} selectedFilter={filter}/>
+            <SettingCards tableData={tableData} onFilterChange={handleFilterChange} selectedFilter={filter} />
             <div className="st-udtd-dv">Update/Remove Devices</div>
           </div>
 

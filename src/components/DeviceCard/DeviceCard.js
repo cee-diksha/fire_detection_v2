@@ -218,7 +218,7 @@ const DeviceCard = ({
             {/* Node id and type */}
             <div className='dv-crd-node-type-div'>
               <div className='dv-img flex-start-row'>
-                <img src={`/static/images/device/${nodeType.toLowerCase()}.svg`} alt={nodeType} />
+                <img src={`/static/images/device/${(nodeType || "").toLowerCase()}.svg`} alt={nodeType} />
               </div>
               <div id='node-type-id' className='flex-start-col'>
                 <p id='dv-crd-light-txt'>{nodeType}</p>
@@ -273,8 +273,8 @@ const DeviceCard = ({
 
         {/* Main info Tray : Battery, Temprature, Smoke */}
         {alertType === "replace" && (
-          <div className="dv-crd-info-tray" style={{ justifyContent: nodeType.toLowerCase() !== 'sensor' ? 'center' : '' }}>
-            {nodeType.toLowerCase() === 'sensor' &&
+          <div className="dv-crd-info-tray" style={{ justifyContent: nodeType?.toLowerCase() !== 'sensor' ? 'center' : '' }}>
+            {nodeType?.toLowerCase() === 'sensor' &&
               (
                 <>
                   <div id="temp-info-card" className="dv-crd-info-crd">
@@ -296,8 +296,8 @@ const DeviceCard = ({
           </div>
         )}
         {alertType !== "replace" && (
-          <div className="dv-crd-info-tray" style={{ justifyContent: nodeType.toLowerCase() !== 'sensor' ? 'center' : '' }}>
-            {nodeType.toLowerCase() === 'sensor' &&
+          <div className="dv-crd-info-tray" style={{ justifyContent: nodeType?.toLowerCase() !== 'sensor' ? 'center' : '' }}>
+            {nodeType?.toLowerCase() === 'sensor' &&
               (
                 <>
                   <div id="temp-info-card" className="dv-crd-info-crd">

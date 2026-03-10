@@ -20,7 +20,8 @@ const MainContextProvider = (props) => {
   const [fireNodes, setFireNodes] = useState([]);
   const [smokeNodes, setSmokeNodes] = useState([]);
   const [fallenNodes, setFallenNodes] = useState([]);
- const[ispotentialdead,setispotentialdead]=useState([])
+  const [batteryNodes, setBatteryNodes] = useState([]);
+  const [ispotentialdead, setispotentialdead] = useState([])
   const [isMuteAllEnabled, setIsMuteAllEnabled] = useState(false);
 
   const lastSeenRef = useRef(new Map());
@@ -110,11 +111,54 @@ const MainContextProvider = (props) => {
 
         if (newData[0]?.isDeviceLog) {
           const deviceLog = newData[0];
-          // console.log("[logs]Received device log data:", deviceLog);
           setDeviceLogs(prev => ({
             ...prev,
             [deviceLog.nodeId]: deviceLog
           }));
+          return;
+        }
+
+        // --- NEW: Handle Event-driven updates (Alerts, Notifications) ---
+        if (newData.event) {
+          if (newData.event === "alert") {
+            const message = newData.message || "";
+            const nodeId = parseInt(message.split(":")[1]);
+
+            if (!isNaN(nodeId)) {
+              setData(prev => {
+                const existing = prev.find(d => d.nodeId === nodeId);
+                const status = message.toLowerCase().includes("smoke") ? "smoke" : "fire";
+
+                if (existing) {
+                  return prev.map(d => d.nodeId === nodeId
+                    ? { ...d, status: [...new Set([...(d.status || []), status])] }
+                    : d
+                  );
+                } else {
+                  return [...prev, {
+                    nodeId: nodeId,
+                    nodeType: "Sensor",
+                    status: [status],
+                    statusCode: 1,
+                    tempvalue: status === "fire" ? 100 : 25,
+                    batp: 100,
+                    location: `Node ${nodeId}`
+                  }];
+                }
+              });
+            }
+          }
+
+          if (newData.event === "notification") {
+            // For now just log, could be used for toast notifications
+            console.info("[notification]", newData.message);
+          }
+
+          if (newData.event === "mesh_update") {
+            console.info("[mesh]", newData);
+            // Optionally trigger a refresh to get the new node data
+            sendMessage({ "GETCARD": 1 });
+          }
           return;
         }
 
@@ -140,7 +184,7 @@ const MainContextProvider = (props) => {
               //additional fix for the dead nodes
               lastSeenRef.current.set(id, Date.now());
 
-              
+
 
               if (hasChanged) {
                 // console.log(`[data] Updating device ${id}`);
@@ -270,43 +314,29 @@ const MainContextProvider = (props) => {
   };
 
   useEffect(() => {
-    if (!isDemo) {
-      // console.log('updated data in maincontext', data);
+    // DERIVE current alerts from active data state (non-accumulative)
+    // This prevents the bug where alerts multiply indefinitely.
+    const fire = data.filter(d => d.tempvalue >= FIRE_TEMP);
+    const fireIds = new Set(fire.map(d => d.nodeId));
 
-      setFireNodes((prev) => {
-        const existingIds = new Set(prev.map((d) => d.nodeId));
-        const newFireNodes = data.filter((device) => {
-          const isTemperatureHigh = device.tempvalue >= FIRE_TEMP;
-          return isTemperatureHigh && !existingIds.has(device.nodeId);
-        });
-        return [...prev, ...newFireNodes];
-      });
+    const smoke = data.filter(d =>
+      !fireIds.has(d.nodeId) &&
+      d.status?.some(s => s.toLowerCase().includes('smoke'))
+    );
 
-      setSmokeNodes((prev) => {
-        const fireNodeIds = new Set(
-          data
-            .filter((device) => device.tempvalue >= FIRE_TEMP)
-            .map((device) => device.nodeId)
-        );
-        const existingIds = new Set(prev.map((d) => d.nodeId));
-        const newSmokeNodes = data.filter((device) => {
-          const hasSmoke = device.status?.includes('smoke');
-          const isInFireNodes = fireNodeIds.has(device.nodeId);
-          return hasSmoke && !isInFireNodes && !existingIds.has(device.nodeId);
-        });
-        return [...prev, ...newSmokeNodes];
-      });
+    const fallen = data.filter(d => d.statusCode === 2);
 
-      setFallenNodes((prev) => {
-        const existingIds = new Set(prev.map((d) => d.nodeId));
-        const newFallenNodes = data.filter((device) => {
-          return device.statusCode === 2 && !existingIds.has(device.nodeId);
-        });
-        return [...prev, ...newFallenNodes];
-      });
-    }
+    const battery = data.filter(d =>
+      d.batp <= 20 &&
+      d.statusCode !== 0 &&
+      !fireIds.has(d.nodeId) // Fire takes precedence
+    );
 
-  }, [data]);
+    setFireNodes(fire);
+    setSmokeNodes(smoke);
+    setFallenNodes(fallen);
+    setBatteryNodes(battery);
+  }, [data, isDemo]);
 
   //Function that checks which devices are dead if we havent recieved data from them
   useEffect(() => {
@@ -422,6 +452,8 @@ const MainContextProvider = (props) => {
         setSmokeNodes,
         fallenNodes,
         setFallenNodes,
+        batteryNodes,
+        setBatteryNodes,
         isMuteAllEnabled,
         setIsMuteAllEnabled,
         weeklyLogs,

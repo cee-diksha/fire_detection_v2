@@ -20,12 +20,12 @@ const SpecificDeck = () => {
     if (!isDemo) {
 
       const filteredData = data.filter(item =>
-        item.deckno.toString() === deck.toString()
+        item.deckno?.toString() === deck?.toString()
       );
       setDevices(filteredData)
     } else {
       const filteredData = fakeCardData.filter(item =>
-        item.deckno.toString() === deck.toString()
+        item.deckno?.toString() === deck?.toString()
       );
       setDevices(filteredData);
     }

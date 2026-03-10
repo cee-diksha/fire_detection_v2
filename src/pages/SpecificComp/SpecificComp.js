@@ -22,16 +22,16 @@ const SpecificComp = () => {
     useEffect(() => {
         if (!isDemo) {
             const filteredData = data.filter(item =>
-                item.deckno.toString() === deck.toString() &&
-                item.compno.toString() === comp.toString()
+                item.deckno?.toString() === deck?.toString() &&
+                item.compno?.toString() === comp?.toString()
             );
             console.log("Filtered devices:", filteredData);
             setDevices(filteredData);
 
         } else {
             const filteredData = fakeCardData.filter(item =>
-                item.deckno.toString() === deck.toString() &&
-                item.compno.toString() === comp.toString()
+                item.deckno?.toString() === deck?.toString() &&
+                item.compno?.toString() === comp?.toString()
             );
             setDevices(filteredData);
         }
